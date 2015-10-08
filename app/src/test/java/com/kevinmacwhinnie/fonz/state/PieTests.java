@@ -53,18 +53,17 @@ public class PieTests {
         pie.tryPlacePiece(3, Piece.GREEN);
         pie.tryPlacePiece(4, Piece.GREEN);
         pie.tryPlacePiece(5, Piece.PURPLE);
-        pie.tryPlacePiece(6, Piece.ORANGE);
 
         assertThat(pie.isSingleColor(), is(false));
 
         pie.drain();
 
         pie.tryPlacePiece(0, Piece.ORANGE);
+        pie.tryPlacePiece(1, Piece.ORANGE);
         pie.tryPlacePiece(2, Piece.ORANGE);
         pie.tryPlacePiece(3, Piece.ORANGE);
         pie.tryPlacePiece(4, Piece.ORANGE);
         pie.tryPlacePiece(5, Piece.ORANGE);
-        pie.tryPlacePiece(6, Piece.ORANGE);
 
         assertThat(pie.isSingleColor(), is(true));
     }

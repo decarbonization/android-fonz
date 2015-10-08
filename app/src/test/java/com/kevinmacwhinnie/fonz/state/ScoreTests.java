@@ -30,7 +30,7 @@ public class ScoreTests {
         assertThat(score.getValue(), is(equalTo(60)));
 
         score.addPieces(6, false);
-        assertThat(score.getValue(), is(equalTo(120)));
+        assertThat(score.getValue(), is(equalTo(90)));
     }
 
     @Test
