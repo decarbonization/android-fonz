@@ -19,11 +19,11 @@ public class PieTests {
     public void tryPlacePiece() {
         final Pie pie = new Pie();
 
-        assertThat(pie.tryPlacePiece(0, Piece.ORANGE), is(true));
-        assertThat(pie.tryPlacePiece(0, Piece.GREEN), is(false));
+        assertThat(pie.tryPlacePiece(Pie.PIECE_TOP_LEFT, Piece.ORANGE), is(true));
+        assertThat(pie.tryPlacePiece(Pie.PIECE_TOP_LEFT, Piece.GREEN), is(false));
 
-        assertThat(pie.tryPlacePiece(1, Piece.ORANGE), is(true));
-        assertThat(pie.tryPlacePiece(1, Piece.ORANGE), is(false));
+        assertThat(pie.tryPlacePiece(Pie.PIECE_TOP_CENTER, Piece.ORANGE), is(true));
+        assertThat(pie.tryPlacePiece(Pie.PIECE_TOP_CENTER, Piece.ORANGE), is(false));
     }
 
     @Test
@@ -43,32 +43,6 @@ public class PieTests {
     }
 
     @Test
-    public void isSingleColor() {
-        final Pie pie = new Pie();
-
-        assertThat(pie.isSingleColor(), is(false));
-
-        pie.tryPlacePiece(0, Piece.ORANGE);
-        pie.tryPlacePiece(2, Piece.PURPLE);
-        pie.tryPlacePiece(3, Piece.GREEN);
-        pie.tryPlacePiece(4, Piece.GREEN);
-        pie.tryPlacePiece(5, Piece.PURPLE);
-
-        assertThat(pie.isSingleColor(), is(false));
-
-        pie.drain();
-
-        pie.tryPlacePiece(0, Piece.ORANGE);
-        pie.tryPlacePiece(1, Piece.ORANGE);
-        pie.tryPlacePiece(2, Piece.ORANGE);
-        pie.tryPlacePiece(3, Piece.ORANGE);
-        pie.tryPlacePiece(4, Piece.ORANGE);
-        pie.tryPlacePiece(5, Piece.ORANGE);
-
-        assertThat(pie.isSingleColor(), is(true));
-    }
-
-    @Test
     public void drain() {
         final Pie pie = new Pie();
 
@@ -83,5 +57,32 @@ public class PieTests {
         pie.drain();
 
         assertThat(pie.isFull(), is(false));
+    }
+
+    @Test
+    public void isSingleColor() {
+        final Pie pie = new Pie();
+
+        assertThat(pie.isSingleColor(), is(false));
+
+        pie.tryPlacePiece(Pie.PIECE_TOP_LEFT, Piece.ORANGE);
+        pie.tryPlacePiece(Pie.PIECE_TOP_CENTER, Piece.PURPLE);
+        pie.tryPlacePiece(Pie.PIECE_TOP_RIGHT, Piece.PURPLE);
+        pie.tryPlacePiece(Pie.PIECE_BOTTOM_LEFT, Piece.GREEN);
+        pie.tryPlacePiece(Pie.PIECE_BOTTOM_CENTER, Piece.GREEN);
+        pie.tryPlacePiece(Pie.PIECE_BOTTOM_RIGHT, Piece.PURPLE);
+
+        assertThat(pie.isSingleColor(), is(false));
+
+        pie.drain();
+
+        pie.tryPlacePiece(Pie.PIECE_TOP_LEFT, Piece.ORANGE);
+        pie.tryPlacePiece(Pie.PIECE_TOP_CENTER, Piece.ORANGE);
+        pie.tryPlacePiece(Pie.PIECE_TOP_RIGHT, Piece.ORANGE);
+        pie.tryPlacePiece(Pie.PIECE_BOTTOM_LEFT, Piece.ORANGE);
+        pie.tryPlacePiece(Pie.PIECE_BOTTOM_CENTER, Piece.ORANGE);
+        pie.tryPlacePiece(Pie.PIECE_BOTTOM_RIGHT, Piece.ORANGE);
+
+        assertThat(pie.isSingleColor(), is(true));
     }
 }

@@ -6,6 +6,13 @@ import java.util.Arrays;
 
 public class Pie {
     public static final int NUMBER_PIECES = 6;
+    public static final int PIECE_TOP_LEFT = 0;
+    public static final int PIECE_TOP_CENTER = 1;
+    public static final int PIECE_TOP_RIGHT = 2;
+    public static final int PIECE_BOTTOM_LEFT = 3;
+    public static final int PIECE_BOTTOM_CENTER = 4;
+    public static final int PIECE_BOTTOM_RIGHT = 5;
+
 
     private final Piece[] slots;
     private int occupiedSlots = 0;

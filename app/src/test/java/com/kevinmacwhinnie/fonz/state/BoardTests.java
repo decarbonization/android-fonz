@@ -11,7 +11,7 @@ public class BoardTests {
     public void reset() {
         final Board board = new Board();
         for (int i = 0; i < Board.NUMBER_PIES; i++) {
-            board.getPie(i).tryPlacePiece(0, Piece.GREEN);
+            board.getPie(i).tryPlacePiece(Pie.PIECE_TOP_LEFT, Piece.GREEN);
         }
 
         board.reset();

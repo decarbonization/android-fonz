@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Fonz</string>
+
+    <string name="piece_orange">Orange piece</string>
+    <string name="piece_green">Green piece</string>
+    <string name="piece_purple">Purple piece</string>
 </resources>

@@ -1,21 +1,31 @@
 package com.kevinmacwhinnie.fonz.view;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.RectF;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.kevinmacwhinnie.fonz.R;
 import com.kevinmacwhinnie.fonz.state.Pie;
+import com.kevinmacwhinnie.fonz.state.Piece;
 
 public class PieView extends View {
-    private final float DEGREES_PER_SLICE = (360f / Pie.NUMBER_PIECES);
-    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    public final float DEGREES_PER_SLICE = (360f / Pie.NUMBER_PIECES);
+
+    private final Resources resources;
+    private final int strokeInset;
     private final RectF rect = new RectF();
+    private final Paint fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint pieceFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint pieceStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Path piecePath = new Path();
 
     private Pie pie;
 
@@ -34,6 +44,18 @@ public class PieView extends View {
         super(context, attrs, defStyle);
 
         setWillNotDraw(true);
+
+        this.resources = getResources();
+        this.strokeInset = resources.getDimensionPixelSize(R.dimen.view_pie_stroke_width);
+
+        final @ColorInt int backgroundColor = resources.getColor(R.color.view_pie_background);
+        fillPaint.setColor(backgroundColor);
+        pieceFillPaint.setStrokeJoin(Paint.Join.ROUND);
+        pieceStrokePaint.setStyle(Paint.Style.STROKE);
+        pieceStrokePaint.setStrokeJoin(Paint.Join.ROUND);
+        pieceStrokePaint.setStrokeCap(Paint.Cap.ROUND);
+        pieceStrokePaint.setStrokeWidth(strokeInset);
+        pieceStrokePaint.setColor(backgroundColor);
     }
 
     //endregion
@@ -45,19 +67,28 @@ public class PieView extends View {
     protected void onDraw(Canvas canvas) {
         rect.set(0f, 0f, canvas.getWidth(), canvas.getHeight());
 
-        paint.setColor(Color.LTGRAY);
-        canvas.drawArc(rect, 0f, 360f, true, paint);
+        canvas.drawOval(rect, fillPaint);
 
-        final int saveCount = canvas.save();
-        canvas.rotate(-90f, rect.centerX(), rect.centerY());
-
+        rect.inset(strokeInset, strokeInset);
+        canvas.save();
+        canvas.rotate(-180f, rect.centerX(), rect.centerY());
         for (int i = 0; i < Pie.NUMBER_PIECES; i++) {
-            final float startAngle = DEGREES_PER_SLICE * i;
-            paint.setColor(pie.getPiece(i).color);
-            canvas.drawArc(rect, startAngle, DEGREES_PER_SLICE, true, paint);
-        }
+            final Piece piece = pie.getPiece(i);
+            if (piece == Piece.NONE) {
+                continue;
+            }
 
-        canvas.restoreToCount(saveCount);
+            piecePath.reset();
+            piecePath.moveTo(rect.centerX(), rect.centerY());
+
+            final float startAngle = DEGREES_PER_SLICE * i;
+            final @ColorInt int pieceColor = resources.getColor(piece.color);
+            pieceFillPaint.setColor(pieceColor);
+
+            piecePath.arcTo(rect, startAngle, DEGREES_PER_SLICE);
+            canvas.drawPath(piecePath, pieceFillPaint);
+            canvas.drawPath(piecePath, pieceStrokePaint);
+        }
     }
 
     //endregion
