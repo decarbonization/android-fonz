@@ -7,12 +7,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class PieceVendor {
+public class PieceFactory {
     private final Random random = new Random();
-    private List<Piece> pieces = new ArrayList<>(3);
+    private final List<Piece> pieces = new ArrayList<>(3);
     private int pointer = 0;
 
-    public PieceVendor() {
+    public PieceFactory() {
         pieces.add(Piece.GREEN);
         pieces.add(Piece.ORANGE);
         pieces.add(Piece.PURPLE);

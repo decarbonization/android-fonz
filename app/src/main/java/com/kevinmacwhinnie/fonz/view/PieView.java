@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.kevinmacwhinnie.fonz.R;
@@ -73,6 +72,8 @@ public class PieView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        // TODO: move to pre-rendered pieces
+
         rect.set(0f, 0f, canvas.getWidth(), canvas.getHeight());
 
         canvas.drawOval(rect, fillPaint);
@@ -106,6 +107,7 @@ public class PieView extends View {
 
     public void setPie(@NonNull Pie pie) {
         this.pie = pie;
+
         final CharSequence contentDescription = generateContentDescription();
         setContentDescription(contentDescription);
         setWillNotDraw(false);
@@ -123,14 +125,6 @@ public class PieView extends View {
 
 
     //region Accessibility
-
-
-    @Override
-    public void setContentDescription(CharSequence contentDescription) {
-        super.setContentDescription(contentDescription);
-
-        Log.i(getClass().getSimpleName(), "New content description: '" + contentDescription + "'");
-    }
 
     @VisibleForTesting
     CharSequence generateContentDescription() {

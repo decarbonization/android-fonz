@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
 public class PieceVendorTests {
     @Test
     public void generatePiece() {
-        final PieceVendor vendor = new PieceVendor();
+        final PieceFactory vendor = new PieceFactory();
 
         final List<Piece> pieces = new ArrayList<>();
         pieces.add(vendor.generatePiece());
