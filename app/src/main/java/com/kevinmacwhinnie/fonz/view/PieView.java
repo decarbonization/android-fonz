@@ -101,5 +101,9 @@ public class PieView extends View {
         setWillNotDraw(false);
     }
 
+    public void notifyChanged() {
+        invalidate();
+    }
+
     //endregion
 }

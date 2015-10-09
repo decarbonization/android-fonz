@@ -13,10 +13,10 @@ public class ScoreTests {
 
         assertThat(score.getValue(), is(equalTo(0)));
 
-        score.addPieces(6, false);
+        score.addPie(false);
         assertThat(score.getValue(), is(equalTo(30)));
 
-        score.addPieces(6, false);
+        score.addPie( false);
         assertThat(score.getValue(), is(equalTo(60)));
     }
 
@@ -26,10 +26,10 @@ public class ScoreTests {
 
         assertThat(score.getValue(), is(equalTo(0)));
 
-        score.addPieces(6, true);
+        score.addPie(true);
         assertThat(score.getValue(), is(equalTo(60)));
 
-        score.addPieces(6, false);
+        score.addPie(false);
         assertThat(score.getValue(), is(equalTo(90)));
     }
 
@@ -40,10 +40,10 @@ public class ScoreTests {
         assertThat(score.getValue(), is(equalTo(0)));
 
         score.setMultiplier(3f);
-        score.addPieces(6, false);
+        score.addPie(false);
         assertThat(score.getValue(), is(equalTo(90)));
 
-        score.addPieces(6, true);
+        score.addPie(true);
         assertThat(score.getValue(), is(equalTo(270)));
     }
 
@@ -53,7 +53,7 @@ public class ScoreTests {
 
         assertThat(score.getValue(), is(equalTo(0)));
 
-        score.addPieces(6, false);
+        score.addPie(false);
         assertThat(score.getValue(), is(equalTo(30)));
 
         score.reset();

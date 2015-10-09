@@ -7,8 +7,8 @@ public class Score {
     private float multiplier = 1f;
 
 
-    public void addPieces(int pieces, boolean allSameColor) {
-        int score = pieces * SCORE_PER_PIECE;
+    public void addPie(boolean allSameColor) {
+        int score = Pie.NUMBER_PIECES * SCORE_PER_PIECE;
         if (allSameColor) {
             score *= 2;
         }
