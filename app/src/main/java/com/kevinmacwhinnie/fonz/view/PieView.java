@@ -57,6 +57,7 @@ public class PieView extends View implements Observer {
         this.resources = getResources();
         this.strokeInset = resources.getDimensionPixelSize(R.dimen.view_pie_stroke_width);
 
+        // TODO: stfu Android Marshmallow SDK, there's no ResourcesCompat#getColor(int, int) yet
         final @ColorInt int backgroundColor = resources.getColor(R.color.view_pie_background);
         fillPaint.setColor(backgroundColor);
         pieceFillPaint.setStrokeJoin(Paint.Join.ROUND);
@@ -80,6 +81,7 @@ public class PieView extends View implements Observer {
 
         canvas.drawOval(rect, fillPaint);
 
+        // TODO: improve rendering, the pie pieces aren't quite straight
         rect.inset(strokeInset, strokeInset);
         canvas.save();
         canvas.rotate(-180f, rect.centerX(), rect.centerY());
@@ -128,6 +130,7 @@ public class PieView extends View implements Observer {
     public void notifyChanged() {
         final CharSequence contentDescription = generateContentDescription();
         setContentDescription(contentDescription);
+        // TODO: we don't want to announce the same thing for the upcoming pie
         announceForAccessibility(contentDescription);
 
         invalidate();

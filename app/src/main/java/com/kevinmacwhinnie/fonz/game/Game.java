@@ -11,6 +11,9 @@ import com.kevinmacwhinnie.fonz.state.Score;
 
 import java.util.Observable;
 
+// TODO: replace Observable with something that doesn't suck
+// TODO: test the crap out of this class
+// TODO: state saving
 public class Game extends Observable implements CountUp.Listener {
     public static final String LOG_TAG = Game.class.getSimpleName();
 
@@ -37,6 +40,7 @@ public class Game extends Observable implements CountUp.Listener {
         this.upcomingPiece = pieceFactory.generateUpcomingPiece();
         Log.d(LOG_TAG, "Upcoming piece " + upcomingPiece);
 
+        // TODO: figure out correct timing and scale ratio for count up
         countUp.start();
 
         notifyObservers();
@@ -92,6 +96,8 @@ public class Game extends Observable implements CountUp.Listener {
     }
 
     public void gameOver() {
+        // TODO: notifications?
+
         Log.d(LOG_TAG, "Game over");
         reset();
     }

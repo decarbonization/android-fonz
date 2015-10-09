@@ -89,6 +89,7 @@ public class BoardView extends LinearLayout implements View.OnClickListener {
     }
 
     public void setGameClockTick(long tick) {
+        // TODO: display this tick somewhere
         Log.i(getClass().getSimpleName(), "setGameClockTick(" + tick + ")");
     }
 

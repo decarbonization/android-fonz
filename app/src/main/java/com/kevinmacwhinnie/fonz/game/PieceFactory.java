@@ -19,6 +19,7 @@ public class PieceFactory {
     }
 
     public Piece generatePiece() {
+        // TODO: this is overly random and makes game play very hard
         return pieces.get(random.nextInt(pieces.size()));
     }
 
