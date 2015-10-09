@@ -9,12 +9,18 @@ import android.graphics.RectF;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.kevinmacwhinnie.fonz.R;
 import com.kevinmacwhinnie.fonz.state.Pie;
 import com.kevinmacwhinnie.fonz.state.Piece;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PieView extends View {
     public final float DEGREES_PER_SLICE = (360f / Pie.NUMBER_PIECES);
@@ -44,6 +50,8 @@ public class PieView extends View {
         super(context, attrs, defStyle);
 
         setWillNotDraw(true);
+        setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
+        setAccessibilityLiveRegion(ACCESSIBILITY_LIVE_REGION_ASSERTIVE);
 
         this.resources = getResources();
         this.strokeInset = resources.getDimensionPixelSize(R.dimen.view_pie_stroke_width);
@@ -74,7 +82,7 @@ public class PieView extends View {
         canvas.rotate(-180f, rect.centerX(), rect.centerY());
         for (int i = 0; i < Pie.NUMBER_PIECES; i++) {
             final Piece piece = pie.getPiece(i);
-            if (piece == Piece.NONE) {
+            if (piece == Piece.EMPTY) {
                 continue;
             }
 
@@ -98,11 +106,62 @@ public class PieView extends View {
 
     public void setPie(@NonNull Pie pie) {
         this.pie = pie;
+        final CharSequence contentDescription = generateContentDescription();
+        setContentDescription(contentDescription);
         setWillNotDraw(false);
     }
 
     public void notifyChanged() {
+        final CharSequence contentDescription = generateContentDescription();
+        setContentDescription(contentDescription);
+        announceForAccessibility(contentDescription);
+
         invalidate();
+    }
+
+    //endregion
+
+
+    //region Accessibility
+
+
+    @Override
+    public void setContentDescription(CharSequence contentDescription) {
+        super.setContentDescription(contentDescription);
+
+        Log.i(getClass().getSimpleName(), "New content description: '" + contentDescription + "'");
+    }
+
+    @VisibleForTesting
+    CharSequence generateContentDescription() {
+        final int occupiedSlotCount = pie.getOccupiedSlotCount();
+        if (occupiedSlotCount == 0) {
+            return resources.getString(R.string.accessibility_pie_empty);
+        } else {
+            if (pie.isFull()) {
+                if (pie.isSingleColor()) {
+                    return resources.getString(R.string.accessibility_pie_full_single_color);
+                } else {
+                    return resources.getString(R.string.accessibility_pie_full_multiple_colors);
+                }
+            } else {
+                final List<CharSequence> slotDescriptions = new ArrayList<>(Pie.NUMBER_PIECES);
+                for (int i = 0; i < Pie.NUMBER_PIECES; i++) {
+                    final Piece piece = pie.getPiece(i);
+                    if (piece == Piece.EMPTY) {
+                        continue;
+                    }
+
+                    final String pieceName = resources.getString(piece.accessibilityName);
+                    slotDescriptions.add(resources.getString(Pie.SLOT_ACCESSIBILITY_NAME_FMTS[i], pieceName));
+                }
+                final String deliminator = resources.getString(R.string.accessibility_pie_slot_conjunction);
+                final CharSequence slotSummary = TextUtils.join(deliminator, slotDescriptions);
+
+                return resources.getQuantityString(R.plurals.accessibility_pie_partially_filled,
+                                                   occupiedSlotCount, occupiedSlotCount, slotSummary);
+            }
+        }
     }
 
     //endregion

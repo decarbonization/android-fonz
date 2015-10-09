@@ -18,7 +18,7 @@ public class Board {
 
     public void reset() {
         for (int i = 0; i < NUMBER_PIES; i++) {
-            pies[i].drain();
+            pies[i].reset();
         }
     }
 }

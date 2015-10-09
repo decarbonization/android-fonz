@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- TODO: how to best represent colors in dictation? -->
+    <string name="accessibility_piece_orange">orange</string>
+    <string name="accessibility_piece_green">green</string>
+    <string name="accessibility_piece_purple">purple</string>
+    <string name="accessibility_piece_empty">empty</string>
+
+    <string name="accessibility_pie_empty">An empty puzzle with 6 slots open</string>
+    <plurals name="accessibility_pie_partially_filled">
+        <item quantity="one">A puzzle with 1 slot filled where %2$s</item>
+        <item quantity="other">A puzzle with %1$d slots filled where %2$s</item>
+    </plurals>
+
+    <string name="accessibility_pie_slot_top_left_fmt">the top left slot is %1$s</string>
+    <string name="accessibility_pie_slot_top_center_fmt">the top center slot is %1$s</string>
+    <string name="accessibility_pie_slot_top_right_fmt">the top right slot is %1$s</string>
+    <string name="accessibility_pie_slot_bottom_left_fmt">the bottom left slot is %1$s</string>
+    <string name="accessibility_pie_slot_bottom_center_fmt">the bottom center slot is %1$s</string>
+    <string name="accessibility_pie_slot_bottom_right_fmt">the bottom right slot is %1$s</string>
+    <string name="accessibility_pie_slot_conjunction">" and "</string>
+
+    <string name="accessibility_pie_full_single_color">A full puzzle where all slots are the same color</string>
+    <string name="accessibility_pie_full_multiple_colors">A full puzzle where the slots are of varying colors</string>
+</resources>

@@ -11,7 +11,7 @@ public class PieTests {
     public void constructor() {
         final Pie pie = new Pie();
         for (int i = 0; i < Pie.NUMBER_PIECES; i++) {
-            assertThat(pie.getPiece(i), is(equalTo(Piece.NONE)));
+            assertThat(pie.getPiece(i), is(equalTo(Piece.EMPTY)));
         }
     }
 
@@ -19,11 +19,11 @@ public class PieTests {
     public void tryPlacePiece() {
         final Pie pie = new Pie();
 
-        assertThat(pie.tryPlacePiece(Pie.PIECE_TOP_LEFT, Piece.ORANGE), is(true));
-        assertThat(pie.tryPlacePiece(Pie.PIECE_TOP_LEFT, Piece.GREEN), is(false));
+        assertThat(pie.tryPlacePiece(Pie.SLOT_TOP_LEFT, Piece.ORANGE), is(true));
+        assertThat(pie.tryPlacePiece(Pie.SLOT_TOP_LEFT, Piece.GREEN), is(false));
 
-        assertThat(pie.tryPlacePiece(Pie.PIECE_TOP_CENTER, Piece.ORANGE), is(true));
-        assertThat(pie.tryPlacePiece(Pie.PIECE_TOP_CENTER, Piece.ORANGE), is(false));
+        assertThat(pie.tryPlacePiece(Pie.SLOT_TOP_CENTER, Piece.ORANGE), is(true));
+        assertThat(pie.tryPlacePiece(Pie.SLOT_TOP_CENTER, Piece.ORANGE), is(false));
     }
 
     @Test
@@ -43,7 +43,7 @@ public class PieTests {
     }
 
     @Test
-    public void drain() {
+    public void reset() {
         final Pie pie = new Pie();
 
         assertThat(pie.isFull(), is(false));
@@ -54,7 +54,7 @@ public class PieTests {
 
         assertThat(pie.isFull(), is(true));
 
-        pie.drain();
+        pie.reset();
 
         assertThat(pie.isFull(), is(false));
     }
@@ -65,23 +65,23 @@ public class PieTests {
 
         assertThat(pie.isSingleColor(), is(false));
 
-        pie.tryPlacePiece(Pie.PIECE_TOP_LEFT, Piece.ORANGE);
-        pie.tryPlacePiece(Pie.PIECE_TOP_CENTER, Piece.PURPLE);
-        pie.tryPlacePiece(Pie.PIECE_TOP_RIGHT, Piece.PURPLE);
-        pie.tryPlacePiece(Pie.PIECE_BOTTOM_LEFT, Piece.GREEN);
-        pie.tryPlacePiece(Pie.PIECE_BOTTOM_CENTER, Piece.GREEN);
-        pie.tryPlacePiece(Pie.PIECE_BOTTOM_RIGHT, Piece.PURPLE);
+        pie.tryPlacePiece(Pie.SLOT_TOP_LEFT, Piece.ORANGE);
+        pie.tryPlacePiece(Pie.SLOT_TOP_CENTER, Piece.PURPLE);
+        pie.tryPlacePiece(Pie.SLOT_TOP_RIGHT, Piece.PURPLE);
+        pie.tryPlacePiece(Pie.SLOT_BOTTOM_LEFT, Piece.GREEN);
+        pie.tryPlacePiece(Pie.SLOT_BOTTOM_CENTER, Piece.GREEN);
+        pie.tryPlacePiece(Pie.SLOT_BOTTOM_RIGHT, Piece.PURPLE);
 
         assertThat(pie.isSingleColor(), is(false));
 
-        pie.drain();
+        pie.reset();
 
-        pie.tryPlacePiece(Pie.PIECE_TOP_LEFT, Piece.ORANGE);
-        pie.tryPlacePiece(Pie.PIECE_TOP_CENTER, Piece.ORANGE);
-        pie.tryPlacePiece(Pie.PIECE_TOP_RIGHT, Piece.ORANGE);
-        pie.tryPlacePiece(Pie.PIECE_BOTTOM_LEFT, Piece.ORANGE);
-        pie.tryPlacePiece(Pie.PIECE_BOTTOM_CENTER, Piece.ORANGE);
-        pie.tryPlacePiece(Pie.PIECE_BOTTOM_RIGHT, Piece.ORANGE);
+        pie.tryPlacePiece(Pie.SLOT_TOP_LEFT, Piece.ORANGE);
+        pie.tryPlacePiece(Pie.SLOT_TOP_CENTER, Piece.ORANGE);
+        pie.tryPlacePiece(Pie.SLOT_TOP_RIGHT, Piece.ORANGE);
+        pie.tryPlacePiece(Pie.SLOT_BOTTOM_LEFT, Piece.ORANGE);
+        pie.tryPlacePiece(Pie.SLOT_BOTTOM_CENTER, Piece.ORANGE);
+        pie.tryPlacePiece(Pie.SLOT_BOTTOM_RIGHT, Piece.ORANGE);
 
         assertThat(pie.isSingleColor(), is(true));
     }

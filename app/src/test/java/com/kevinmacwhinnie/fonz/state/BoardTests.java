@@ -11,13 +11,13 @@ public class BoardTests {
     public void reset() {
         final Board board = new Board();
         for (int i = 0; i < Board.NUMBER_PIES; i++) {
-            board.getPie(i).tryPlacePiece(Pie.PIECE_TOP_LEFT, Piece.GREEN);
+            board.getPie(i).tryPlacePiece(Pie.SLOT_TOP_LEFT, Piece.GREEN);
         }
 
         board.reset();
 
         for (int i = 0; i < Board.NUMBER_PIES; i++) {
-            assertThat(board.getPie(i).getPiece(0), is(equalTo(Piece.NONE)));
+            assertThat(board.getPie(i).getPiece(0), is(equalTo(Piece.EMPTY)));
         }
     }
 }

@@ -1,17 +1,28 @@
 package com.kevinmacwhinnie.fonz.state;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+
+import com.kevinmacwhinnie.fonz.R;
 
 import java.util.Arrays;
 
 public class Pie {
     public static final int NUMBER_PIECES = 6;
-    public static final int PIECE_TOP_LEFT = 0;
-    public static final int PIECE_TOP_CENTER = 1;
-    public static final int PIECE_TOP_RIGHT = 2;
-    public static final int PIECE_BOTTOM_LEFT = 3;
-    public static final int PIECE_BOTTOM_CENTER = 4;
-    public static final int PIECE_BOTTOM_RIGHT = 5;
+    public static final int SLOT_TOP_LEFT = 0;
+    public static final int SLOT_TOP_CENTER = 1;
+    public static final int SLOT_TOP_RIGHT = 2;
+    public static final int SLOT_BOTTOM_LEFT = 3;
+    public static final int SLOT_BOTTOM_CENTER = 4;
+    public static final int SLOT_BOTTOM_RIGHT = 5;
+    public static final @StringRes int SLOT_ACCESSIBILITY_NAME_FMTS[] = {
+            R.string.accessibility_pie_slot_top_left_fmt,
+            R.string.accessibility_pie_slot_top_center_fmt,
+            R.string.accessibility_pie_slot_top_right_fmt,
+            R.string.accessibility_pie_slot_bottom_left_fmt,
+            R.string.accessibility_pie_slot_bottom_center_fmt,
+            R.string.accessibility_pie_slot_bottom_right_fmt,
+    };
 
 
     private final Piece[] slots;
@@ -20,7 +31,7 @@ public class Pie {
     public Pie() {
         this.slots = new Piece[NUMBER_PIECES];
         for (int i = 0; i < NUMBER_PIECES; i++) {
-            this.slots[i] = Piece.NONE;
+            this.slots[i] = Piece.EMPTY;
         }
     }
 
@@ -29,7 +40,7 @@ public class Pie {
             return false;
         }
 
-        if (slots[offset] == Piece.NONE) {
+        if (slots[offset] == Piece.EMPTY) {
             slots[offset] = piece;
             this.occupiedSlots++;
             return true;
@@ -40,6 +51,10 @@ public class Pie {
 
     public Piece getPiece(int offset) {
         return slots[offset];
+    }
+
+    public int getOccupiedSlotCount() {
+        return occupiedSlots;
     }
 
     public boolean isFull() {
@@ -60,9 +75,9 @@ public class Pie {
         }
     }
 
-    public void drain() {
+    public void reset() {
         for (int i = 0; i < NUMBER_PIECES; i++) {
-            this.slots[i] = Piece.NONE;
+            this.slots[i] = Piece.EMPTY;
         }
         this.occupiedSlots = 0;
     }
