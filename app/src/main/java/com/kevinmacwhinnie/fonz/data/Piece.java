@@ -1,4 +1,4 @@
-package com.kevinmacwhinnie.fonz.state;
+package com.kevinmacwhinnie.fonz.data;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.StringRes;

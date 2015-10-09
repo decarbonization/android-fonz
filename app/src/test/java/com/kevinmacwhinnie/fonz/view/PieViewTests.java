@@ -1,8 +1,8 @@
 package com.kevinmacwhinnie.fonz.view;
 
 import com.kevinmacwhinnie.fonz.FonzTestCase;
+import com.kevinmacwhinnie.fonz.data.Piece;
 import com.kevinmacwhinnie.fonz.state.Pie;
-import com.kevinmacwhinnie.fonz.state.Piece;
 
 import org.junit.After;
 import org.junit.Before;

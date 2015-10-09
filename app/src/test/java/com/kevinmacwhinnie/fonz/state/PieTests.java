@@ -1,5 +1,7 @@
 package com.kevinmacwhinnie.fonz.state;
 
+import com.kevinmacwhinnie.fonz.data.Piece;
+
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -10,7 +12,7 @@ public class PieTests {
     @Test
     public void constructor() {
         final Pie pie = new Pie();
-        for (int i = 0; i < Pie.NUMBER_PIECES; i++) {
+        for (int i = 0; i < Pie.NUMBER_SLOTS; i++) {
             assertThat(pie.getPiece(i), is(equalTo(Piece.EMPTY)));
         }
     }
@@ -35,7 +37,7 @@ public class PieTests {
         pie.tryPlacePiece(0, Piece.ORANGE);
         assertThat(pie.isFull(), is(false));
 
-        for (int i = 0; i < Pie.NUMBER_PIECES; i++) {
+        for (int i = 0; i < Pie.NUMBER_SLOTS; i++) {
             pie.tryPlacePiece(i, Piece.ORANGE);
         }
 
@@ -48,7 +50,7 @@ public class PieTests {
 
         assertThat(pie.isFull(), is(false));
 
-        for (int i = 0; i < Pie.NUMBER_PIECES; i++) {
+        for (int i = 0; i < Pie.NUMBER_SLOTS; i++) {
             pie.tryPlacePiece(i, Piece.ORANGE);
         }
 

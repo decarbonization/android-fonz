@@ -12,8 +12,8 @@ public class Board {
         }
     }
 
-    public Pie getPie(int offset) {
-        return pies[offset];
+    public Pie getPie(int slot) {
+        return pies[slot];
     }
 
     public void reset() {

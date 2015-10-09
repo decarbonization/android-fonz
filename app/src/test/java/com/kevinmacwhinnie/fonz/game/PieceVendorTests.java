@@ -1,6 +1,6 @@
 package com.kevinmacwhinnie.fonz.game;
 
-import com.kevinmacwhinnie.fonz.state.Piece;
+import com.kevinmacwhinnie.fonz.data.Piece;
 
 import org.junit.Test;
 

@@ -5,13 +5,16 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 
-public class CountDown implements Handler.Callback {
+import java.util.ArrayList;
+import java.util.List;
+
+public class CountUp implements Handler.Callback {
     public static final long DEFAULT_TICK_COUNT = 60;
     public static final long DEFAULT_TICK_DURATION_MS = 1000L;
 
     private static final int MSG_TICK = 0;
 
-    private final Listener listener;
+    private final List<Listener> listeners = new ArrayList<>();
     private final Handler handler;
 
     private boolean running = false;
@@ -19,9 +22,16 @@ public class CountDown implements Handler.Callback {
     private long tickDuration = DEFAULT_TICK_DURATION_MS;
     private long tickCurrent = 0L;
 
-    public CountDown(@NonNull Listener listener) {
-        this.listener = listener;
+    public CountUp() {
         this.handler = new Handler(Looper.getMainLooper(), this);
+    }
+
+    public void addListener(@NonNull Listener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeListener(@NonNull Listener listener) {
+        listeners.remove(listener);
     }
 
     public void setTickDuration(long tickDuration) {
@@ -43,6 +53,14 @@ public class CountDown implements Handler.Callback {
 
     public void start() {
         this.running = true;
+
+        this.tickCurrent = 0;
+
+        handler.removeMessages(MSG_TICK);
+        handler.sendEmptyMessageDelayed(MSG_TICK, tickDuration);
+    }
+
+    public void resume() {
         handler.sendEmptyMessageDelayed(MSG_TICK, tickDuration);
     }
 
@@ -65,12 +83,18 @@ public class CountDown implements Handler.Callback {
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
             case MSG_TICK: {
-                listener.onTicked();
+                for (final Listener listener : listeners) {
+                    listener.onTicked(tickCurrent);
+                }
+
                 if (++this.tickCurrent < tickCount) {
                     handler.sendEmptyMessageDelayed(MSG_TICK, tickDuration);
                 } else {
                     reset();
-                    listener.onCompleted();
+
+                    for (final Listener listener : listeners) {
+                        listener.onCompleted();
+                    }
                 }
                 return true;
             }
@@ -82,7 +106,7 @@ public class CountDown implements Handler.Callback {
 
 
     public interface Listener {
-        void onTicked();
+        void onTicked(long number);
         void onCompleted();
     }
 }

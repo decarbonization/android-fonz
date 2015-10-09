@@ -21,4 +21,19 @@ public class LifeTests {
 
         assertThat(life.isAlive(), is(true));
     }
+
+    @Test
+    public void reset() {
+        final Life life = new Life();
+
+        life.death();
+        life.death();
+        life.death();
+
+        assertThat(life.isAlive(), is(false));
+
+        life.reset();
+
+        assertThat(life.isAlive(), is(true));
+    }
 }

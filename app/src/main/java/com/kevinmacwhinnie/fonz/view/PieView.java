@@ -15,14 +15,16 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.kevinmacwhinnie.fonz.R;
+import com.kevinmacwhinnie.fonz.data.Piece;
 import com.kevinmacwhinnie.fonz.state.Pie;
-import com.kevinmacwhinnie.fonz.state.Piece;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public class PieView extends View {
-    public final float DEGREES_PER_SLICE = (360f / Pie.NUMBER_PIECES);
+public class PieView extends View implements Observer {
+    public final float DEGREES_PER_SLICE = (360f / Pie.NUMBER_SLOTS);
 
     private final Resources resources;
     private final int strokeInset;
@@ -81,7 +83,7 @@ public class PieView extends View {
         rect.inset(strokeInset, strokeInset);
         canvas.save();
         canvas.rotate(-180f, rect.centerX(), rect.centerY());
-        for (int i = 0; i < Pie.NUMBER_PIECES; i++) {
+        for (int i = 0; i < Pie.NUMBER_SLOTS; i++) {
             final Piece piece = pie.getPiece(i);
             if (piece == Piece.EMPTY) {
                 continue;
@@ -105,12 +107,22 @@ public class PieView extends View {
 
     //region Attributes
 
-    public void setPie(@NonNull Pie pie) {
+    public void setPie(@Nullable Pie pie) {
+        if (this.pie != null) {
+            this.pie.deleteObserver(this);
+        }
+
         this.pie = pie;
 
-        final CharSequence contentDescription = generateContentDescription();
-        setContentDescription(contentDescription);
-        setWillNotDraw(false);
+        if (pie != null) {
+            final CharSequence contentDescription = generateContentDescription();
+            setContentDescription(contentDescription);
+            setWillNotDraw(false);
+
+            pie.addObserver(this);
+        } else {
+            setWillNotDraw(true);
+        }
     }
 
     public void notifyChanged() {
@@ -139,15 +151,15 @@ public class PieView extends View {
                     return resources.getString(R.string.accessibility_pie_full_multiple_colors);
                 }
             } else {
-                final List<CharSequence> slotDescriptions = new ArrayList<>(Pie.NUMBER_PIECES);
-                for (int i = 0; i < Pie.NUMBER_PIECES; i++) {
+                final List<CharSequence> slotDescriptions = new ArrayList<>(Pie.NUMBER_SLOTS);
+                for (int i = 0; i < Pie.NUMBER_SLOTS; i++) {
                     final Piece piece = pie.getPiece(i);
                     if (piece == Piece.EMPTY) {
                         continue;
                     }
 
                     final String pieceName = resources.getString(piece.accessibilityName);
-                    slotDescriptions.add(resources.getString(Pie.SLOT_ACCESSIBILITY_NAME_FMTS[i], pieceName));
+                    slotDescriptions.add(resources.getString(Pie.SLOT_ACCESSIBILITY_NAME_FORMATS[i], pieceName));
                 }
                 final String deliminator = resources.getString(R.string.accessibility_pie_slot_conjunction);
                 final CharSequence slotSummary = TextUtils.join(deliminator, slotDescriptions);
@@ -156,6 +168,16 @@ public class PieView extends View {
                                                    occupiedSlotCount, occupiedSlotCount, slotSummary);
             }
         }
+    }
+
+    //endregion
+
+
+    //region Events
+
+    @Override
+    public void update(Observable observable, Object data) {
+        notifyChanged();
     }
 
     //endregion

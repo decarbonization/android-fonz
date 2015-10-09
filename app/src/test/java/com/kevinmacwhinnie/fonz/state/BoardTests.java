@@ -1,5 +1,7 @@
 package com.kevinmacwhinnie.fonz.state;
 
+import com.kevinmacwhinnie.fonz.data.Piece;
+
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
