@@ -76,6 +76,7 @@ public class Game implements CountUp.Listener {
     void reset() {
         Log.d(LOG_TAG, "reset()");
 
+        pieceFactory.reset();
         countUp.reset();
         life.reset();
         score.reset();
