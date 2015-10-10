@@ -1,11 +1,14 @@
 package com.kevinmacwhinnie.fonz;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 
+import com.kevinmacwhinnie.fonz.data.Preferences;
 import com.kevinmacwhinnie.fonz.game.Game;
 import com.kevinmacwhinnie.fonz.game.Sounds;
 import com.kevinmacwhinnie.fonz.state.Life;
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity
         implements BoardView.OnPieClickListener {
     private Game game = new Game();
     private Sounds sounds;
+    private SharedPreferences preferences;
 
     @Bind(R.id.activity_main_stats) StatsView statsView;
     @Bind(R.id.activity_main_board) BoardView boardView;
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         this.sounds = new Sounds(this);
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         statsView.setLife(game.life.getValue());
         statsView.setScore(game.score.getValue());
@@ -98,7 +103,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onUpcomingPieClicked() {
-        game.skipPiece();
+        final boolean skipEnabled = preferences.getBoolean(Preferences.SKIP_ON_UPCOMING_CLICK, true);
+        if (skipEnabled) {
+            game.skipPiece();
+        }
     }
 
     @Override
