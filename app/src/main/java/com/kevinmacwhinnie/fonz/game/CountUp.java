@@ -34,6 +34,10 @@ public class CountUp implements Handler.Callback {
         listeners.remove(listener);
     }
 
+    public void clearListeners() {
+        listeners.clear();
+    }
+
     public void setTickDuration(long tickDuration) {
         this.tickDuration = tickDuration;
 
@@ -58,6 +62,10 @@ public class CountUp implements Handler.Callback {
 
         handler.removeMessages(MSG_TICK);
         handler.sendEmptyMessageDelayed(MSG_TICK, tickDuration);
+
+        for (final Listener listener : listeners) {
+            listener.onStarted();
+        }
     }
 
     public void resume() {
@@ -106,6 +114,7 @@ public class CountUp implements Handler.Callback {
 
 
     public interface Listener {
+        void onStarted();
         void onTicked(long number);
         void onCompleted();
     }

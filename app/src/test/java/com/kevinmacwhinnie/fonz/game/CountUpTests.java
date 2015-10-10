@@ -72,8 +72,14 @@ public class CountUpTests extends FonzTestCase {
 
 
     static class CountingListener implements CountUp.Listener {
+        final AtomicBoolean started = new AtomicBoolean(false);
         final AtomicInteger counter = new AtomicInteger(0);
         final AtomicBoolean completed = new AtomicBoolean(false);
+
+        @Override
+        public void onStarted() {
+            started.set(true);
+        }
 
         @Override
         public void onTicked(long number) {

@@ -112,6 +112,10 @@ public class BoardView extends LinearLayout
     }
 
     @Override
+    public void onStarted() {
+    }
+
+    @Override
     public void onTicked(long tick) {
         // TODO: display this tick somewhere
         Log.i(getClass().getSimpleName(), "setGameClockTick(" + tick + ")");
@@ -119,7 +123,6 @@ public class BoardView extends LinearLayout
 
     @Override
     public void onCompleted() {
-
     }
 
     //endregion

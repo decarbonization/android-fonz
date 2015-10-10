@@ -2,6 +2,7 @@ package com.kevinmacwhinnie.fonz.game;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
@@ -13,7 +14,6 @@ import com.kevinmacwhinnie.fonz.state.Score;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
-// TODO: test the crap out of this class
 // TODO: state saving
 public class Game implements CountUp.Listener {
     public static final String LOG_TAG = Game.class.getSimpleName();
@@ -25,13 +25,22 @@ public class Game implements CountUp.Listener {
     public final Board board = new Board(bus);
 
     private final PieceFactory pieceFactory = new PieceFactory();
-    private UpcomingPiece upcomingPiece;
     private boolean inProgress = false;
+    @VisibleForTesting UpcomingPiece upcomingPiece;
 
+
+    //region Lifecycle
 
     public Game() {
         countUp.addListener(this);
     }
+
+    public void destroy() {
+        reset();
+        countUp.clearListeners();
+    }
+
+    //endregion
 
 
     //region Attributes
@@ -49,7 +58,8 @@ public class Game implements CountUp.Listener {
 
     //region Internal
 
-    private void doNewCountUp() {
+    @VisibleForTesting
+    void doNewCountUp() {
         Log.d(LOG_TAG, "doNewCountUp()");
 
         this.inProgress = true;
@@ -62,7 +72,8 @@ public class Game implements CountUp.Listener {
         bus.post(UpcomingPieceAvailable.INSTANCE);
     }
 
-    private void reset() {
+    @VisibleForTesting
+    void reset() {
         Log.d(LOG_TAG, "reset()");
 
         countUp.reset();
@@ -123,6 +134,13 @@ public class Game implements CountUp.Listener {
     //endregion
 
 
+    //region Timer
+
+    @Override
+    public void onStarted() {
+        // Don't care
+    }
+
     @Override
     public void onTicked(long number) {
         // Don't care
@@ -132,6 +150,8 @@ public class Game implements CountUp.Listener {
     public void onCompleted() {
         skipPiece();
     }
+
+    //endregion
 
 
     public static class NewGame extends BaseEvent {
