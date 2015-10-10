@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Button;
 
 import com.kevinmacwhinnie.fonz.game.Game;
+import com.kevinmacwhinnie.fonz.game.Sounds;
 import com.kevinmacwhinnie.fonz.state.Life;
 import com.kevinmacwhinnie.fonz.state.Pie;
 import com.kevinmacwhinnie.fonz.state.Score;
@@ -21,6 +22,7 @@ import butterknife.OnClick;
 public class MainActivity extends AppCompatActivity
         implements BoardView.OnPieClickListener {
     private Game game = new Game();
+    private Sounds sounds;
 
     @Bind(R.id.activity_main_stats) StatsView statsView;
     @Bind(R.id.activity_main_board) BoardView boardView;
@@ -34,6 +36,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        this.sounds = new Sounds(this);
 
         statsView.setLife(game.life.getValue());
         statsView.setScore(game.score.getValue());
@@ -88,6 +92,8 @@ public class MainActivity extends AppCompatActivity
             final GameOverDialogFragment gameOver = new GameOverDialogFragment();
             gameOver.show(getSupportFragmentManager(), GameOverDialogFragment.TAG);
         }
+
+        sounds.playGameOver();
     }
 
     @Override
@@ -99,6 +105,7 @@ public class MainActivity extends AppCompatActivity
     public void onPieClicked(@NonNull Pie pie) {
         if (!game.tryPlaceCurrentPiece(pie)) {
             Log.e(getClass().getSimpleName(), "Can't put a piece there!");
+            sounds.playForbiddenPlacement();
         }
     }
 
