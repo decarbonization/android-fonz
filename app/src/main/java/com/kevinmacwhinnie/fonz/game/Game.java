@@ -66,7 +66,6 @@ public class Game implements CountUp.Listener {
         this.upcomingPiece = pieceFactory.generateUpcomingPiece();
         Log.d(LOG_TAG, "Upcoming piece " + upcomingPiece);
 
-        // TODO: figure out correct timing and scale ratio for count up
         countUp.start();
 
         bus.post(UpcomingPieceAvailable.INSTANCE);
@@ -112,6 +111,7 @@ public class Game implements CountUp.Listener {
                 }
             }
 
+            countUp.scaleTickDuration(CountUp.DEFAULT_SCALE_FACTOR);
             doNewCountUp();
             return true;
         } else {
@@ -124,6 +124,7 @@ public class Game implements CountUp.Listener {
 
         life.decrement();
         if (life.isAlive()) {
+            countUp.scaleTickDuration(CountUp.DEFAULT_SCALE_FACTOR);
             doNewCountUp();
         } else {
             gameOver();

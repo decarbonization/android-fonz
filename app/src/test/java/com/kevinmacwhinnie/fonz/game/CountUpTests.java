@@ -70,6 +70,15 @@ public class CountUpTests extends FonzTestCase {
         assertThat(listener.completed.get(), is(true));
     }
 
+    @Test
+    public void scaleTickDuration() {
+        final CountUp countUp = new CountUp();
+        countUp.setTickDuration(10L);
+        countUp.scaleTickDuration(0.5);
+
+        assertThat(countUp.getTickDuration(), is(equalTo(5L)));
+    }
+
 
     static class CountingListener implements CountUp.Listener {
         final AtomicBoolean started = new AtomicBoolean(false);

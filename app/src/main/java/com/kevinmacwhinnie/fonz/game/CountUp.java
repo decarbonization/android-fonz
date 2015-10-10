@@ -11,6 +11,7 @@ import java.util.List;
 public class CountUp implements Handler.Callback {
     public static final long DEFAULT_TICK_COUNT = 10;
     public static final long DEFAULT_TICK_DURATION_MS = 1000L;
+    public static final double DEFAULT_SCALE_FACTOR = 0.99;
 
     private static final int MSG_TICK = 0;
 
@@ -45,6 +46,19 @@ public class CountUp implements Handler.Callback {
         if (running) {
             handler.sendEmptyMessageDelayed(MSG_TICK, tickDuration);
         }
+    }
+
+    public void scaleTickDuration(double factor) {
+        this.tickDuration = Math.round(tickDuration * factor);
+
+        handler.removeMessages(MSG_TICK);
+        if (running) {
+            handler.sendEmptyMessageDelayed(MSG_TICK, tickDuration);
+        }
+    }
+
+    public long getTickDuration() {
+        return tickDuration;
     }
 
     public void setTickCount(long tickCount) {
