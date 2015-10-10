@@ -103,7 +103,7 @@ public class Game implements CountUp.Listener {
     }
 
     public boolean tryPlaceCurrentPiece(@NonNull Pie pie) {
-        if (pie.tryPlacePiece(upcomingPiece.slot, upcomingPiece.piece)) {
+        if (inProgress && pie.tryPlacePiece(upcomingPiece.slot, upcomingPiece.piece)) {
             if (pie.isFull()) {
                 final boolean isSingleColor = pie.isSingleColor();
                 score.addPie(isSingleColor);
@@ -125,12 +125,14 @@ public class Game implements CountUp.Listener {
     public void skipPiece() {
         Log.d(LOG_TAG, "skipPiece()");
 
-        life.decrement();
-        if (life.isAlive()) {
-            countUp.scaleTickDuration(CountUp.DEFAULT_SCALE_FACTOR);
-            doNewCountUp();
-        } else {
-            gameOver(GameOver.How.GAME_LOGIC);
+        if (inProgress) {
+            life.decrement();
+            if (life.isAlive()) {
+                countUp.scaleTickDuration(CountUp.DEFAULT_SCALE_FACTOR);
+                doNewCountUp();
+            } else {
+                gameOver(GameOver.How.GAME_LOGIC);
+            }
         }
     }
 

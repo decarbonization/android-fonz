@@ -72,13 +72,14 @@ public class CountUp implements Handler.Callback {
     public void start() {
         this.running = true;
 
-        this.tickCurrent = 0;
+        this.tickCurrent = 0L;
 
         handler.removeMessages(MSG_TICK);
         handler.sendEmptyMessageDelayed(MSG_TICK, tickDuration);
 
         for (final Listener listener : listeners) {
             listener.onStarted();
+            listener.onTicked(tickCurrent);
         }
     }
 
@@ -95,6 +96,8 @@ public class CountUp implements Handler.Callback {
     }
 
     public void reset() {
+        handler.removeMessages(MSG_TICK);
+
         this.running = false;
         this.tickCount = DEFAULT_TICK_COUNT;
         this.tickDuration = DEFAULT_TICK_DURATION_MS;
