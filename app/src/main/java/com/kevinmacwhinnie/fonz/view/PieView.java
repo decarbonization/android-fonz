@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.RectF;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
@@ -18,6 +17,7 @@ import com.kevinmacwhinnie.fonz.R;
 import com.kevinmacwhinnie.fonz.data.Piece;
 import com.kevinmacwhinnie.fonz.state.Pie;
 import com.kevinmacwhinnie.fonz.view.util.Drawing;
+import com.kevinmacwhinnie.fonz.view.util.PieceDrawing;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -25,15 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PieView extends View {
-    public final float DEGREES_PER_SLICE = (360f / Pie.NUMBER_SLOTS);
-
     private final Resources resources;
-    private final int strokeInset;
     private final RectF rect = new RectF();
     private final Paint fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint pieceFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint pieceStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Path piecePath = new Path();
+    private final PieceDrawing pieceDrawing;
 
     private boolean upcoming = false;
     private Pie pie;
@@ -57,17 +53,12 @@ public class PieView extends View {
         setAccessibilityLiveRegion(ACCESSIBILITY_LIVE_REGION_ASSERTIVE);
 
         this.resources = getResources();
-        this.strokeInset = resources.getDimensionPixelSize(R.dimen.view_pie_stroke_width);
 
-        // TODO: stfu Android Marshmallow SDK, there's no ResourcesCompat#getColor(int, int) yet
         final @ColorInt int backgroundColor = Drawing.getColor(resources, R.color.view_pie_background);
         fillPaint.setColor(backgroundColor);
         pieceFillPaint.setStrokeJoin(Paint.Join.ROUND);
-        pieceStrokePaint.setStyle(Paint.Style.STROKE);
-        pieceStrokePaint.setStrokeJoin(Paint.Join.ROUND);
-        pieceStrokePaint.setStrokeCap(Paint.Cap.ROUND);
-        pieceStrokePaint.setStrokeWidth(strokeInset);
-        pieceStrokePaint.setColor(backgroundColor);
+
+        this.pieceDrawing = new PieceDrawing(resources);
     }
 
     //endregion
@@ -77,32 +68,17 @@ public class PieView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        // TODO: move to pre-rendered pieces
-
         rect.set(0f, 0f, canvas.getWidth(), canvas.getHeight());
 
         canvas.drawOval(rect, fillPaint);
 
-        // TODO: improve rendering, the pie pieces aren't quite straight
-        rect.inset(strokeInset, strokeInset);
-        canvas.save();
-        canvas.rotate(-180f, rect.centerX(), rect.centerY());
-        for (int i = 0; i < Pie.NUMBER_SLOTS; i++) {
-            final Piece piece = pie.getPiece(i);
+        for (int slot = 0; slot < Pie.NUMBER_SLOTS; slot++) {
+            final Piece piece = pie.getPiece(slot);
             if (piece == Piece.EMPTY) {
                 continue;
             }
 
-            piecePath.reset();
-            piecePath.moveTo(rect.centerX(), rect.centerY());
-
-            final float startAngle = DEGREES_PER_SLICE * i;
-            final @ColorInt int pieceColor = Drawing.getColor(resources, piece.color);
-            pieceFillPaint.setColor(pieceColor);
-
-            piecePath.arcTo(rect, startAngle, DEGREES_PER_SLICE);
-            canvas.drawPath(piecePath, pieceFillPaint);
-            canvas.drawPath(piecePath, pieceStrokePaint);
+            pieceDrawing.draw(slot, piece, canvas, pieceFillPaint);
         }
     }
 
