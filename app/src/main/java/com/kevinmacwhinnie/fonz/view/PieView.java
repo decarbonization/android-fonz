@@ -17,6 +17,7 @@ import android.view.View;
 import com.kevinmacwhinnie.fonz.R;
 import com.kevinmacwhinnie.fonz.data.Piece;
 import com.kevinmacwhinnie.fonz.state.Pie;
+import com.kevinmacwhinnie.fonz.view.util.Drawing;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -59,7 +60,7 @@ public class PieView extends View {
         this.strokeInset = resources.getDimensionPixelSize(R.dimen.view_pie_stroke_width);
 
         // TODO: stfu Android Marshmallow SDK, there's no ResourcesCompat#getColor(int, int) yet
-        final @ColorInt int backgroundColor = resources.getColor(R.color.view_pie_background);
+        final @ColorInt int backgroundColor = Drawing.getColor(resources, R.color.view_pie_background);
         fillPaint.setColor(backgroundColor);
         pieceFillPaint.setStrokeJoin(Paint.Join.ROUND);
         pieceStrokePaint.setStyle(Paint.Style.STROKE);
@@ -96,7 +97,7 @@ public class PieView extends View {
             piecePath.moveTo(rect.centerX(), rect.centerY());
 
             final float startAngle = DEGREES_PER_SLICE * i;
-            final @ColorInt int pieceColor = resources.getColor(piece.color);
+            final @ColorInt int pieceColor = Drawing.getColor(resources, piece.color);
             pieceFillPaint.setColor(pieceColor);
 
             piecePath.arcTo(rect, startAngle, DEGREES_PER_SLICE);
@@ -180,13 +181,15 @@ public class PieView extends View {
 
     //region Events
 
-    @Subscribe public void onPieChanged(@NonNull Pie.Changed ignored) {
-        final CharSequence contentDescription = generateContentDescription();
-        setContentDescription(contentDescription);
-        // TODO: we don't want to announce the same thing for the upcoming pie
-        announceForAccessibility(contentDescription);
+    @Subscribe public void onPieChanged(@NonNull Pie.Changed change) {
+        if (change.from == this.pie) {
+            final CharSequence contentDescription = generateContentDescription();
+            setContentDescription(contentDescription);
+            // TODO: we don't want to announce the same thing for the upcoming pie
+            announceForAccessibility(contentDescription);
 
-        invalidate();
+            invalidate();
+        }
     }
 
     //endregion

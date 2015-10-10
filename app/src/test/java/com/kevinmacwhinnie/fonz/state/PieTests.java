@@ -58,7 +58,7 @@ public class PieTests extends FonzTestCase {
         assertThat(pie.tryPlacePiece(Pie.SLOT_TOP_CENTER, Piece.ORANGE), is(true));
         assertThat(pie.tryPlacePiece(Pie.SLOT_TOP_CENTER, Piece.ORANGE), is(false));
 
-        assertThat(occurrencesOf(events, Pie.Changed.INSTANCE), is(equalTo(2)));
+        assertThat(occurrencesOf(events, pie.thisChanged), is(equalTo(2)));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class PieTests extends FonzTestCase {
 
         assertThat(pie.isFull(), is(false));
 
-        assertThat(occurrencesOf(events, Pie.Changed.INSTANCE), is(equalTo(7)));
+        assertThat(occurrencesOf(events, pie.thisChanged), is(equalTo(7)));
     }
 
     @Test

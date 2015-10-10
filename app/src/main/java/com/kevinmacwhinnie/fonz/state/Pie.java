@@ -3,6 +3,7 @@ package com.kevinmacwhinnie.fonz.state;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.annotation.VisibleForTesting;
 
 import com.kevinmacwhinnie.fonz.R;
 import com.kevinmacwhinnie.fonz.data.Piece;
@@ -33,6 +34,7 @@ public class Pie {
 
     public final @Nullable Bus bus;
 
+    @VisibleForTesting final Changed thisChanged = new Changed(this);
     private final Piece[] slots;
     private int occupiedSlots = 0;
 
@@ -54,7 +56,7 @@ public class Pie {
             this.occupiedSlots++;
 
             if (bus != null) {
-                bus.post(Changed.INSTANCE);
+                bus.post(thisChanged);
             }
             return true;
         } else {
@@ -95,7 +97,7 @@ public class Pie {
         this.occupiedSlots = 0;
 
         if (bus != null) {
-            bus.post(Changed.INSTANCE);
+            bus.post(thisChanged);
         }
     }
 
@@ -110,6 +112,10 @@ public class Pie {
 
 
     public static class Changed extends BaseEvent {
-        static final Changed INSTANCE = new Changed();
+        public final Pie from;
+
+        Changed(@NonNull Pie from) {
+            this.from = from;
+        }
     }
 }
