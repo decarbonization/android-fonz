@@ -6,4 +6,8 @@
 
     <string name="action_new_game">New Game</string>
     <string name="action_end_game">End Game</string>
+    <string name="dialog_game_over_title">Game Over</string>
+    <string name="action_no_thanks">No, Thanks</string>
+    <string name="caption_player_name">Enter your name:</string>
+    <string name="score_name_default">Dina</string>
 </resources>

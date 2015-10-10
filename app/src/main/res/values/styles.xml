@@ -3,6 +3,8 @@
     <style name="Fonz" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowBackground">@color/background</item>
 
+        <item name="alertDialogTheme">@style/Fonz.AlertDialog</item>
+
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
@@ -16,6 +18,16 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:statusBarColor" tools:ignore="NewApi">@color/background_dark</item>
+    </style>
+
+    <style name="Fonz.AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent</item>
+
+        <item name="colorControlNormal">@color/color_primary</item>
+        <item name="colorControlActivated">@color/color_primary_dark</item>
+        <item name="colorControlHighlight">@color/color_accent</item>
     </style>
 
 </resources>

@@ -196,11 +196,11 @@ public class GameTests extends FonzTestCase implements CountUp.Listener {
         assertThat(events, hasItem(Game.NewGame.INSTANCE));
         assertThat(events, hasItem(Game.UpcomingPieceAvailable.INSTANCE));
 
-        game.gameOver();
+        game.gameOver(Game.GameOver.How.GAME_LOGIC);
 
         assertThat(game.isInProgress(), is(false));
         assertThat(game.getUpcomingPiece(), is(nullValue()));
 
-        assertThat(events, hasItem(Game.GameOver.INSTANCE));
+        assertThat(events, hasItem(new Game.GameOver(Game.GameOver.How.GAME_LOGIC)));
     }
 }

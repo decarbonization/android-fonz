@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
 import com.kevinmacwhinnie.fonz.events.BaseEvent;
+import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
 import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Life;
 import com.kevinmacwhinnie.fonz.state.Pie;
@@ -93,10 +94,12 @@ public class Game implements CountUp.Listener {
     public void newGame() {
         Log.d(LOG_TAG, "newGame()");
 
-        reset();
-        doNewCountUp();
+        if (!inProgress) {
+            reset();
+            doNewCountUp();
 
-        bus.post(NewGame.INSTANCE);
+            bus.post(NewGame.INSTANCE);
+        }
     }
 
     public boolean tryPlaceCurrentPiece(@NonNull Pie pie) {
@@ -127,15 +130,17 @@ public class Game implements CountUp.Listener {
             countUp.scaleTickDuration(CountUp.DEFAULT_SCALE_FACTOR);
             doNewCountUp();
         } else {
-            gameOver();
+            gameOver(GameOver.How.GAME_LOGIC);
         }
     }
 
-    public void gameOver() {
+    public void gameOver(@NonNull GameOver.How how) {
         Log.d(LOG_TAG, "gameOver()");
 
-        reset();
-        bus.post(GameOver.INSTANCE);
+        if (inProgress) {
+            reset();
+            bus.post(new GameOver(how));
+        }
     }
 
     //endregion
@@ -165,8 +170,15 @@ public class Game implements CountUp.Listener {
         static final NewGame INSTANCE = new NewGame();
     }
 
-    public static class GameOver extends BaseEvent {
-        static final GameOver INSTANCE = new GameOver();
+    public static class GameOver extends ValueBaseEvent<GameOver.How> {
+        public GameOver(@NonNull How value) {
+            super(value);
+        }
+
+        public enum How {
+            USER_INTERVENTION,
+            GAME_LOGIC,
+        }
     }
 
     public static class UpcomingPieceAvailable extends BaseEvent {

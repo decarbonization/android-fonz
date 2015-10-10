@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity
 
         game.bus.unregister(this);
 
-        game.gameOver();
+        game.gameOver(Game.GameOver.How.GAME_LOGIC);
         game.destroy();
     }
 
@@ -80,9 +80,14 @@ public class MainActivity extends AppCompatActivity
         gameToggle.setText(R.string.action_end_game);
     }
 
-    @Subscribe public void onGameOver(@NonNull Game.GameOver ignored) {
+    @Subscribe public void onGameOver(@NonNull Game.GameOver event) {
         gameToggle.setText(R.string.action_new_game);
         boardView.setUpcomingPiece(null);
+
+        if (event.value == Game.GameOver.How.GAME_LOGIC) {
+            final GameOverDialogFragment gameOver = new GameOverDialogFragment();
+            gameOver.show(getSupportFragmentManager(), GameOverDialogFragment.TAG);
+        }
     }
 
     @Override
@@ -105,7 +110,7 @@ public class MainActivity extends AppCompatActivity
     @OnClick(R.id.activity_main_game_control)
     public void onGameControlClicked(@NonNull Button sender) {
         if (game.isInProgress()) {
-            game.gameOver();
+            game.gameOver(Game.GameOver.How.USER_INTERVENTION);
         } else {
             game.newGame();
         }
