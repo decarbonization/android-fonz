@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CountUp implements Handler.Callback {
-    public static final long DEFAULT_TICK_COUNT = 60;
+    public static final long DEFAULT_TICK_COUNT = 10;
     public static final long DEFAULT_TICK_DURATION_MS = 1000L;
 
     private static final int MSG_TICK = 0;

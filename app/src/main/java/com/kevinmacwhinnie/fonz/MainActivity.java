@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
 
+        game.countUp.removeListener(boardView);
         boardView.destroy();
 
         game.bus.unregister(this);

@@ -117,13 +117,13 @@ public class BoardView extends LinearLayout
 
     @Override
     public void onStarted() {
-        debugCountUpText.setText(Long.toString(0L, 10));
+        debugCountUpText.setText(Long.toString(1L, 10));
     }
 
     @Override
     public void onTicked(long tick) {
         Log.i(getClass().getSimpleName(), "BoardView#onTicked(" + tick + ")");
-        debugCountUpText.setText(Long.toString(tick, 10));
+        debugCountUpText.setText(Long.toString(tick + 1L, 10));
     }
 
     @Override
