@@ -6,44 +6,44 @@ import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
 import com.squareup.otto.Bus;
 
 public class Life {
-    public static int INITIAL_COUNT = 3;
+    public static int INITIAL_VALUE = 5;
 
     private final Bus bus;
-    private int count = INITIAL_COUNT;
+    private int value = INITIAL_VALUE;
 
     public Life(@NonNull Bus bus) {
         this.bus = bus;
     }
 
-    public int getCount() {
-        return count;
+    public int getValue() {
+        return value;
     }
 
     public void decrement() {
-        if (count > 0) {
-            this.count--;
-            bus.post(new Changed(count));
+        if (value > 0) {
+            this.value--;
+            bus.post(new Changed(value));
         }
     }
 
     public void increment() {
-        this.count++;
-        bus.post(new Changed(count));
+        this.value++;
+        bus.post(new Changed(value));
     }
 
     public boolean isAlive() {
-        return (count > 0);
+        return (value > 0);
     }
 
     public void reset() {
-        this.count = INITIAL_COUNT;
-        bus.post(new Changed(count));
+        this.value = INITIAL_VALUE;
+        bus.post(new Changed(value));
     }
 
     @Override
     public String toString() {
         return "Life{" +
-                "count=" + count +
+                "value=" + value +
                 '}';
     }
 

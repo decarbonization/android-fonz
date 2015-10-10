@@ -132,7 +132,7 @@ public class GameTests extends FonzTestCase implements CountUp.Listener {
 
         assertThat(pie.getOccupiedSlotCount(), is(equalTo(0)));
         assertThat(events, hasItem(new Score.Changed(60)));
-        assertThat(events, hasItem(new Life.Changed(Life.INITIAL_COUNT + 1)));
+        assertThat(events, hasItem(new Life.Changed(Life.INITIAL_VALUE + 1)));
 
         assertThat(occurrencesOf(events, Game.UpcomingPieceAvailable.INSTANCE), is(equalTo(2)));
     }
@@ -158,7 +158,7 @@ public class GameTests extends FonzTestCase implements CountUp.Listener {
 
         assertThat(pie.getOccupiedSlotCount(), is(equalTo(0)));
         assertThat(events, hasItem(new Score.Changed(30)));
-        assertThat(events, not(hasItem(new Life.Changed(Life.INITIAL_COUNT + 1))));
+        assertThat(events, not(hasItem(new Life.Changed(Life.INITIAL_VALUE + 1))));
 
         assertThat(occurrencesOf(events, Game.UpcomingPieceAvailable.INSTANCE), is(equalTo(2)));
     }
@@ -176,7 +176,7 @@ public class GameTests extends FonzTestCase implements CountUp.Listener {
 
         game.skipPiece();
 
-        assertThat(events, hasItem(new Life.Changed(Life.INITIAL_COUNT - 1)));
+        assertThat(events, hasItem(new Life.Changed(Life.INITIAL_VALUE - 1)));
         assertThat(occurrencesOf(events, Game.UpcomingPieceAvailable.INSTANCE), is(equalTo(2)));
         assertThat(game.isInProgress(), is(true));
         assertThat(game.getUpcomingPiece(), is(notNullValue()));

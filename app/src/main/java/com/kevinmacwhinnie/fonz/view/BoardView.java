@@ -40,7 +40,7 @@ public class BoardView extends LinearLayout
         setOrientation(HORIZONTAL);
 
         final LayoutInflater inflater = LayoutInflater.from(context);
-        inflater.inflate(R.layout.game_board, this, true);
+        inflater.inflate(R.layout.view_game_board, this, true);
 
         this.pieViews = new PieView[] {
                 (PieView) findViewById(R.id.game_board_pie_left_top),
