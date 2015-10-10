@@ -83,8 +83,13 @@ public class GameOverDialogFragment extends AppCompatDialogFragment
 
         switch (which) {
             case DialogInterface.BUTTON_POSITIVE: {
+                final String name = nameText.getText().toString();
+                preferences.edit()
+                           .putString(Preferences.SAVED_SCORE_NAME, name)
+                           .apply();
+
                 final Intent response = new Intent();
-                response.putExtra(RESULT_NAME, nameText.getText().toString());
+                response.putExtra(RESULT_NAME, name);
                 targetFragment.onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, response);
                 break;
             }
@@ -101,9 +106,8 @@ public class GameOverDialogFragment extends AppCompatDialogFragment
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        final boolean isAction = (actionId == EditorInfo.IME_ACTION_DONE &&
-                event.getAction() == KeyEvent.ACTION_DOWN);
-        final boolean isEnter = (event.getKeyCode() == KeyEvent.KEYCODE_ENTER &&
+        final boolean isAction = (actionId == EditorInfo.IME_ACTION_DONE);
+        final boolean isEnter = !isAction && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER &&
                 event.getAction() == KeyEvent.ACTION_DOWN);
         if (isAction || isEnter) {
             dismiss();
