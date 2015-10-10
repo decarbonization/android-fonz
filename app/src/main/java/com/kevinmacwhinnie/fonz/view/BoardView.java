@@ -15,6 +15,7 @@ import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
 import com.kevinmacwhinnie.fonz.game.CountUp;
 import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Pie;
+import com.kevinmacwhinnie.fonz.view.util.PieceDrawing;
 
 public class BoardView extends LinearLayout
         implements View.OnClickListener, CountUp.Listener {
@@ -44,6 +45,8 @@ public class BoardView extends LinearLayout
         final LayoutInflater inflater = LayoutInflater.from(context);
         inflater.inflate(R.layout.view_game_board, this, true);
 
+        final PieceDrawing pieceDrawing = new PieceDrawing(getResources());
+
         this.pieViews = new PieView[] {
                 (PieView) findViewById(R.id.view_game_board_pie_left_top),
                 (PieView) findViewById(R.id.view_game_board_pie_center_top),
@@ -55,12 +58,14 @@ public class BoardView extends LinearLayout
         for (int i = 0, pieViewsLength = pieViews.length; i < pieViewsLength; i++) {
             final PieView pieView = pieViews[i];
             pieView.setTag(R.id.view_board_pie_slot_tag, i);
+            pieView.setPieceDrawing(pieceDrawing);
             pieView.setOnClickListener(this);
         }
 
+        // TODO: view specifically for upcoming pieces
         this.upcomingPieView = (PieView) findViewById(R.id.view_game_board_pie_upcoming);
         upcomingPieView.setOnClickListener(this);
-        upcomingPieView.setUpcoming(true);
+        upcomingPieView.setPieceDrawing(pieceDrawing);
 
         this.debugCountUpText = (TextView) findViewById(R.id.game_board_debug_counter);
     }
