@@ -56,11 +56,11 @@ public class CountUpTests extends FonzTestCase {
         countUp.start();
 
         scheduler.advanceBy(31L);
-        assertThat(listener.counter.get(), is(equalTo(3)));
+        assertThat(listener.counter.get(), is(equalTo(4)));
         assertThat(listener.completed.get(), is(false));
 
         scheduler.advanceBy(31L);
-        assertThat(listener.counter.get(), is(equalTo(5)));
+        assertThat(listener.counter.get(), is(equalTo(6)));
         assertThat(listener.completed.get(), is(true));
     }
 
@@ -80,19 +80,19 @@ public class CountUpTests extends FonzTestCase {
         countUp.start();
 
         scheduler.advanceBy(31L);
-        assertThat(listener.counter.get(), is(equalTo(3)));
+        assertThat(listener.counter.get(), is(equalTo(4)));
         assertThat(listener.completed.get(), is(false));
 
         countUp.pause();
         assertThat(countUp.isRunning(), is(true));
 
         scheduler.advanceBy(31L);
-        assertThat(listener.counter.get(), is(equalTo(3)));
+        assertThat(listener.counter.get(), is(equalTo(4)));
         assertThat(listener.completed.get(), is(false));
 
         countUp.resume();
         scheduler.advanceBy(31L);
-        assertThat(listener.counter.get(), is(equalTo(5)));
+        assertThat(listener.counter.get(), is(equalTo(6)));
         assertThat(listener.completed.get(), is(true));
     }
 
