@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.kevinmacwhinnie.fonz.R;
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
@@ -19,6 +20,7 @@ public class BoardView extends LinearLayout
         implements View.OnClickListener, CountUp.Listener {
     private final PieView[] pieViews;
     private final PieView upcomingPieView;
+    private final TextView debugCountUpText;
 
     private Pie upcomingPie;
     private Board board;
@@ -43,12 +45,12 @@ public class BoardView extends LinearLayout
         inflater.inflate(R.layout.view_game_board, this, true);
 
         this.pieViews = new PieView[] {
-                (PieView) findViewById(R.id.game_board_pie_left_top),
-                (PieView) findViewById(R.id.game_board_pie_center_top),
-                (PieView) findViewById(R.id.game_board_pie_right_top),
-                (PieView) findViewById(R.id.game_board_pie_left_bottom),
-                (PieView) findViewById(R.id.game_board_pie_center_bottom),
-                (PieView) findViewById(R.id.game_board_pie_right_bottom),
+                (PieView) findViewById(R.id.view_game_board_pie_left_top),
+                (PieView) findViewById(R.id.view_game_board_pie_center_top),
+                (PieView) findViewById(R.id.view_game_board_pie_right_top),
+                (PieView) findViewById(R.id.view_game_board_pie_left_bottom),
+                (PieView) findViewById(R.id.view_game_board_pie_center_bottom),
+                (PieView) findViewById(R.id.view_game_board_pie_right_bottom),
         };
         for (int i = 0, pieViewsLength = pieViews.length; i < pieViewsLength; i++) {
             final PieView pieView = pieViews[i];
@@ -56,9 +58,11 @@ public class BoardView extends LinearLayout
             pieView.setOnClickListener(this);
         }
 
-        this.upcomingPieView = (PieView) findViewById(R.id.game_board_pie_upcoming);
+        this.upcomingPieView = (PieView) findViewById(R.id.view_game_board_pie_upcoming);
         upcomingPieView.setOnClickListener(this);
         upcomingPieView.setUpcoming(true);
+
+        this.debugCountUpText = (TextView) findViewById(R.id.game_board_debug_counter);
     }
 
     public void destroy() {
@@ -113,16 +117,18 @@ public class BoardView extends LinearLayout
 
     @Override
     public void onStarted() {
+        debugCountUpText.setText(Long.toString(0L, 10));
     }
 
     @Override
     public void onTicked(long tick) {
-        // TODO: display this tick somewhere
-        Log.i(getClass().getSimpleName(), "setGameClockTick(" + tick + ")");
+        Log.i(getClass().getSimpleName(), "BoardView#onTicked(" + tick + ")");
+        debugCountUpText.setText(Long.toString(tick, 10));
     }
 
     @Override
     public void onCompleted() {
+        debugCountUpText.setText(R.string.data_placeholder);
     }
 
     //endregion

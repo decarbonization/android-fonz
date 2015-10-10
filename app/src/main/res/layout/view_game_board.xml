@@ -11,13 +11,13 @@
         android:gravity="center">
 
         <com.kevinmacwhinnie.fonz.view.PieView
-            android:id="@+id/game_board_pie_left_top"
+            android:id="@+id/view_game_board_pie_left_top"
             android:layout_width="@dimen/view_pie_width"
             android:layout_height="@dimen/view_pie_height"
             android:layout_marginBottom="@dimen/gap_large" />
 
         <com.kevinmacwhinnie.fonz.view.PieView
-            android:id="@+id/game_board_pie_left_bottom"
+            android:id="@+id/view_game_board_pie_left_bottom"
             android:layout_width="@dimen/view_pie_width"
             android:layout_height="@dimen/view_pie_height" />
 
@@ -31,20 +31,27 @@
         android:gravity="center">
 
         <com.kevinmacwhinnie.fonz.view.PieView
-            android:id="@+id/game_board_pie_center_top"
+            android:id="@+id/view_game_board_pie_center_top"
             android:layout_width="@dimen/view_pie_width"
             android:layout_height="@dimen/view_pie_height"
             android:layout_marginBottom="@dimen/gap_large" />
 
         <com.kevinmacwhinnie.fonz.view.PieView
-            android:id="@+id/game_board_pie_upcoming"
+            android:id="@+id/view_game_board_pie_upcoming"
             android:layout_width="@dimen/view_pie_width"
             android:layout_height="@dimen/view_pie_height"
             android:layout_marginTop="@dimen/gap_large"
             android:layout_marginBottom="@dimen/gap_large" />
 
+        <TextView
+            android:id="@+id/game_board_debug_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:text="@string/data_placeholder"/>
+
         <com.kevinmacwhinnie.fonz.view.PieView
-            android:id="@+id/game_board_pie_center_bottom"
+            android:id="@+id/view_game_board_pie_center_bottom"
             android:layout_width="@dimen/view_pie_width"
             android:layout_height="@dimen/view_pie_height"
             android:layout_marginTop="@dimen/gap_large" />
@@ -59,13 +66,13 @@
         android:gravity="center">
 
         <com.kevinmacwhinnie.fonz.view.PieView
-            android:id="@+id/game_board_pie_right_top"
+            android:id="@+id/view_game_board_pie_right_top"
             android:layout_width="@dimen/view_pie_width"
             android:layout_height="@dimen/view_pie_height"
             android:layout_marginBottom="@dimen/gap_large" />
 
         <com.kevinmacwhinnie.fonz.view.PieView
-            android:id="@+id/game_board_pie_right_bottom"
+            android:id="@+id/view_game_board_pie_right_bottom"
             android:layout_width="@dimen/view_pie_width"
             android:layout_height="@dimen/view_pie_height" />
 

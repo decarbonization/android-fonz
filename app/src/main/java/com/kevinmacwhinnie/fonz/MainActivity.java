@@ -43,16 +43,19 @@ public class MainActivity extends AppCompatActivity
         boardView.setOnPieClickListener(this);
 
         game.bus.register(this);
+        game.countUp.addListener(boardView);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
+        boardView.destroy();
+
         game.bus.unregister(this);
 
         game.gameOver();
-        boardView.destroy();
+        game.destroy();
     }
 
     //endregion
