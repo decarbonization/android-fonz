@@ -4,88 +4,73 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
-import com.kevinmacwhinnie.fonz.game.CountUp;
 import com.kevinmacwhinnie.fonz.game.Game;
+import com.kevinmacwhinnie.fonz.state.Life;
 import com.kevinmacwhinnie.fonz.state.Pie;
+import com.kevinmacwhinnie.fonz.state.Score;
 import com.kevinmacwhinnie.fonz.view.BoardView;
+import com.squareup.otto.Subscribe;
 
-import java.util.Observable;
-import java.util.Observer;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements Observer, CountUp.Listener, BoardView.OnPieClickListener {
+public class MainActivity extends AppCompatActivity
+        implements BoardView.OnPieClickListener {
     private Game game = new Game();
 
-    private TextView livesText;
-    private TextView scoreText;
-    private BoardView boardView;
-    private Button gameToggle;
+    @Bind(R.id.activity_main_lives) TextView livesText;
+    @Bind(R.id.activity_main_score) TextView scoreText;
+    @Bind(R.id.activity_main_board) BoardView boardView;
+    @Bind(R.id.activity_main_game_control) Button gameToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-        this.livesText = (TextView) findViewById(R.id.activity_main_lives);
-        this.scoreText = (TextView) findViewById(R.id.activity_main_score);
-        this.boardView = (BoardView) findViewById(R.id.activity_main_board);
         boardView.setBoard(game.board);
         boardView.setOnPieClickListener(this);
 
-        this.gameToggle = (Button) findViewById(R.id.activity_main_game_control);
-        gameToggle.setOnClickListener(START_GAME);
-
-        setUpObservations();
+        game.bus.register(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        tearDownObservations();
+        game.bus.unregister(this);
 
-        game.reset();
+        game.gameOver();
         boardView.destroy();
     }
 
-    private void setUpObservations() {
-        game.addObserver(this);
-        game.life.addObserver(this);
-        game.score.addObserver(this);
-        game.countUp.addListener(this);
+
+    //region Events
+
+    @Subscribe public void onLifeChanged(@NonNull Life.Changed change) {
+        livesText.setText(String.format("%d", change.value));
     }
 
-    private void tearDownObservations() {
-        game.deleteObserver(this);
-        game.life.deleteObserver(this);
-        game.score.deleteObserver(this);
-        game.countUp.removeListener(this);
+    @Subscribe public void onScoreChanged(@NonNull Score.Changed change) {
+        scoreText.setText(String.format("%d", change.value));
     }
 
-    @Override
-    public void update(Observable observable, Object data) {
-        Log.d(getClass().getSimpleName(), "update(" + observable + ")");
-
-        if (observable == game) {
-            boardView.setUpcomingPiece(game.getUpcomingPiece());
-        } else if (observable == game.life) {
-            livesText.setText(Integer.toString(game.life.getCount()));
-        } else if (observable == game.score) {
-            scoreText.setText(Integer.toString(game.score.getValue()));
-        }
+    @Subscribe public void onUpcomingPieceAvailable(@NonNull Game.UpcomingPieceAvailable ignored) {
+        boardView.setUpcomingPiece(game.getUpcomingPiece());
     }
 
-    @Override
-    public void onTicked(long number) {
-        boardView.setGameClockTick(number);
+    @Subscribe public void onNewGame(@NonNull Game.NewGame ignored) {
+        gameToggle.setText(R.string.action_end_game);
     }
 
-    @Override
-    public void onCompleted() {
+    @Subscribe public void onGameOver(@NonNull Game.GameOver ignored) {
+        gameToggle.setText(R.string.action_new_game);
+        boardView.setUpcomingPiece(null);
     }
 
     @Override
@@ -95,20 +80,24 @@ public class MainActivity extends AppCompatActivity implements Observer, CountUp
 
     @Override
     public void onPieClicked(@NonNull Pie pie) {
-        final UpcomingPiece upcomingPiece = game.getUpcomingPiece();
-        if (!pie.tryPlacePiece(upcomingPiece.slot, upcomingPiece.piece)) {
+        if (!game.tryPlaceCurrentPiece(pie)) {
             Log.e(getClass().getSimpleName(), "Can't put a piece there!");
-        } else if (pie.isFull()) {
-            game.pieFilled(pie);
-        } else {
-            game.advance();
         }
     }
 
-    private final View.OnClickListener START_GAME = new View.OnClickListener() {
-        @Override
-        public void onClick(View ignored) {
-            game.start();
+    //endregion
+
+
+    //region Actions
+
+    @OnClick(R.id.activity_main_game_control)
+    public void onGameControlClicked(@NonNull Button sender) {
+        if (game.isInProgress()) {
+            game.gameOver();
+        } else {
+            game.newGame();
         }
-    };
+    }
+
+    //endregion
 }

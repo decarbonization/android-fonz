@@ -11,7 +11,7 @@ import static org.junit.Assert.assertThat;
 public class BoardTests {
     @Test
     public void reset() {
-        final Board board = new Board();
+        final Board board = new Board(null);
         for (int i = 0; i < Board.NUMBER_PIES; i++) {
             board.getPie(i).tryPlacePiece(Pie.SLOT_TOP_LEFT, Piece.GREEN);
         }

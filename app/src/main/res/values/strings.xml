@@ -3,4 +3,7 @@
     <string name="label_lives">Lives</string>
     <string name="label_score">Score</string>
     <string name="data_placeholder">--</string>
+
+    <string name="action_new_game">New Game</string>
+    <string name="action_end_game">End Game</string>
 </resources>

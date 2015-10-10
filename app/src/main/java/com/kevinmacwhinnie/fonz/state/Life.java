@@ -1,15 +1,18 @@
 package com.kevinmacwhinnie.fonz.state;
 
-import java.util.Observable;
+import android.support.annotation.NonNull;
 
-public class Life extends Observable {
+import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
+import com.squareup.otto.Bus;
+
+public class Life {
     public static int INITIAL_COUNT = 3;
 
+    private final Bus bus;
     private int count = INITIAL_COUNT;
 
-    @Override
-    public boolean hasChanged() {
-        return true;
+    public Life(@NonNull Bus bus) {
+        this.bus = bus;
     }
 
     public int getCount() {
@@ -19,13 +22,13 @@ public class Life extends Observable {
     public void death() {
         if (count > 0) {
             this.count--;
-            notifyObservers();
+            bus.post(new Changed(count));
         }
     }
 
     public void plusOne() {
         this.count++;
-        notifyObservers();
+        bus.post(new Changed(count));
     }
 
     public boolean isAlive() {
@@ -34,7 +37,7 @@ public class Life extends Observable {
 
     public void reset() {
         this.count = INITIAL_COUNT;
-        notifyObservers();
+        bus.post(new Changed(count));
     }
 
     @Override
@@ -42,5 +45,12 @@ public class Life extends Observable {
         return "Life{" +
                 "count=" + count +
                 '}';
+    }
+
+
+    public static class Changed extends ValueBaseEvent<Integer> {
+        public Changed(Integer value) {
+            super(value);
+        }
     }
 }

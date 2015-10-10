@@ -14,7 +14,7 @@ import static org.junit.Assert.assertThat;
 
 public class PieViewTests extends FonzTestCase {
     private PieView pieView;
-    private Pie pie = new Pie();
+    private Pie pie = new Pie(null);
 
     @Before
     public void setUp() {

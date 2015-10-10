@@ -11,16 +11,17 @@ import android.widget.LinearLayout;
 
 import com.kevinmacwhinnie.fonz.R;
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
+import com.kevinmacwhinnie.fonz.game.CountUp;
 import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Pie;
 
-public class BoardView extends LinearLayout implements View.OnClickListener {
+public class BoardView extends LinearLayout
+        implements View.OnClickListener, CountUp.Listener {
     private final PieView[] pieViews;
     private final PieView upcomingPieView;
 
-    private final Pie upcomingPie = new Pie();
+    private Pie upcomingPie;
     private Board board;
-    private UpcomingPiece upcomingPiece;
     private OnPieClickListener onPieClickListener;
 
     //region Lifecycle
@@ -57,7 +58,7 @@ public class BoardView extends LinearLayout implements View.OnClickListener {
 
         this.upcomingPieView = (PieView) findViewById(R.id.game_board_pie_upcoming);
         upcomingPieView.setOnClickListener(this);
-        upcomingPieView.setPie(upcomingPie);
+        upcomingPieView.setUpcoming(true);
     }
 
     public void destroy() {
@@ -77,20 +78,16 @@ public class BoardView extends LinearLayout implements View.OnClickListener {
         for (int i = 0; i < Board.NUMBER_PIES; i++) {
             pieViews[i].setPie(board.getPie(i));
         }
+
+        this.upcomingPie = new Pie(board.bus);
+        upcomingPieView.setPie(upcomingPie);
     }
 
     public void setUpcomingPiece(UpcomingPiece upcomingPiece) {
-        this.upcomingPiece = upcomingPiece;
-
         upcomingPie.reset();
         if (upcomingPiece != null) {
             upcomingPie.tryPlacePiece(upcomingPiece.slot, upcomingPiece.piece);
         }
-    }
-
-    public void setGameClockTick(long tick) {
-        // TODO: display this tick somewhere
-        Log.i(getClass().getSimpleName(), "setGameClockTick(" + tick + ")");
     }
 
     public void setOnPieClickListener(@Nullable OnPieClickListener onPieClickListener) {
@@ -112,6 +109,17 @@ public class BoardView extends LinearLayout implements View.OnClickListener {
                 onPieClickListener.onPieClicked(board.getPie(slot));
             }
         }
+    }
+
+    @Override
+    public void onTicked(long tick) {
+        // TODO: display this tick somewhere
+        Log.i(getClass().getSimpleName(), "setGameClockTick(" + tick + ")");
+    }
+
+    @Override
+    public void onCompleted() {
+
     }
 
     //endregion

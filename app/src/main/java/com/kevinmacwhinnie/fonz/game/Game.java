@@ -1,90 +1,68 @@
 package com.kevinmacwhinnie.fonz.game;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
+import com.kevinmacwhinnie.fonz.events.BaseEvent;
 import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Life;
 import com.kevinmacwhinnie.fonz.state.Pie;
 import com.kevinmacwhinnie.fonz.state.Score;
+import com.squareup.otto.Bus;
+import com.squareup.otto.ThreadEnforcer;
 
-import java.util.Observable;
-
-// TODO: replace Observable with something that doesn't suck
 // TODO: test the crap out of this class
 // TODO: state saving
-public class Game extends Observable implements CountUp.Listener {
+public class Game implements CountUp.Listener {
     public static final String LOG_TAG = Game.class.getSimpleName();
 
+    public final Bus bus = new Bus(ThreadEnforcer.MAIN, "Game#bus");
     public final CountUp countUp = new CountUp();
-    public final Life life = new Life();
-    public final Score score = new Score();
-    public final Board board = new Board();
+    public final Life life = new Life(bus);
+    public final Score score = new Score(bus);
+    public final Board board = new Board(bus);
 
     private final PieceFactory pieceFactory = new PieceFactory();
     private UpcomingPiece upcomingPiece;
+    private boolean inProgress = false;
+
 
     public Game() {
         countUp.addListener(this);
     }
 
-    @Override
-    public boolean hasChanged() {
-        return true;
+
+    //region Attributes
+
+    public boolean isInProgress() {
+        return inProgress;
     }
 
-    public void advance() {
-        Log.d(LOG_TAG, "advance()");
+    public @Nullable UpcomingPiece getUpcomingPiece() {
+        return upcomingPiece;
+    }
 
+    //endregion
+
+
+    //region Internal
+
+    private void doNewCountUp() {
+        Log.d(LOG_TAG, "doNewCountUp()");
+
+        this.inProgress = true;
         this.upcomingPiece = pieceFactory.generateUpcomingPiece();
         Log.d(LOG_TAG, "Upcoming piece " + upcomingPiece);
 
         // TODO: figure out correct timing and scale ratio for count up
         countUp.start();
 
-        notifyObservers();
+        bus.post(UpcomingPieceAvailable.INSTANCE);
     }
 
-    public void skipPiece() {
-        life.death();
-        if (life.isAlive()) {
-            advance();
-        } else {
-            gameOver();
-        }
-    }
-
-    public void pieFilled(@NonNull Pie pie) {
-        score.addPie(pie.isSingleColor());
-        pie.reset();
-        advance();
-    }
-
-    public UpcomingPiece getUpcomingPiece() {
-        return upcomingPiece;
-    }
-
-    public void start() {
-        Log.d(LOG_TAG, "start()");
-
-        reset();
-        advance();
-    }
-
-    public void pause() {
-        Log.d(LOG_TAG, "pause()");
-
-        countUp.pause();
-    }
-
-    public void stop() {
-        Log.d(LOG_TAG, "stop()");
-
-        reset();
-    }
-
-    public void reset() {
+    private void reset() {
         Log.d(LOG_TAG, "reset()");
 
         countUp.reset();
@@ -92,15 +70,57 @@ public class Game extends Observable implements CountUp.Listener {
         score.reset();
         board.reset();
 
+        this.inProgress = false;
         this.upcomingPiece = null;
     }
 
-    public void gameOver() {
-        // TODO: notifications?
+    //endregion
 
-        Log.d(LOG_TAG, "Game over");
+
+    //region Controls
+
+    public void newGame() {
+        Log.d(LOG_TAG, "newGame()");
+
         reset();
+        doNewCountUp();
+
+        bus.post(NewGame.INSTANCE);
     }
+
+    public boolean tryPlaceCurrentPiece(@NonNull Pie pie) {
+        if (pie.tryPlacePiece(upcomingPiece.slot, upcomingPiece.piece)) {
+            if (pie.isFull()) {
+                score.addPie(pie.isSingleColor());
+                pie.reset();
+            }
+
+            doNewCountUp();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void skipPiece() {
+        Log.d(LOG_TAG, "skipPiece()");
+
+        life.death();
+        if (life.isAlive()) {
+            doNewCountUp();
+        } else {
+            gameOver();
+        }
+    }
+
+    public void gameOver() {
+        Log.d(LOG_TAG, "gameOver()");
+
+        reset();
+        bus.post(GameOver.INSTANCE);
+    }
+
+    //endregion
 
 
     @Override
@@ -110,11 +130,19 @@ public class Game extends Observable implements CountUp.Listener {
 
     @Override
     public void onCompleted() {
-        life.death();
-        if (life.isAlive()) {
-            advance();
-        } else {
-            gameOver();
-        }
+        skipPiece();
+    }
+
+
+    public static class NewGame extends BaseEvent {
+        static final NewGame INSTANCE = new NewGame();
+    }
+
+    public static class GameOver extends BaseEvent {
+        static final GameOver INSTANCE = new GameOver();
+    }
+
+    public static class UpcomingPieceAvailable extends BaseEvent {
+        static final UpcomingPieceAvailable INSTANCE = new UpcomingPieceAvailable();
     }
 }

@@ -17,13 +17,13 @@ import android.view.View;
 import com.kevinmacwhinnie.fonz.R;
 import com.kevinmacwhinnie.fonz.data.Piece;
 import com.kevinmacwhinnie.fonz.state.Pie;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
-public class PieView extends View implements Observer {
+public class PieView extends View {
     public final float DEGREES_PER_SLICE = (360f / Pie.NUMBER_SLOTS);
 
     private final Resources resources;
@@ -34,6 +34,7 @@ public class PieView extends View implements Observer {
     private final Paint pieceStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Path piecePath = new Path();
 
+    private boolean upcoming = false;
     private Pie pie;
 
 
@@ -109,9 +110,16 @@ public class PieView extends View implements Observer {
 
     //region Attributes
 
+    public void setUpcoming(boolean upcoming) {
+        this.upcoming = upcoming;
+    }
+
     public void setPie(@Nullable Pie pie) {
         if (this.pie != null) {
-            this.pie.deleteObserver(this);
+            final Bus bus = this.pie.bus;
+            if (this.pie.bus != null) {
+                bus.unregister(this);
+            }
         }
 
         this.pie = pie;
@@ -121,19 +129,13 @@ public class PieView extends View implements Observer {
             setContentDescription(contentDescription);
             setWillNotDraw(false);
 
-            pie.addObserver(this);
+            final Bus bus = pie.bus;
+            if (bus != null) {
+                bus.register(this);
+            }
         } else {
             setWillNotDraw(true);
         }
-    }
-
-    public void notifyChanged() {
-        final CharSequence contentDescription = generateContentDescription();
-        setContentDescription(contentDescription);
-        // TODO: we don't want to announce the same thing for the upcoming pie
-        announceForAccessibility(contentDescription);
-
-        invalidate();
     }
 
     //endregion
@@ -178,9 +180,13 @@ public class PieView extends View implements Observer {
 
     //region Events
 
-    @Override
-    public void update(Observable observable, Object data) {
-        notifyChanged();
+    @Subscribe public void onPieChanged(@NonNull Pie.Changed ignored) {
+        final CharSequence contentDescription = generateContentDescription();
+        setContentDescription(contentDescription);
+        // TODO: we don't want to announce the same thing for the upcoming pie
+        announceForAccessibility(contentDescription);
+
+        invalidate();
     }
 
     //endregion

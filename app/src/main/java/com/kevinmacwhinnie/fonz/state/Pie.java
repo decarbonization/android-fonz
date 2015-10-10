@@ -1,15 +1,17 @@
 package com.kevinmacwhinnie.fonz.state;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.kevinmacwhinnie.fonz.R;
 import com.kevinmacwhinnie.fonz.data.Piece;
+import com.kevinmacwhinnie.fonz.events.BaseEvent;
+import com.squareup.otto.Bus;
 
 import java.util.Arrays;
-import java.util.Observable;
 
-public class Pie extends Observable {
+public class Pie {
     public static final int NUMBER_SLOTS = 6;
 
     public static final int SLOT_TOP_LEFT = 0;
@@ -29,19 +31,17 @@ public class Pie extends Observable {
     };
 
 
+    public final @Nullable Bus bus;
+
     private final Piece[] slots;
     private int occupiedSlots = 0;
 
-    public Pie() {
+    public Pie(@Nullable Bus bus) {
+        this.bus = bus;
         this.slots = new Piece[NUMBER_SLOTS];
         for (int i = 0; i < NUMBER_SLOTS; i++) {
             this.slots[i] = Piece.EMPTY;
         }
-    }
-
-    @Override
-    public boolean hasChanged() {
-        return true;
     }
 
     public boolean tryPlacePiece(int slot, @NonNull Piece piece) {
@@ -53,7 +53,9 @@ public class Pie extends Observable {
             slots[slot] = piece;
             this.occupiedSlots++;
 
-            notifyObservers();
+            if (bus != null) {
+                bus.post(Changed.INSTANCE);
+            }
             return true;
         } else {
             return false;
@@ -92,7 +94,9 @@ public class Pie extends Observable {
         }
         this.occupiedSlots = 0;
 
-        notifyObservers();
+        if (bus != null) {
+            bus.post(Changed.INSTANCE);
+        }
     }
 
 
@@ -102,5 +106,10 @@ public class Pie extends Observable {
                 "slots=" + Arrays.toString(slots) +
                 ", isFull=" + isFull() +
                 '}';
+    }
+
+
+    public static class Changed extends BaseEvent {
+        static final Changed INSTANCE = new Changed();
     }
 }
