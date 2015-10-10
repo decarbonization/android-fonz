@@ -22,6 +22,7 @@ import static com.kevinmacwhinnie.fonz.Testing.occurrencesOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -131,6 +132,7 @@ public class GameTests extends FonzTestCase implements CountUp.Listener {
 
         assertThat(pie.getOccupiedSlotCount(), is(equalTo(0)));
         assertThat(events, hasItem(new Score.Changed(60)));
+        assertThat(events, hasItem(new Life.Changed(Life.INITIAL_COUNT + 1)));
 
         assertThat(occurrencesOf(events, Game.UpcomingPieceAvailable.INSTANCE), is(equalTo(2)));
     }
@@ -156,6 +158,7 @@ public class GameTests extends FonzTestCase implements CountUp.Listener {
 
         assertThat(pie.getOccupiedSlotCount(), is(equalTo(0)));
         assertThat(events, hasItem(new Score.Changed(30)));
+        assertThat(events, not(hasItem(new Life.Changed(Life.INITIAL_COUNT + 1))));
 
         assertThat(occurrencesOf(events, Game.UpcomingPieceAvailable.INSTANCE), is(equalTo(2)));
     }

@@ -19,14 +19,14 @@ public class Life {
         return count;
     }
 
-    public void death() {
+    public void decrement() {
         if (count > 0) {
             this.count--;
             bus.post(new Changed(count));
         }
     }
 
-    public void plusOne() {
+    public void increment() {
         this.count++;
         bus.post(new Changed(count));
     }

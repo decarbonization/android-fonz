@@ -43,17 +43,17 @@ public class LifeTests extends FonzTestCase {
         final Life life = new Life(bus);
         assertThat(life.isAlive(), is(true));
 
-        life.death();
+        life.decrement();
         assertThat(events, hasItem(new Life.Changed(2)));
-        life.death();
+        life.decrement();
         assertThat(events, hasItem(new Life.Changed(1)));
-        life.death();
+        life.decrement();
         assertThat(events, hasItem(new Life.Changed(0)));
 
         assertThat(life.isAlive(), is(false));
 
         events.clear();
-        life.plusOne();
+        life.increment();
         assertThat(events, hasItem(new Life.Changed(1)));
 
         assertThat(life.isAlive(), is(true));
@@ -63,9 +63,9 @@ public class LifeTests extends FonzTestCase {
     public void reset() {
         final Life life = new Life(bus);
 
-        life.death();
-        life.death();
-        life.death();
+        life.decrement();
+        life.decrement();
+        life.decrement();
 
         assertThat(life.isAlive(), is(false));
 
