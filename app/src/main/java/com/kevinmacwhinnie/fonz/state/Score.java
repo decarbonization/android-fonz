@@ -71,7 +71,7 @@ public class Score {
     @Override
     public String toString() {
         return "Score{" +
-                "value=" + value +
+                "how=" + value +
                 ", multiplier=" + multiplier +
                 '}';
     }

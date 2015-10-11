@@ -10,13 +10,14 @@
         android:fullBackupContent="true"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Fonz.NoActionBar">
+        android:theme="@style/Fonz">
 
         <!-- TODO: add orientation change support -->
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/Fonz.NoActionBar">
 
             <intent-filter>
 
@@ -26,6 +27,11 @@
             </intent-filter>
 
         </activity>
+
+        <activity
+            android:name=".ScoresActivity"
+            android:label="@string/title_high_scores"
+            android:parentActivityName=".MainActivity" />
 
     </application>
 

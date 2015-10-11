@@ -27,7 +27,6 @@
 package com.kevinmacwhinnie.fonz;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,10 +35,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,10 +48,12 @@ import android.widget.TextView;
 
 import com.kevinmacwhinnie.fonz.data.Preferences;
 
-public class GameOverDialogFragment extends AppCompatDialogFragment
+public class HighScoreDialogFragment extends AppCompatDialogFragment
         implements Dialog.OnClickListener, TextView.OnEditorActionListener {
-    public static String TAG = GameOverDialogFragment.class.getSimpleName();
-    public static String RESULT_NAME = GameOverDialogFragment.class.getName() + ".RESULT_NAME";
+    public static final String ACTION_SUBMITTED = HighScoreDialogFragment.class.getName() + ".ACTION_SUBMITTED";
+    public static final String EXTRA_NAME = HighScoreDialogFragment.class.getName() + ".EXTRA_NAME";
+
+    public static final String TAG = HighScoreDialogFragment.class.getSimpleName();
 
     private SharedPreferences preferences;
     private EditText nameText;
@@ -102,31 +102,16 @@ public class GameOverDialogFragment extends AppCompatDialogFragment
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        final Fragment targetFragment = getTargetFragment();
-        if (targetFragment == null) {
-            return;
-        }
+        if (which == DialogInterface.BUTTON_POSITIVE) {
+            final String name = nameText.getText().toString();
+            preferences.edit()
+                       .putString(Preferences.SAVED_SCORE_NAME, name)
+                       .apply();
 
-        switch (which) {
-            case DialogInterface.BUTTON_POSITIVE: {
-                final String name = nameText.getText().toString();
-                preferences.edit()
-                           .putString(Preferences.SAVED_SCORE_NAME, name)
-                           .apply();
-
-                final Intent response = new Intent();
-                response.putExtra(RESULT_NAME, name);
-                targetFragment.onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, response);
-                break;
-            }
-            case DialogInterface.BUTTON_NEGATIVE: {
-                targetFragment.onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, null);
-                break;
-            }
-            default: {
-                Log.w(getClass().getSimpleName(), "Unknown button " + which);
-                break;
-            }
+            final Intent response = new Intent(ACTION_SUBMITTED);
+            response.putExtra(EXTRA_NAME, name);
+            LocalBroadcastManager.getInstance(getActivity())
+                    .sendBroadcast(response);
         }
     }
 

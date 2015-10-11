@@ -227,6 +227,6 @@ public class GameTests extends FonzTestCase implements CountUp.Listener {
         assertThat(game.isInProgress(), is(false));
         assertThat(game.getUpcomingPiece(), is(nullValue()));
 
-        assertThat(events, hasItem(new Game.GameOver(Game.GameOver.How.GAME_LOGIC)));
+        assertThat(events, hasItem(new Game.GameOver(Game.GameOver.How.GAME_LOGIC, 0)));
     }
 }

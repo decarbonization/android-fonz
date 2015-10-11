@@ -33,7 +33,6 @@ import android.util.Log;
 
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
 import com.kevinmacwhinnie.fonz.events.BaseEvent;
-import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
 import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Life;
 import com.kevinmacwhinnie.fonz.state.Pie;
@@ -166,8 +165,9 @@ public class Game implements CountUp.Listener {
         Log.d(LOG_TAG, "gameOver()");
 
         if (inProgress) {
+            final int finalScore = score.getValue();
             reset();
-            bus.post(new GameOver(how));
+            bus.post(new GameOver(how, finalScore));
         }
     }
 
@@ -198,9 +198,40 @@ public class Game implements CountUp.Listener {
         static final NewGame INSTANCE = new NewGame();
     }
 
-    public static class GameOver extends ValueBaseEvent<GameOver.How> {
-        public GameOver(@NonNull How value) {
-            super(value);
+    public static class GameOver extends BaseEvent {
+        public final How how;
+        public final int score;
+
+        public GameOver(@NonNull How how, int score) {
+            this.how = how;
+            this.score = score;
+        }
+
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            GameOver gameOver = (GameOver) o;
+
+            return score == gameOver.score && how == gameOver.how;
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = how.hashCode();
+            result = 31 * result + score;
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "GameOver{" +
+                    "how=" + how +
+                    ", score=" + score +
+                    '}';
         }
 
         public enum How {

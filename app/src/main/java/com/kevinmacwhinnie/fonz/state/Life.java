@@ -69,7 +69,7 @@ public class Life {
     @Override
     public String toString() {
         return "Life{" +
-                "value=" + value +
+                "how=" + value +
                 '}';
     }
 

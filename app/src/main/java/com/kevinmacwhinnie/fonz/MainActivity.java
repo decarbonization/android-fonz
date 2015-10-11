@@ -26,6 +26,7 @@
  */
 package com.kevinmacwhinnie.fonz;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -119,9 +120,10 @@ public class MainActivity extends AppCompatActivity
         gameToggle.setText(R.string.action_new_game);
         boardView.setUpcomingPiece(null);
 
-        if (event.value == Game.GameOver.How.GAME_LOGIC) {
-            final GameOverDialogFragment gameOver = new GameOverDialogFragment();
-            gameOver.show(getSupportFragmentManager(), GameOverDialogFragment.TAG);
+        if (event.how == Game.GameOver.How.GAME_LOGIC) {
+            final Intent scoresActivity = new Intent(this, ScoresActivity.class);
+            scoresActivity.putExtras(ScoresActivity.getArguments(event.score));
+            startActivity(scoresActivity);
         }
 
         sounds.playGameOver();

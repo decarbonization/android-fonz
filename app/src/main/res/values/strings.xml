@@ -10,4 +10,6 @@
     <string name="action_no_thanks">No, Thanks</string>
     <string name="caption_player_name">Enter your name:</string>
     <string name="score_name_default">Dina</string>
+    <string name="title_high_scores">High Scores</string>
+    <string name="action_clear_scores">Clear All</string>
 </resources>
