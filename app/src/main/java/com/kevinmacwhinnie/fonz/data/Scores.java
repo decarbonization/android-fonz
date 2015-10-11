@@ -32,6 +32,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import com.kevinmacwhinnie.fonz.R;
+import com.kevinmacwhinnie.fonz.events.BaseEvent;
+import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
+import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,11 +45,14 @@ public class Scores {
     public static final int POSITION_REJECTED = -1;
     public static final int SCORE_DEFAULT = 100;
 
+    public Bus bus;
+
     private final Context context;
     @VisibleForTesting final List<Entry> entries = new ArrayList<>(NUMBER_SCORES);
 
-    public Scores(@NonNull Context context) {
+    public Scores(@NonNull Context context, @NonNull Bus bus) {
         this.context = context;
+        this.bus = bus;
     }
 
     public void initialize(boolean withDefaults) {
@@ -67,6 +73,8 @@ public class Scores {
         for (int i = 0; i < NUMBER_SCORES; i++) {
             entries.add(placeholder);
         }
+
+        bus.post(new Cleared());
     }
 
     public Entry getEntry(int position) {
@@ -74,18 +82,37 @@ public class Scores {
     }
 
     public int trackScore(@NonNull String name, int score) {
-        int position = POSITION_REJECTED;
-
         for (int i = 0; i < NUMBER_SCORES; i++) {
             if (score > entries.get(i).score) {
                 entries.add(i, new Entry(name, score, System.currentTimeMillis()));
                 entries.remove(entries.size() - 1);
-                position = i;
-                break;
+
+                bus.post(new TrackedAtPosition(i));
+
+                return i;
             }
         }
 
-        return position;
+        return POSITION_REJECTED;
+    }
+
+
+    public static class Cleared extends BaseEvent {
+        @Override
+        public boolean equals(Object o) {
+            return (o instanceof Cleared);
+        }
+
+        @Override
+        public int hashCode() {
+            return 42;
+        }
+    }
+
+    public static class TrackedAtPosition extends ValueBaseEvent<Integer> {
+        public TrackedAtPosition(int value) {
+            super(value);
+        }
     }
 
 

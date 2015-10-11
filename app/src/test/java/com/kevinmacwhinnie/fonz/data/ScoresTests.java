@@ -27,30 +27,55 @@
 
 package com.kevinmacwhinnie.fonz.data;
 
+import android.support.annotation.NonNull;
+
 import com.kevinmacwhinnie.fonz.FonzTestCase;
+import com.kevinmacwhinnie.fonz.events.BaseEvent;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class ScoresTests extends FonzTestCase {
+    private final Bus bus = new Bus("test-bus");
+    private final List<BaseEvent> events = new ArrayList<>();
+
     private Scores scores;
 
     @Before
     public void setUp() {
-        this.scores = new Scores(getContext());
+        bus.register(this);
+
+        this.scores = new Scores(getContext(), bus);
         scores.initialize(true);
     }
 
     @After
     public void tearDown() {
         scores.clear();
+
+        bus.unregister(this);
+        events.clear();
+    }
+
+    @Subscribe public void onScoresCleared(@NonNull Scores.Cleared event) {
+        events.add(event);
+    }
+
+    @Subscribe public void onScoreTracked(@NonNull Scores.TrackedAtPosition event) {
+        events.add(event);
     }
 
 
@@ -74,11 +99,14 @@ public class ScoresTests extends FonzTestCase {
         }
 
         scores.clear();
+
         for (int i = 0; i < Scores.NUMBER_SCORES; i++) {
             final Scores.Entry entry = scores.getEntry(i);
             assertThat(entry, is(notNullValue()));
             assertThat(entry.score, is(equalTo(0)));
         }
+
+        assertThat(events, hasItem(new Scores.Cleared()));
     }
 
     @Test
@@ -87,11 +115,13 @@ public class ScoresTests extends FonzTestCase {
         assertThat(firstPosition, is(not(equalTo(Scores.POSITION_REJECTED))));
         assertThat(firstPosition, is(equalTo(0)));
         assertThat(scores.entries.size(), is(equalTo(Scores.NUMBER_SCORES)));
+        assertThat(events, hasItem(new Scores.TrackedAtPosition(0)));
 
         final int secondPosition = scores.trackScore("John Doe", Math.round(Scores.SCORE_DEFAULT * 1.5f));
         assertThat(secondPosition, is(not(equalTo(Scores.POSITION_REJECTED))));
         assertThat(secondPosition, is(equalTo(1)));
         assertThat(scores.entries.size(), is(equalTo(Scores.NUMBER_SCORES)));
+        assertThat(events, hasItem(new Scores.TrackedAtPosition(1)));
     }
 
     @Test
