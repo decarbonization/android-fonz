@@ -75,7 +75,7 @@ public class PieceDrawing {
         return path;
     }
 
-    public void draw(int slot,
+    public void draw(@Pie.Slot int slot,
                      @NonNull Piece piece,
                      @NonNull Canvas canvas,
                      @NonNull Paint paint) {

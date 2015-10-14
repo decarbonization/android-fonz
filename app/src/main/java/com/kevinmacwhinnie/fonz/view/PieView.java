@@ -29,7 +29,6 @@ package com.kevinmacwhinnie.fonz.view;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
@@ -47,10 +46,9 @@ import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PieView extends View {
-    private final Paint pieceFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+public class PieView extends View implements PieceDrawable.PieceProvider {
 
-    private PieceDrawing pieceDrawing;
+    private PieceDrawable pieceDrawable;
     private Pie pie;
 
 
@@ -71,8 +69,6 @@ public class PieView extends View {
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
         setAccessibilityLiveRegion(ACCESSIBILITY_LIVE_REGION_ASSERTIVE);
         setWillNotDraw(true);
-
-        pieceFillPaint.setStrokeJoin(Paint.Join.ROUND);
     }
 
     //endregion
@@ -81,15 +77,17 @@ public class PieView extends View {
     //region Drawing
 
     @Override
-    protected void onDraw(Canvas canvas) {
-        for (int slot = 0; slot < Pie.NUMBER_SLOTS; slot++) {
-            final Piece piece = pie.getPiece(slot);
-            if (piece == Piece.EMPTY) {
-                continue;
-            }
+    protected void onSizeChanged(int w, int h, int oldW, int oldH) {
+        super.onSizeChanged(w, h, oldW, oldH);
 
-            pieceDrawing.draw(slot, piece, canvas, pieceFillPaint);
+        if (pieceDrawable != null) {
+            pieceDrawable.setBounds(0, 0, w, h);
         }
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        pieceDrawable.draw(canvas);
     }
 
     //endregion
@@ -97,8 +95,13 @@ public class PieView extends View {
 
     //region Attributes
 
-    public void setPieceDrawing(PieceDrawing pieceDrawing) {
-        this.pieceDrawing = pieceDrawing;
+    public void setPieceDrawing(@Nullable PieceDrawing pieceDrawing) {
+        if (pieceDrawing != null) {
+            this.pieceDrawable = new PieceDrawable(this, pieceDrawing);
+            pieceDrawable.setBounds(0, 0, getWidth(), getHeight());
+        } else {
+            this.pieceDrawable = null;
+        }
 
         setWillNotDraw(pieceDrawing == null || pie == null);
     }
@@ -123,7 +126,7 @@ public class PieView extends View {
             }
         }
 
-        setWillNotDraw(pieceDrawing == null || pie == null);
+        setWillNotDraw(pieceDrawable == null || pie == null);
     }
 
     //endregion
@@ -177,6 +180,12 @@ public class PieView extends View {
 
             invalidate();
         }
+    }
+
+    @NonNull
+    @Override
+    public Piece getPiece(@Pie.Slot int slot) {
+        return pie.getPiece(slot);
     }
 
     //endregion

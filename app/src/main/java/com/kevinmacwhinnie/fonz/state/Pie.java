@@ -26,6 +26,7 @@
  */
 package com.kevinmacwhinnie.fonz.state;
 
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -36,6 +37,8 @@ import com.kevinmacwhinnie.fonz.data.Piece;
 import com.kevinmacwhinnie.fonz.events.BaseEvent;
 import com.squareup.otto.Bus;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 
 public class Pie {
@@ -56,6 +59,11 @@ public class Pie {
             R.string.accessibility_pie_slot_bottom_center_fmt,
             R.string.accessibility_pie_slot_bottom_right_fmt,
     };
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({SLOT_TOP_LEFT, SLOT_TOP_CENTER, SLOT_TOP_RIGHT,
+             SLOT_BOTTOM_LEFT, SLOT_BOTTOM_CENTER, SLOT_BOTTOM_RIGHT})
+    public @interface Slot {}
 
 
     public final @Nullable Bus bus;
