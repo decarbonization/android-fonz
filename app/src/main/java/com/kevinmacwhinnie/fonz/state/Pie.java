@@ -62,7 +62,8 @@ public class Pie {
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({SLOT_TOP_LEFT, SLOT_TOP_CENTER, SLOT_TOP_RIGHT,
-             SLOT_BOTTOM_LEFT, SLOT_BOTTOM_CENTER, SLOT_BOTTOM_RIGHT})
+             SLOT_BOTTOM_LEFT, SLOT_BOTTOM_CENTER, SLOT_BOTTOM_RIGHT,
+             NUMBER_SLOTS})
     public @interface Slot {}
 
 
@@ -75,7 +76,7 @@ public class Pie {
     public Pie(@Nullable Bus bus) {
         this.bus = bus;
         this.slots = new Piece[NUMBER_SLOTS];
-        for (int i = 0; i < NUMBER_SLOTS; i++) {
+        for (@Slot int i = SLOT_TOP_LEFT; i < NUMBER_SLOTS; i++) {
             this.slots[i] = Piece.EMPTY;
         }
     }
@@ -98,7 +99,7 @@ public class Pie {
         }
     }
 
-    public Piece getPiece(int offset) {
+    public Piece getPiece(@Slot int offset) {
         return slots[offset];
     }
 
@@ -112,9 +113,9 @@ public class Pie {
 
     public boolean isSingleColor() {
         if (isFull()) {
-            final Piece first = slots[0];
-            for (int i = 1; i < NUMBER_SLOTS; i++) {
-                if (slots[i] != first) {
+            final Piece first = slots[SLOT_TOP_LEFT];
+            for (@Slot int slot = SLOT_TOP_CENTER; slot < NUMBER_SLOTS; slot++) {
+                if (slots[slot] != first) {
                     return false;
                 }
             }
@@ -125,8 +126,8 @@ public class Pie {
     }
 
     public void reset() {
-        for (int i = 0; i < NUMBER_SLOTS; i++) {
-            this.slots[i] = Piece.EMPTY;
+        for (@Slot int slot = 0; slot < NUMBER_SLOTS; slot++) {
+            this.slots[slot] = Piece.EMPTY;
         }
         this.occupiedSlots = 0;
 

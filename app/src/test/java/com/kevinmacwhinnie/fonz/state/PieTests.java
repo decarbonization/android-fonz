@@ -69,8 +69,8 @@ public class PieTests extends FonzTestCase {
     @Test
     public void constructor() {
         final Pie pie = new Pie(bus);
-        for (int i = 0; i < Pie.NUMBER_SLOTS; i++) {
-            assertThat(pie.getPiece(i), is(equalTo(Piece.EMPTY)));
+        for (@Pie.Slot int slot = Pie.SLOT_TOP_LEFT; slot < Pie.NUMBER_SLOTS; slot++) {
+            assertThat(pie.getPiece(slot), is(equalTo(Piece.EMPTY)));
         }
     }
 

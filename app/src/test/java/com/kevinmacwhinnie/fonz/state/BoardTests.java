@@ -45,7 +45,7 @@ public class BoardTests {
         board.reset();
 
         for (int i = 0; i < Board.NUMBER_PIES; i++) {
-            assertThat(board.getPie(i).getPiece(0), is(equalTo(Piece.EMPTY)));
+            assertThat(board.getPie(i).getPiece(Pie.SLOT_TOP_LEFT), is(equalTo(Piece.EMPTY)));
         }
     }
 }

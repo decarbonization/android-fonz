@@ -149,14 +149,14 @@ public class PieView extends View implements PieceDrawable.PieceProvider {
                 }
             } else {
                 final List<CharSequence> slotDescriptions = new ArrayList<>(Pie.NUMBER_SLOTS);
-                for (int i = 0; i < Pie.NUMBER_SLOTS; i++) {
-                    final Piece piece = pie.getPiece(i);
+                for (@Pie.Slot int slot = 0; slot < Pie.NUMBER_SLOTS; slot++) {
+                    final Piece piece = pie.getPiece(slot);
                     if (piece == Piece.EMPTY) {
                         continue;
                     }
 
                     final String pieceName = resources.getString(piece.accessibilityName);
-                    slotDescriptions.add(resources.getString(Pie.SLOT_ACCESSIBILITY_NAME_FORMATS[i], pieceName));
+                    slotDescriptions.add(resources.getString(Pie.SLOT_ACCESSIBILITY_NAME_FORMATS[slot], pieceName));
                 }
                 final String deliminator = resources.getString(R.string.accessibility_pie_slot_conjunction);
                 final CharSequence slotSummary = TextUtils.join(deliminator, slotDescriptions);
