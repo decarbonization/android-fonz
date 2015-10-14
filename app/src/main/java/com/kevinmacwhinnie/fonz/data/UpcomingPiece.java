@@ -28,11 +28,13 @@ package com.kevinmacwhinnie.fonz.data;
 
 import android.support.annotation.NonNull;
 
+import com.kevinmacwhinnie.fonz.state.Pie;
+
 public class UpcomingPiece {
     public final Piece piece;
-    public final int slot;
+    public final @Pie.Slot int slot;
 
-    public UpcomingPiece(@NonNull Piece piece, int slot) {
+    public UpcomingPiece(@NonNull Piece piece, @Pie.Slot int slot) {
         this.piece = piece;
         this.slot = slot;
     }

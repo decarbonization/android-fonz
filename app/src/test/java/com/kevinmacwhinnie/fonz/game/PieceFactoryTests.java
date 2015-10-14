@@ -37,7 +37,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertThat;
 
-public class PieceVendorTests {
+public class PieceFactoryTests {
     @Test
     public void generatePiece() {
         final PieceFactory vendor = new PieceFactory();

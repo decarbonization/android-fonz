@@ -37,8 +37,10 @@ import com.kevinmacwhinnie.fonz.data.Piece;
 import com.kevinmacwhinnie.fonz.events.BaseEvent;
 import com.squareup.otto.Bus;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.Arrays;
 
 public class Pie {
@@ -61,6 +63,7 @@ public class Pie {
     };
 
     @Retention(RetentionPolicy.SOURCE)
+    @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.LOCAL_VARIABLE, ElementType.METHOD})
     @IntDef({SLOT_TOP_LEFT, SLOT_TOP_CENTER, SLOT_TOP_RIGHT,
              SLOT_BOTTOM_LEFT, SLOT_BOTTOM_CENTER, SLOT_BOTTOM_RIGHT,
              NUMBER_SLOTS})

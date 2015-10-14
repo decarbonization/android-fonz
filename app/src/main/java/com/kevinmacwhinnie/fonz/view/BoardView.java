@@ -46,10 +46,9 @@ import com.kevinmacwhinnie.fonz.view.util.PieceDrawing;
 public class BoardView extends LinearLayout
         implements View.OnClickListener, CountUp.Listener {
     private final PieView[] pieViews;
-    private final PieView upcomingPieView;
+    private final UpcomingPieceView upcomingPieceView;
     private final TextView debugCountUpText;
 
-    private Pie upcomingPie;
     private Board board;
     private OnPieClickListener onPieClickListener;
 
@@ -89,9 +88,9 @@ public class BoardView extends LinearLayout
         }
 
         // TODO: view specifically for upcoming pieces
-        this.upcomingPieView = (PieView) findViewById(R.id.view_game_board_pie_upcoming);
-        upcomingPieView.setOnClickListener(this);
-        upcomingPieView.setPieceDrawing(pieceDrawing);
+        this.upcomingPieceView = (UpcomingPieceView) findViewById(R.id.view_game_board_upcoming_piece);
+        upcomingPieceView.setOnClickListener(this);
+        upcomingPieceView.setPieceDrawing(pieceDrawing);
 
         this.debugCountUpText = (TextView) findViewById(R.id.game_board_debug_counter);
     }
@@ -113,16 +112,10 @@ public class BoardView extends LinearLayout
         for (int i = 0; i < Board.NUMBER_PIES; i++) {
             pieViews[i].setPie(board.getPie(i));
         }
-
-        this.upcomingPie = new Pie(board.bus);
-        upcomingPieView.setPie(upcomingPie);
     }
 
-    public void setUpcomingPiece(UpcomingPiece upcomingPiece) {
-        upcomingPie.reset();
-        if (upcomingPiece != null) {
-            upcomingPie.tryPlacePiece(upcomingPiece.slot, upcomingPiece.piece);
-        }
+    public void setUpcomingPiece(@Nullable UpcomingPiece upcomingPiece) {
+        upcomingPieceView.setUpcomingPiece(upcomingPiece);
     }
 
     public void setOnPieClickListener(@Nullable OnPieClickListener onPieClickListener) {
@@ -137,7 +130,7 @@ public class BoardView extends LinearLayout
     @Override
     public void onClick(View pieView) {
         if (onPieClickListener != null && board != null) {
-            if (pieView == upcomingPieView) {
+            if (pieView == upcomingPieceView) {
                 onPieClickListener.onUpcomingPieClicked();
             } else {
                 final int slot = (int) pieView.getTag(R.id.view_board_pie_slot_tag);

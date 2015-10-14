@@ -55,13 +55,14 @@ public class PieceFactory {
         return pieces.remove(position);
     }
 
-    public int generateSlot() {
+    public @Pie.Slot int generateSlot() {
         if (slots.isEmpty()) {
             reset();
         }
 
         final int position = random.nextInt(slots.size());
-        return slots.remove(position);
+        final @Pie.Slot int slot = slots.remove(position);
+        return slot;
     }
 
     public UpcomingPiece generateUpcomingPiece() {
