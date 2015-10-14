@@ -77,6 +77,16 @@ public class Scores {
         bus.post(new Cleared());
     }
 
+    public boolean isScoreEligible(int score) {
+        for (int i = NUMBER_SCORES - 1; i >= 0; i--) {
+            if (getEntry(i).score > score) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public Entry getEntry(int position) {
         return entries.get(position);
     }

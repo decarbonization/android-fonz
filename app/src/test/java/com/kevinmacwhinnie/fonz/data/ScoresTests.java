@@ -110,6 +110,12 @@ public class ScoresTests extends FonzTestCase {
     }
 
     @Test
+    public void isScoreEligible() {
+        assertThat(scores.isScoreEligible(Scores.SCORE_DEFAULT * 2), is(true));
+        assertThat(scores.isScoreEligible(Scores.SCORE_DEFAULT / 2), is(false));
+    }
+
+    @Test
     public void trackScoreQualified() {
         final int firstPosition = scores.trackScore("John Doe", Scores.SCORE_DEFAULT * 2);
         assertThat(firstPosition, is(not(equalTo(Scores.POSITION_REJECTED))));
