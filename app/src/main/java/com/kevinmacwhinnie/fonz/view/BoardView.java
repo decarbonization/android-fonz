@@ -34,7 +34,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.kevinmacwhinnie.fonz.R;
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
@@ -47,7 +46,6 @@ public class BoardView extends LinearLayout
         implements View.OnClickListener, CountUp.Listener {
     private final PieView[] pieViews;
     private final UpcomingPieceView upcomingPieceView;
-    private final TextView debugCountUpText;
 
     private Board board;
     private OnPieClickListener onPieClickListener;
@@ -87,12 +85,10 @@ public class BoardView extends LinearLayout
             pieView.setOnClickListener(this);
         }
 
-        // TODO: view specifically for upcoming pieces
         this.upcomingPieceView = (UpcomingPieceView) findViewById(R.id.view_game_board_upcoming_piece);
         upcomingPieceView.setOnClickListener(this);
         upcomingPieceView.setPieceDrawing(pieceDrawing);
 
-        this.debugCountUpText = (TextView) findViewById(R.id.game_board_debug_counter);
     }
 
     public void destroy() {
@@ -141,18 +137,16 @@ public class BoardView extends LinearLayout
 
     @Override
     public void onStarted() {
-        debugCountUpText.setText(Long.toString(1L, 10));
     }
 
     @Override
-    public void onTicked(long tick) {
+    public void onTicked(int tick) {
         Log.i(getClass().getSimpleName(), "BoardView#onTicked(" + tick + ")");
-        debugCountUpText.setText(Long.toString(tick + 1L, 10));
+        upcomingPieceView.setTick(tick);
     }
 
     @Override
     public void onCompleted() {
-        debugCountUpText.setText(R.string.data_placeholder);
     }
 
     //endregion

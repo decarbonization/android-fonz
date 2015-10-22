@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CountUp implements Handler.Callback {
-    public static final long DEFAULT_TICK_COUNT = 10;
+    public static final int NUMBER_TICKS = 10;
     public static final long DEFAULT_TICK_DURATION_MS = 1000L;
     public static final double DEFAULT_SCALE_FACTOR = 0.99;
 
@@ -45,9 +45,8 @@ public class CountUp implements Handler.Callback {
     private final Handler handler;
 
     private boolean running = false;
-    private long tickCount = DEFAULT_TICK_COUNT;
+    private int tickCurrent = 0;
     private long tickDuration = DEFAULT_TICK_DURATION_MS;
-    private long tickCurrent = 0L;
 
     public CountUp() {
         this.handler = new Handler(Looper.getMainLooper(), this);
@@ -87,18 +86,10 @@ public class CountUp implements Handler.Callback {
         return tickDuration;
     }
 
-    public void setTickCount(long tickCount) {
-        if (running) {
-            throw new IllegalStateException("Cannot adjust tick count on running timer.");
-        }
-
-        this.tickCount = tickCount;
-    }
-
     public void start() {
         this.running = true;
 
-        this.tickCurrent = 0L;
+        this.tickCurrent = 1;
 
         handler.removeMessages(MSG_TICK);
         handler.sendEmptyMessageDelayed(MSG_TICK, tickDuration);
@@ -125,20 +116,19 @@ public class CountUp implements Handler.Callback {
         handler.removeMessages(MSG_TICK);
 
         this.running = false;
-        this.tickCount = DEFAULT_TICK_COUNT;
         this.tickDuration = DEFAULT_TICK_DURATION_MS;
-        this.tickCurrent = 0L;
+        this.tickCurrent = 1;
     }
 
     @Override
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
             case MSG_TICK: {
-                for (final Listener listener : listeners) {
-                    listener.onTicked(tickCurrent);
-                }
+                if (++this.tickCurrent <= NUMBER_TICKS) {
+                    for (final Listener listener : listeners) {
+                        listener.onTicked(tickCurrent);
+                    }
 
-                if (++this.tickCurrent < tickCount) {
                     handler.sendEmptyMessageDelayed(MSG_TICK, tickDuration);
                 } else {
                     reset();
@@ -158,7 +148,7 @@ public class CountUp implements Handler.Callback {
 
     public interface Listener {
         void onStarted();
-        void onTicked(long number);
+        void onTicked(int tick);
         void onCompleted();
     }
 }

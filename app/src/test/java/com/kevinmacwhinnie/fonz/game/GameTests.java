@@ -100,7 +100,7 @@ public class GameTests extends FonzTestCase implements CountUp.Listener {
     }
 
     @Override
-    public void onTicked(long number) {
+    public void onTicked(int tick) {
     }
 
     @Override

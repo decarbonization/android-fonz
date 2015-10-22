@@ -47,7 +47,6 @@ public class CountUpTests extends FonzTestCase {
         final CountUp countUp = new CountUp();
         countUp.addListener(listener);
         countUp.setTickDuration(10L);
-        countUp.setTickCount(5);
 
         assertThat(countUp.isRunning(), is(false));
 
@@ -55,12 +54,12 @@ public class CountUpTests extends FonzTestCase {
         scheduler.pause();
         countUp.start();
 
-        scheduler.advanceBy(31L);
-        assertThat(listener.counter.get(), is(equalTo(4)));
+        scheduler.advanceBy(41L);
+        assertThat(listener.counter.get(), is(equalTo(5)));
         assertThat(listener.completed.get(), is(false));
 
-        scheduler.advanceBy(31L);
-        assertThat(listener.counter.get(), is(equalTo(6)));
+        scheduler.advanceBy(61L);
+        assertThat(listener.counter.get(), is(equalTo(10)));
         assertThat(listener.completed.get(), is(true));
     }
 
@@ -71,7 +70,6 @@ public class CountUpTests extends FonzTestCase {
         final CountUp countUp = new CountUp();
         countUp.addListener(listener);
         countUp.setTickDuration(10L);
-        countUp.setTickCount(5);
 
         assertThat(countUp.isRunning(), is(false));
 
@@ -79,20 +77,20 @@ public class CountUpTests extends FonzTestCase {
         scheduler.pause();
         countUp.start();
 
-        scheduler.advanceBy(31L);
-        assertThat(listener.counter.get(), is(equalTo(4)));
+        scheduler.advanceBy(41L);
+        assertThat(listener.counter.get(), is(equalTo(5)));
         assertThat(listener.completed.get(), is(false));
 
         countUp.pause();
         assertThat(countUp.isRunning(), is(true));
 
-        scheduler.advanceBy(31L);
-        assertThat(listener.counter.get(), is(equalTo(4)));
+        scheduler.advanceBy(61L);
+        assertThat(listener.counter.get(), is(equalTo(5)));
         assertThat(listener.completed.get(), is(false));
 
         countUp.resume();
-        scheduler.advanceBy(31L);
-        assertThat(listener.counter.get(), is(equalTo(6)));
+        scheduler.advanceBy(61L);
+        assertThat(listener.counter.get(), is(equalTo(10)));
         assertThat(listener.completed.get(), is(true));
     }
 
@@ -117,7 +115,7 @@ public class CountUpTests extends FonzTestCase {
         }
 
         @Override
-        public void onTicked(long number) {
+        public void onTicked(int tick) {
             counter.incrementAndGet();
         }
 

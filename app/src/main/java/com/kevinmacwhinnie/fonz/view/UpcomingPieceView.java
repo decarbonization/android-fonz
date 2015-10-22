@@ -28,9 +28,13 @@
 package com.kevinmacwhinnie.fonz.view;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -41,6 +45,9 @@ import com.kevinmacwhinnie.fonz.state.Pie;
 import com.kevinmacwhinnie.fonz.view.util.PieceDrawing;
 
 public class UpcomingPieceView extends View implements PieceDrawable.PieceProvider {
+    private final TimerDrawable timerDrawable;
+    private final int pieceInset;
+
     private PieceDrawable pieceDrawable;
     private @Nullable UpcomingPiece upcomingPiece;
 
@@ -58,7 +65,17 @@ public class UpcomingPieceView extends View implements PieceDrawable.PieceProvid
     public UpcomingPieceView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        setBackgroundResource(R.drawable.background_pie);
+        final Resources resources = getResources();
+
+        this.timerDrawable = new TimerDrawable(resources);
+        this.pieceInset = resources.getDimensionPixelSize(R.dimen.timer_stroke) / 2;
+
+        final Drawable pie = ResourcesCompat.getDrawable(resources, R.drawable.background_pie, null);
+        final Drawable[] layers = { timerDrawable, pie };
+        final LayerDrawable background = new LayerDrawable(layers);
+        background.setLayerInset(1, pieceInset, pieceInset, pieceInset, pieceInset);
+
+        setBackground(background);
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
         setAccessibilityLiveRegion(ACCESSIBILITY_LIVE_REGION_ASSERTIVE);
         setWillNotDraw(true);
@@ -73,7 +90,8 @@ public class UpcomingPieceView extends View implements PieceDrawable.PieceProvid
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
 
-        pieceDrawable.setBounds(0, 0, w, h);
+        pieceDrawable.setBounds(pieceInset, pieceInset,
+                                w - pieceInset, h - pieceInset);
     }
 
     @Override
@@ -101,6 +119,10 @@ public class UpcomingPieceView extends View implements PieceDrawable.PieceProvid
         this.upcomingPiece = upcomingPiece;
         invalidate();
         setWillNotDraw(pieceDrawable == null || upcomingPiece == null);
+    }
+
+    public void setTick(int tick) {
+        timerDrawable.setTick(tick);
     }
 
     @NonNull

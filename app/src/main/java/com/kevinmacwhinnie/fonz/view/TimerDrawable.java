@@ -27,56 +27,78 @@
 
 package com.kevinmacwhinnie.fonz.view;
 
+import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 
-import com.kevinmacwhinnie.fonz.data.Piece;
-import com.kevinmacwhinnie.fonz.state.Pie;
-import com.kevinmacwhinnie.fonz.view.util.PieceDrawing;
+import com.kevinmacwhinnie.fonz.R;
+import com.kevinmacwhinnie.fonz.game.CountUp;
+import com.kevinmacwhinnie.fonz.view.util.Drawing;
 
-public class PieceDrawable extends Drawable {
-    private final PieceProvider provider;
-    private final PieceDrawing pieceDrawing;
-    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+public class TimerDrawable extends Drawable {
+    private static final float DEGREES_PER_TICK = 360f / CountUp.NUMBER_TICKS;
 
-    public PieceDrawable(@NonNull PieceProvider provider,
-                         @NonNull PieceDrawing pieceDrawing) {
-        this.provider = provider;
-        this.pieceDrawing = pieceDrawing;
+    private final RectF drawingRect = new RectF();
+    private final Paint fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+    private final @ColorInt int colors[];
+    private final float inset;
+
+    private int tick = 0;
+
+    public TimerDrawable(@NonNull Resources resources) {
+        final int strokeSize = resources.getDimensionPixelSize(R.dimen.timer_stroke);
+        fillPaint.setStyle(Paint.Style.STROKE);
+        fillPaint.setColor(Color.RED);
+        fillPaint.setStrokeWidth(strokeSize);
+
+        this.colors = new int[] {
+                Drawing.getColor(resources, R.color.timer_early),
+                Drawing.getColor(resources, R.color.timer_first_mid),
+                Drawing.getColor(resources, R.color.timer_second_mid),
+                Drawing.getColor(resources, R.color.timer_third_mid),
+                Drawing.getColor(resources, R.color.timer_late),
+        };
+        this.inset = strokeSize / 2f;
     }
+
+    //region Drawing
 
     @Override
     public void draw(Canvas canvas) {
-        final int saveCount = canvas.save();
-        final Rect bounds = getBounds();
-        canvas.translate(bounds.left, bounds.top);
-
-        for (@Pie.Slot int slot = Pie.SLOT_TOP_LEFT; slot < Pie.NUMBER_SLOTS; slot++) {
-            final Piece piece = provider.getPiece(slot);
-            if (piece == Piece.EMPTY) {
-                continue;
-            }
-
-            pieceDrawing.draw(slot, piece, canvas, paint);
-        }
-        canvas.restoreToCount(saveCount);
+        canvas.drawArc(drawingRect, 180f,
+                       tick * DEGREES_PER_TICK,
+                       false, fillPaint);
     }
 
     @Override
+    protected void onBoundsChange(Rect bounds) {
+        drawingRect.set(bounds);
+        drawingRect.inset(inset, inset);
+    }
+
+    //endregion
+
+
+    //region Attributes
+
+    @Override
     public void setAlpha(int alpha) {
-        paint.setAlpha(alpha);
+        fillPaint.setAlpha(alpha);
         invalidateSelf();
     }
 
     @Override
     public void setColorFilter(ColorFilter colorFilter) {
-        paint.setColorFilter(colorFilter);
-        invalidateSelf();
+        fillPaint.setColorFilter(colorFilter);
     }
 
     @Override
@@ -84,8 +106,11 @@ public class PieceDrawable extends Drawable {
         return PixelFormat.TRANSLUCENT;
     }
 
-
-    public interface PieceProvider {
-        @NonNull Piece getPiece(@Pie.Slot int slot);
+    public void setTick(int tick) {
+        this.tick = tick;
+        fillPaint.setColor(colors[(tick - 1) / 2]);
+        invalidateSelf();
     }
+
+    //endregion
 }
