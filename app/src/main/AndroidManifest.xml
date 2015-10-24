@@ -10,7 +10,8 @@
         android:fullBackupContent="true"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Fonz">
+        android:theme="@style/Fonz"
+        android:name=".FonzApplication">
 
         <activity
             android:name=".MainActivity"
