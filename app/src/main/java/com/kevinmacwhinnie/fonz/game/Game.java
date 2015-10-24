@@ -41,7 +41,6 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
 
-// TODO: state saving
 public class Game {
     public static final String LOG_TAG = Game.class.getSimpleName();
 

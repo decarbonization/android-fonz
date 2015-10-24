@@ -39,7 +39,6 @@ import com.squareup.otto.Bus;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: persistent representation
 public class Scores {
     public static final int NUMBER_SCORES = 12;
     public static final int POSITION_REJECTED = -1;

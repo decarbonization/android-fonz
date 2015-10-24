@@ -73,7 +73,6 @@ public class ScoresActivity extends AppCompatActivity {
             showNewScoreDialog();
         }
 
-        // TODO: make this less ghetto
         this.scores = new Scores(this, new Bus());
         scores.initialize(false);
 
