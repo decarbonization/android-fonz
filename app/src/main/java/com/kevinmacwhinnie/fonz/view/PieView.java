@@ -69,6 +69,7 @@ public class PieView extends View implements PieceDrawable.PieceProvider {
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
         setAccessibilityLiveRegion(ACCESSIBILITY_LIVE_REGION_ASSERTIVE);
         setWillNotDraw(true);
+        setSoundEffectsEnabled(false);
     }
 
     //endregion
