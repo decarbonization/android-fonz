@@ -34,23 +34,24 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
 
 import com.kevinmacwhinnie.fonz.data.Scores;
+import com.kevinmacwhinnie.fonz.graph.GraphActivity;
 import com.kevinmacwhinnie.fonz.view.ScoresAdapter;
-import com.squareup.otto.Bus;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ScoresActivity extends AppCompatActivity {
+public class ScoresActivity extends GraphActivity {
     public static final String EXTRA_SCORE = ScoresActivity.class.getName() + ".EXTRA_SCORE";
 
-    private Scores scores;
+    @Inject Scores scores;
 
     @Bind(R.id.activity_scores_recycler) RecyclerView recyclerView;
 
@@ -73,7 +74,6 @@ public class ScoresActivity extends AppCompatActivity {
             showNewScoreDialog();
         }
 
-        this.scores = new Scores(this, new Bus());
         scores.initialize(false);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

@@ -29,9 +29,7 @@ package com.kevinmacwhinnie.fonz;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 
@@ -39,6 +37,7 @@ import com.kevinmacwhinnie.fonz.data.Preferences;
 import com.kevinmacwhinnie.fonz.game.CountUp;
 import com.kevinmacwhinnie.fonz.game.Game;
 import com.kevinmacwhinnie.fonz.game.Sounds;
+import com.kevinmacwhinnie.fonz.graph.GraphActivity;
 import com.kevinmacwhinnie.fonz.state.Life;
 import com.kevinmacwhinnie.fonz.state.Pie;
 import com.kevinmacwhinnie.fonz.state.Score;
@@ -46,15 +45,17 @@ import com.kevinmacwhinnie.fonz.view.BoardView;
 import com.kevinmacwhinnie.fonz.view.StatsView;
 import com.squareup.otto.Subscribe;
 
+import javax.inject.Inject;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends GraphActivity
         implements BoardView.OnPieClickListener {
-    private Game game = new Game();
-    private Sounds sounds;
-    private SharedPreferences preferences;
+    @Inject Game game;
+    @Inject Sounds sounds;
+    @Inject SharedPreferences preferences;
 
     @Bind(R.id.activity_main_stats) StatsView statsView;
     @Bind(R.id.activity_main_board) BoardView boardView;
@@ -68,9 +69,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-        this.sounds = new Sounds(this);
-        this.preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         statsView.setLife(game.life.getValue());
         statsView.setScore(game.score.getValue());

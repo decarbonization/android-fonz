@@ -25,30 +25,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.kevinmacwhinnie.fonz;
+package com.kevinmacwhinnie.fonz.graph;
 
-import android.app.Application;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.kevinmacwhinnie.fonz.graph.AppModule;
-import com.kevinmacwhinnie.fonz.graph.GameModule;
-import com.kevinmacwhinnie.fonz.graph.Injector;
+import com.kevinmacwhinnie.fonz.MainActivity;
+import com.kevinmacwhinnie.fonz.ScoresActivity;
+import com.kevinmacwhinnie.fonz.data.Scores;
+import com.kevinmacwhinnie.fonz.game.Game;
+import com.kevinmacwhinnie.fonz.game.Sounds;
+import com.squareup.otto.Bus;
+import com.squareup.otto.ThreadEnforcer;
 
-import dagger.ObjectGraph;
+import javax.inject.Singleton;
 
-public class FonzApplication extends Application implements Injector {
-    private ObjectGraph objectGraph;
+import dagger.Module;
+import dagger.Provides;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+@Module(complete = false,
+        injects = {
+        MainActivity.class,
+        ScoresActivity.class,
+})
+public class GameModule {
+    private final Context context;
 
-        this.objectGraph = ObjectGraph.create(new AppModule(this),
-                                              new GameModule(this));
+    public GameModule(@NonNull Context context) {
+        this.context = context;
     }
 
-    @Override
-    public <T> void inject(@NonNull T target) {
-        objectGraph.inject(target);
+    @Singleton @Provides Bus provideBus() {
+        return new Bus(ThreadEnforcer.MAIN, "Fonz Bus");
+    }
+
+    @Singleton @Provides Game provideGame(@NonNull Bus bus) {
+        return new Game(bus);
+    }
+
+    @Singleton @Provides Scores provideScores(@NonNull Bus bus) {
+        return new Scores(context, bus);
+    }
+
+    @Singleton @Provides Sounds provideSounds() {
+        return new Sounds(context);
     }
 }

@@ -35,6 +35,7 @@ import com.kevinmacwhinnie.fonz.events.BaseEvent;
 import com.kevinmacwhinnie.fonz.state.Life;
 import com.kevinmacwhinnie.fonz.state.Pie;
 import com.kevinmacwhinnie.fonz.state.Score;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import org.junit.After;
@@ -54,13 +55,14 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 public class GameTests extends FonzTestCase {
+    private final Bus bus = new Bus();
     private final List<BaseEvent> events = new ArrayList<>();
     private boolean countUpStarted = false;
     private Game game;
 
     @Before
     public void setUp() {
-        this.game = new Game();
+        this.game = new Game(bus);
         game.bus.register(this);
     }
 

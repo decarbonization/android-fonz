@@ -25,30 +25,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.kevinmacwhinnie.fonz;
+package com.kevinmacwhinnie.fonz.graph;
 
-import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
-import com.kevinmacwhinnie.fonz.graph.AppModule;
-import com.kevinmacwhinnie.fonz.graph.GameModule;
-import com.kevinmacwhinnie.fonz.graph.Injector;
+import com.kevinmacwhinnie.fonz.MainActivity;
 
-import dagger.ObjectGraph;
+import dagger.Module;
+import dagger.Provides;
 
-public class FonzApplication extends Application implements Injector {
-    private ObjectGraph objectGraph;
+@Module(complete = false,
+        injects = {
+        MainActivity.class,
+})
+public class AppModule {
+    private final Context context;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        this.objectGraph = ObjectGraph.create(new AppModule(this),
-                                              new GameModule(this));
+    public AppModule(@NonNull Context context) {
+        this.context = context;
     }
 
-    @Override
-    public <T> void inject(@NonNull T target) {
-        objectGraph.inject(target);
+    @Provides SharedPreferences providePreferences() {
+        return PreferenceManager.getDefaultSharedPreferences(context);
     }
 }

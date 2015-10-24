@@ -30,25 +30,13 @@ package com.kevinmacwhinnie.fonz;
 import android.app.Application;
 import android.support.annotation.NonNull;
 
-import com.kevinmacwhinnie.fonz.graph.AppModule;
-import com.kevinmacwhinnie.fonz.graph.GameModule;
 import com.kevinmacwhinnie.fonz.graph.Injector;
 
-import dagger.ObjectGraph;
-
-public class FonzApplication extends Application implements Injector {
-    private ObjectGraph objectGraph;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        this.objectGraph = ObjectGraph.create(new AppModule(this),
-                                              new GameModule(this));
-    }
-
+public class FonzTestApplication extends Application implements Injector {
     @Override
     public <T> void inject(@NonNull T target) {
-        objectGraph.inject(target);
+        // Provided as a stub until there's a need to test something
+        // depending on the application being the object graph root.
+        throw new IllegalStateException("FonzTestApplication#inject(T) currently unimplemented");
     }
 }

@@ -39,16 +39,15 @@ import com.kevinmacwhinnie.fonz.state.Pie;
 import com.kevinmacwhinnie.fonz.state.Score;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
-import com.squareup.otto.ThreadEnforcer;
 
 public class Game {
     public static final String LOG_TAG = Game.class.getSimpleName();
 
-    public final Bus bus = new Bus(ThreadEnforcer.MAIN, "Game#bus");
-    public final CountUp countUp = new CountUp(bus);
-    public final Life life = new Life(bus);
-    public final Score score = new Score(bus);
-    public final Board board = new Board(bus);
+    public final Bus bus;
+    public final CountUp countUp;
+    public final Life life;
+    public final Score score;
+    public final Board board;
 
     private final PieceFactory pieceFactory = new PieceFactory();
     private boolean inProgress = false;
@@ -56,6 +55,14 @@ public class Game {
 
 
     //region Lifecycle
+
+    public Game(@NonNull Bus bus) {
+        this.bus = bus;
+        this.countUp = new CountUp(bus);
+        this.life = new Life(bus);
+        this.score = new Score(bus);
+        this.board = new Board(bus);
+    }
 
     public void destroy() {
         reset();

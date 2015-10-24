@@ -25,30 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.kevinmacwhinnie.fonz;
+package com.kevinmacwhinnie.fonz.graph;
 
-import android.app.Application;
 import android.support.annotation.NonNull;
 
-import com.kevinmacwhinnie.fonz.graph.AppModule;
-import com.kevinmacwhinnie.fonz.graph.GameModule;
-import com.kevinmacwhinnie.fonz.graph.Injector;
+import com.kevinmacwhinnie.fonz.FonzApplication;
 
-import dagger.ObjectGraph;
-
-public class FonzApplication extends Application implements Injector {
-    private ObjectGraph objectGraph;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        this.objectGraph = ObjectGraph.create(new AppModule(this),
-                                              new GameModule(this));
-    }
-
-    @Override
-    public <T> void inject(@NonNull T target) {
-        objectGraph.inject(target);
-    }
+/**
+ * Provides a level of introduction to allow {@link FonzApplication}
+ * to be replaced during testing with another injector.
+ */
+public interface Injector {
+    <T> void inject(@NonNull T target);
 }
