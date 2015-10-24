@@ -53,7 +53,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-public class GameTests extends FonzTestCase implements CountUp.Listener {
+public class GameTests extends FonzTestCase {
     private final List<BaseEvent> events = new ArrayList<>();
     private boolean countUpStarted = false;
     private Game game;
@@ -61,7 +61,6 @@ public class GameTests extends FonzTestCase implements CountUp.Listener {
     @Before
     public void setUp() {
         this.game = new Game();
-        game.countUp.addListener(this);
         game.bus.register(this);
     }
 
@@ -86,25 +85,18 @@ public class GameTests extends FonzTestCase implements CountUp.Listener {
         events.add(event);
     }
 
+    @Subscribe public void onCountUpTick(@NonNull CountUp.Ticked tick) {
+        if (tick.getValue() == 1) {
+            this.countUpStarted = true;
+        }
+    }
+
     @Subscribe public void onNewGame(@NonNull Game.NewGame event) {
         events.add(event);
     }
 
     @Subscribe public void onGameOver(@NonNull Game.GameOver event) {
         events.add(event);
-    }
-
-    @Override
-    public void onStarted() {
-        this.countUpStarted = true;
-    }
-
-    @Override
-    public void onTicked(int tick) {
-    }
-
-    @Override
-    public void onCompleted() {
     }
 
 

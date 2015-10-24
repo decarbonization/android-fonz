@@ -26,26 +26,52 @@
  */
 package com.kevinmacwhinnie.fonz.game;
 
-import com.kevinmacwhinnie.fonz.FonzTestCase;
+import android.support.annotation.NonNull;
 
+import com.kevinmacwhinnie.fonz.FonzTestCase;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.robolectric.Robolectric;
 import org.robolectric.util.Scheduler;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class CountUpTests extends FonzTestCase {
+    private final Bus bus = new Bus();
+    private int counter = 0;
+    private boolean completed = false;
+
+    @Before
+    public void setUp() {
+        bus.register(this);
+    }
+
+    @After
+    public void tearDown() {
+        bus.unregister(this);
+
+        this.counter = 0;
+        this.completed = false;
+    }
+
+    @Subscribe public void onCountUpTick(@NonNull CountUp.Ticked tick) {
+        this.counter++;
+    }
+
+    @Subscribe public void onCountUpCompleted(@NonNull CountUp.Completed ignored) {
+        this.completed = true;
+    }
+
+
     @Test
     public void basicCountDown() {
-        final CountingListener listener = new CountingListener();
-
-        final CountUp countUp = new CountUp();
-        countUp.addListener(listener);
+        final CountUp countUp = new CountUp(bus);
         countUp.setTickDuration(10L);
 
         assertThat(countUp.isRunning(), is(false));
@@ -55,20 +81,17 @@ public class CountUpTests extends FonzTestCase {
         countUp.start();
 
         scheduler.advanceBy(41L);
-        assertThat(listener.counter.get(), is(equalTo(5)));
-        assertThat(listener.completed.get(), is(false));
+        assertThat(counter, is(equalTo(5)));
+        assertThat(completed, is(false));
 
         scheduler.advanceBy(61L);
-        assertThat(listener.counter.get(), is(equalTo(10)));
-        assertThat(listener.completed.get(), is(true));
+        assertThat(counter, is(equalTo(10)));
+        assertThat(completed, is(true));
     }
 
     @Test
     public void pause() {
-        final CountingListener listener = new CountingListener();
-
-        final CountUp countUp = new CountUp();
-        countUp.addListener(listener);
+        final CountUp countUp = new CountUp(bus);
         countUp.setTickDuration(10L);
 
         assertThat(countUp.isRunning(), is(false));
@@ -78,50 +101,28 @@ public class CountUpTests extends FonzTestCase {
         countUp.start();
 
         scheduler.advanceBy(41L);
-        assertThat(listener.counter.get(), is(equalTo(5)));
-        assertThat(listener.completed.get(), is(false));
+        assertThat(counter, is(equalTo(5)));
+        assertThat(completed, is(false));
 
         countUp.pause();
         assertThat(countUp.isRunning(), is(true));
 
         scheduler.advanceBy(61L);
-        assertThat(listener.counter.get(), is(equalTo(5)));
-        assertThat(listener.completed.get(), is(false));
+        assertThat(counter, is(equalTo(5)));
+        assertThat(completed, is(false));
 
         countUp.resume();
         scheduler.advanceBy(61L);
-        assertThat(listener.counter.get(), is(equalTo(10)));
-        assertThat(listener.completed.get(), is(true));
+        assertThat(counter, is(equalTo(10)));
+        assertThat(completed, is(true));
     }
 
     @Test
     public void scaleTickDuration() {
-        final CountUp countUp = new CountUp();
+        final CountUp countUp = new CountUp(bus);
         countUp.setTickDuration(10L);
         countUp.scaleTickDuration(0.5);
 
         assertThat(countUp.getTickDuration(), is(equalTo(5L)));
-    }
-
-
-    static class CountingListener implements CountUp.Listener {
-        final AtomicBoolean started = new AtomicBoolean(false);
-        final AtomicInteger counter = new AtomicInteger(0);
-        final AtomicBoolean completed = new AtomicBoolean(false);
-
-        @Override
-        public void onStarted() {
-            started.set(true);
-        }
-
-        @Override
-        public void onTicked(int tick) {
-            counter.incrementAndGet();
-        }
-
-        @Override
-        public void onCompleted() {
-            completed.set(true);
-        }
     }
 }

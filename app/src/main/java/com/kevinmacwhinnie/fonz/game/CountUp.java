@@ -31,8 +31,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.kevinmacwhinnie.fonz.events.BaseEvent;
+import com.squareup.otto.Bus;
 
 public class CountUp implements Handler.Callback {
     public static final int NUMBER_TICKS = 10;
@@ -41,27 +41,16 @@ public class CountUp implements Handler.Callback {
 
     private static final int MSG_TICK = 0;
 
-    private final List<Listener> listeners = new ArrayList<>();
+    private final Bus bus;
     private final Handler handler;
 
     private boolean running = false;
     private int tickCurrent = 0;
     private long tickDuration = DEFAULT_TICK_DURATION_MS;
 
-    public CountUp() {
+    public CountUp(@NonNull Bus bus) {
+        this.bus = bus;
         this.handler = new Handler(Looper.getMainLooper(), this);
-    }
-
-    public void addListener(@NonNull Listener listener) {
-        listeners.add(listener);
-    }
-
-    public void removeListener(@NonNull Listener listener) {
-        listeners.remove(listener);
-    }
-
-    public void clearListeners() {
-        listeners.clear();
     }
 
     public void setTickDuration(long tickDuration) {
@@ -94,10 +83,7 @@ public class CountUp implements Handler.Callback {
         handler.removeMessages(MSG_TICK);
         handler.sendEmptyMessageDelayed(MSG_TICK, tickDuration);
 
-        for (final Listener listener : listeners) {
-            listener.onStarted();
-            listener.onTicked(tickCurrent);
-        }
+        bus.post(Ticked.acquire(tickCurrent));
     }
 
     public void resume() {
@@ -125,17 +111,11 @@ public class CountUp implements Handler.Callback {
         switch (msg.what) {
             case MSG_TICK: {
                 if (++this.tickCurrent <= NUMBER_TICKS) {
-                    for (final Listener listener : listeners) {
-                        listener.onTicked(tickCurrent);
-                    }
-
+                    bus.post(Ticked.acquire(tickCurrent));
                     handler.sendEmptyMessageDelayed(MSG_TICK, tickDuration);
                 } else {
                     reset();
-
-                    for (final Listener listener : listeners) {
-                        listener.onCompleted();
-                    }
+                    bus.post(Completed.INSTANCE);
                 }
                 return true;
             }
@@ -146,9 +126,24 @@ public class CountUp implements Handler.Callback {
     }
 
 
-    public interface Listener {
-        void onStarted();
-        void onTicked(int tick);
-        void onCompleted();
+    public static class Ticked extends BaseEvent {
+        private static final Ticked INSTANCE = new Ticked();
+        private int value = 0;
+
+        public static Ticked acquire(int value) {
+            INSTANCE.value = value;
+            return INSTANCE;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        private Ticked() {
+        }
+    }
+
+    public static class Completed extends BaseEvent {
+        public static final Completed INSTANCE = new Completed();
     }
 }

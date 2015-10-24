@@ -36,6 +36,7 @@ import android.util.Log;
 import android.widget.Button;
 
 import com.kevinmacwhinnie.fonz.data.Preferences;
+import com.kevinmacwhinnie.fonz.game.CountUp;
 import com.kevinmacwhinnie.fonz.game.Game;
 import com.kevinmacwhinnie.fonz.game.Sounds;
 import com.kevinmacwhinnie.fonz.state.Life;
@@ -79,14 +80,12 @@ public class MainActivity extends AppCompatActivity
         boardView.setOnPieClickListener(this);
 
         game.bus.register(this);
-        game.countUp.addListener(boardView);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        game.countUp.removeListener(boardView);
         boardView.destroy();
 
         game.bus.unregister(this);
@@ -112,13 +111,19 @@ public class MainActivity extends AppCompatActivity
         boardView.setUpcomingPiece(game.getUpcomingPiece());
     }
 
+    @Subscribe public void onCountUpTicked(@NonNull CountUp.Ticked tick) {
+        boardView.setTick(tick.getValue());
+    }
+
     @Subscribe public void onNewGame(@NonNull Game.NewGame ignored) {
         gameToggle.setText(R.string.action_end_game);
+        boardView.setTick(1);
     }
 
     @Subscribe public void onGameOver(@NonNull Game.GameOver event) {
         gameToggle.setText(R.string.action_new_game);
         boardView.setUpcomingPiece(null);
+        boardView.setTick(0);
 
         if (event.how == Game.GameOver.How.GAME_LOGIC) {
             final Intent scoresActivity = new Intent(this, ScoresActivity.class);

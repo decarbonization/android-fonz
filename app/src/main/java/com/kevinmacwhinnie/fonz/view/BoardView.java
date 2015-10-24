@@ -30,20 +30,18 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.kevinmacwhinnie.fonz.R;
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
-import com.kevinmacwhinnie.fonz.game.CountUp;
 import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Pie;
 import com.kevinmacwhinnie.fonz.view.util.PieceDrawing;
 
 public class BoardView extends LinearLayout
-        implements View.OnClickListener, CountUp.Listener {
+        implements View.OnClickListener {
     private final PieView[] pieViews;
     private final UpcomingPieceView upcomingPieceView;
 
@@ -118,6 +116,10 @@ public class BoardView extends LinearLayout
         this.onPieClickListener = onPieClickListener;
     }
 
+    public void setTick(int tick) {
+        upcomingPieceView.setTick(tick);
+    }
+
     //endregion
 
 
@@ -133,20 +135,6 @@ public class BoardView extends LinearLayout
                 onPieClickListener.onPieClicked(board.getPie(slot));
             }
         }
-    }
-
-    @Override
-    public void onStarted() {
-    }
-
-    @Override
-    public void onTicked(int tick) {
-        Log.i(getClass().getSimpleName(), "BoardView#onTicked(" + tick + ")");
-        upcomingPieceView.setTick(tick);
-    }
-
-    @Override
-    public void onCompleted() {
     }
 
     //endregion

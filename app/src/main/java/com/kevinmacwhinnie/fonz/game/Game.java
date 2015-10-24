@@ -38,14 +38,15 @@ import com.kevinmacwhinnie.fonz.state.Life;
 import com.kevinmacwhinnie.fonz.state.Pie;
 import com.kevinmacwhinnie.fonz.state.Score;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
 
 // TODO: state saving
-public class Game implements CountUp.Listener {
+public class Game {
     public static final String LOG_TAG = Game.class.getSimpleName();
 
     public final Bus bus = new Bus(ThreadEnforcer.MAIN, "Game#bus");
-    public final CountUp countUp = new CountUp();
+    public final CountUp countUp = new CountUp(bus);
     public final Life life = new Life(bus);
     public final Score score = new Score(bus);
     public final Board board = new Board(bus);
@@ -57,13 +58,8 @@ public class Game implements CountUp.Listener {
 
     //region Lifecycle
 
-    public Game() {
-        countUp.addListener(this);
-    }
-
     public void destroy() {
         reset();
-        countUp.clearListeners();
     }
 
     //endregion
@@ -176,18 +172,7 @@ public class Game implements CountUp.Listener {
 
     //region Timer
 
-    @Override
-    public void onStarted() {
-        // Don't care
-    }
-
-    @Override
-    public void onTicked(int tick) {
-        // Don't care
-    }
-
-    @Override
-    public void onCompleted() {
+    @Subscribe public void onCountUpCompleted(@NonNull CountUp.Completed ignored) {
         skipPiece();
     }
 
