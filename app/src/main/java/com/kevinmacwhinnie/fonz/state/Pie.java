@@ -84,7 +84,12 @@ public class Pie {
         }
     }
 
-    public boolean tryPlacePiece(int slot, @NonNull Piece piece) {
+    public boolean canPlacePiece(@Pie.Slot int slot, @NonNull Piece piece) {
+        return (occupiedSlots < NUMBER_SLOTS &&
+                slots[slot] == Piece.EMPTY);
+    }
+
+    public boolean tryPlacePiece(@Pie.Slot int slot, @NonNull Piece piece) {
         if (occupiedSlots == NUMBER_SLOTS) {
             return false;
         }

@@ -129,6 +129,10 @@ public class Game {
         }
     }
 
+    public boolean canPlaceCurrentPiece(@NonNull Pie pie) {
+        return (inProgress && pie.canPlacePiece(upcomingPiece.slot, upcomingPiece.piece));
+    }
+
     public boolean tryPlaceCurrentPiece(@NonNull Pie pie) {
         if (inProgress && pie.tryPlacePiece(upcomingPiece.slot, upcomingPiece.piece)) {
             if (pie.isFull()) {

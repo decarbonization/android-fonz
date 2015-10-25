@@ -30,7 +30,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.Button;
 
 import com.kevinmacwhinnie.fonz.data.Preferences;
@@ -50,6 +49,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import is.hello.go99.animators.OnAnimationCompleted;
 
 public class MainActivity extends GraphActivity
         implements BoardView.OnPieClickListener {
@@ -141,10 +141,19 @@ public class MainActivity extends GraphActivity
     }
 
     @Override
-    public void onPieClicked(@NonNull Pie pie) {
-        if (!game.tryPlaceCurrentPiece(pie)) {
-            Log.e(getClass().getSimpleName(), "Can't put a piece there!");
+    public void onPieClicked(final int pieSlot, @NonNull final Pie pie) {
+        if (!game.canPlaceCurrentPiece(pie)) {
             sounds.playForbiddenPlacement();
+        } else {
+            game.countUp.pause();
+            boardView.animateCurrentPieceIntoPie(pieSlot, new OnAnimationCompleted() {
+                @Override
+                public void onAnimationCompleted(boolean finished) {
+                    if (!game.tryPlaceCurrentPiece(pie)) {
+                        sounds.playForbiddenPlacement();
+                    }
+                }
+            });
         }
     }
 

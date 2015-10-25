@@ -40,6 +40,8 @@ import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Pie;
 import com.kevinmacwhinnie.fonz.view.util.PieceDrawing;
 
+import is.hello.go99.animators.OnAnimationCompleted;
+
 public class BoardView extends LinearLayout
         implements View.OnClickListener {
     private final PieView[] pieViews;
@@ -123,6 +125,16 @@ public class BoardView extends LinearLayout
     //endregion
 
 
+    //region Animations
+
+    public void animateCurrentPieceIntoPie(final int pieSlot,
+                                           @NonNull final OnAnimationCompleted onAnimationCompleted) {
+        onAnimationCompleted.onAnimationCompleted(true);
+    }
+
+    //endregion
+
+
     //region Events
 
     @Override
@@ -132,7 +144,7 @@ public class BoardView extends LinearLayout
                 onPieClickListener.onUpcomingPieClicked();
             } else {
                 final int slot = (int) pieView.getTag(R.id.view_board_pie_slot_tag);
-                onPieClickListener.onPieClicked(board.getPie(slot));
+                onPieClickListener.onPieClicked(slot, board.getPie(slot));
             }
         }
     }
@@ -142,6 +154,6 @@ public class BoardView extends LinearLayout
 
     public interface OnPieClickListener {
         void onUpcomingPieClicked();
-        void onPieClicked(@NonNull Pie pie);
+        void onPieClicked(int pieSlot, @NonNull Pie pie);
     }
 }

@@ -75,6 +75,19 @@ public class PieTests extends FonzTestCase {
     }
 
     @Test
+    public void canPlacePiece() {
+        final Pie pie = new Pie(bus);
+
+        assertThat(pie.canPlacePiece(Pie.SLOT_TOP_LEFT, Piece.GREEN), is(true));
+        assertThat(pie.tryPlacePiece(Pie.SLOT_TOP_LEFT, Piece.GREEN), is(true));
+        assertThat(pie.canPlacePiece(Pie.SLOT_TOP_LEFT, Piece.PURPLE), is(false));
+
+        assertThat(pie.canPlacePiece(Pie.SLOT_TOP_RIGHT, Piece.ORANGE), is(true));
+        assertThat(pie.tryPlacePiece(Pie.SLOT_TOP_RIGHT, Piece.ORANGE), is(true));
+        assertThat(pie.canPlacePiece(Pie.SLOT_TOP_RIGHT, Piece.GREEN), is(false));
+    }
+
+    @Test
     public void tryPlacePiece() {
         final Pie pie = new Pie(bus);
 
@@ -93,11 +106,11 @@ public class PieTests extends FonzTestCase {
 
         assertThat(pie.isFull(), is(false));
 
-        pie.tryPlacePiece(0, Piece.ORANGE);
+        pie.tryPlacePiece(Pie.SLOT_TOP_LEFT, Piece.ORANGE);
         assertThat(pie.isFull(), is(false));
 
-        for (int i = 0; i < Pie.NUMBER_SLOTS; i++) {
-            pie.tryPlacePiece(i, Piece.ORANGE);
+        for (@Pie.Slot int slot = Pie.SLOT_TOP_LEFT; slot < Pie.NUMBER_SLOTS; slot++) {
+            pie.tryPlacePiece(slot, Piece.ORANGE);
         }
 
         assertThat(pie.isFull(), is(true));
@@ -109,8 +122,8 @@ public class PieTests extends FonzTestCase {
 
         assertThat(pie.isFull(), is(false));
 
-        for (int i = 0; i < Pie.NUMBER_SLOTS; i++) {
-            pie.tryPlacePiece(i, Piece.ORANGE);
+        for (@Pie.Slot int slot = Pie.SLOT_TOP_LEFT; slot < Pie.NUMBER_SLOTS; slot++) {
+            pie.tryPlacePiece(slot, Piece.ORANGE);
         }
 
         assertThat(pie.isFull(), is(true));
