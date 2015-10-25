@@ -26,18 +26,51 @@
  */
 package com.kevinmacwhinnie.fonz.state;
 
-import com.kevinmacwhinnie.fonz.data.Piece;
+import android.support.annotation.NonNull;
 
+import com.kevinmacwhinnie.fonz.FonzTestCase;
+import com.kevinmacwhinnie.fonz.data.Piece;
+import com.kevinmacwhinnie.fonz.data.PowerUp;
+import com.kevinmacwhinnie.fonz.events.BaseEvent;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class BoardTests {
+public class BoardTests extends FonzTestCase {
+    private final Bus bus = new Bus();
+    private final List<BaseEvent> events = new ArrayList<>();
+
+    private Board board;
+
+    @Before
+    public void setUp() {
+        this.board = new Board(bus);
+        bus.register(this);
+    }
+
+    @After
+    public void tearDown() {
+        bus.unregister(this);
+        events.clear();
+    }
+
+    @Subscribe public void onPowerUpChanged(@NonNull Board.PowerUpChanged change) {
+        events.add(change);
+    }
+
+
     @Test
     public void reset() {
-        final Board board = new Board(null);
         for (int i = 0; i < Board.NUMBER_PIES; i++) {
             board.getPie(i).tryPlacePiece(Pie.SLOT_TOP_LEFT, Piece.GREEN);
         }
@@ -47,5 +80,29 @@ public class BoardTests {
         for (int i = 0; i < Board.NUMBER_PIES; i++) {
             assertThat(board.getPie(i).getPiece(Pie.SLOT_TOP_LEFT), is(equalTo(Piece.EMPTY)));
         }
+    }
+
+    @Test
+    public void addAvailablePowerUp() {
+        assertThat(board.addPowerUp(PowerUp.CLEAR_ALL), is(true));
+        assertThat(events.size(), is(equalTo(1)));
+        assertThat(board.hasPowerUp(PowerUp.CLEAR_ALL), is(true));
+
+        assertThat(board.addPowerUp(PowerUp.CLEAR_ALL), is(false));
+        assertThat(events.size(), is(equalTo(1)));
+    }
+
+    @Test
+    public void usePowerUp() {
+        assertThat(board.addPowerUp(PowerUp.CLEAR_ALL), is(true));
+        assertThat(board.hasPowerUp(PowerUp.CLEAR_ALL), is(true));
+        assertThat(events.size(), is(equalTo(1)));
+
+        assertThat(board.usePowerUp(PowerUp.CLEAR_ALL), is(true));
+        assertThat(board.hasPowerUp(PowerUp.CLEAR_ALL), is(false));
+        assertThat(events.size(), is(equalTo(2)));
+
+        assertThat(board.usePowerUp(PowerUp.CLEAR_ALL), is(false));
+        assertThat(events.size(), is(equalTo(2)));
     }
 }

@@ -26,22 +26,27 @@
  */
 package com.kevinmacwhinnie.fonz.state;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
+import com.kevinmacwhinnie.fonz.data.PowerUp;
+import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
 import com.squareup.otto.Bus;
+
+import java.util.EnumSet;
 
 public class Board {
     public static final int NUMBER_PIES = 6;
 
-    public final @Nullable Bus bus;
+    public final Bus bus;
 
     private final Pie[] pies;
+    private final EnumSet<PowerUp> powerUps = EnumSet.noneOf(PowerUp.class);
 
-    public Board(@Nullable Bus bus) {
+    public Board(@NonNull Bus bus) {
         this.bus = bus;
         this.pies = new Pie[NUMBER_PIES];
-        for (int i = 0; i < NUMBER_PIES; i++) {
-            this.pies[i] = new Pie(bus);
+        for (int slot = 0; slot < NUMBER_PIES; slot++) {
+            this.pies[slot] = new Pie(bus);
         }
     }
 
@@ -49,9 +54,40 @@ public class Board {
         return pies[slot];
     }
 
+    public boolean addPowerUp(@NonNull PowerUp powerUp) {
+        if (powerUps.add(powerUp)) {
+            bus.post(new PowerUpChanged(powerUp));
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean usePowerUp(@NonNull PowerUp powerUp) {
+        if (powerUps.remove(powerUp)) {
+            bus.post(new PowerUpChanged(powerUp));
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean hasPowerUp(@NonNull PowerUp powerUp) {
+        return powerUps.contains(powerUp);
+    }
+
     public void reset() {
         for (int i = 0; i < NUMBER_PIES; i++) {
             pies[i].reset();
+        }
+    }
+
+
+    public static class PowerUpChanged extends ValueBaseEvent<PowerUp> {
+        public PowerUpChanged(@NonNull PowerUp value) {
+            super(value);
         }
     }
 }
