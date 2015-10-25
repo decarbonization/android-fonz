@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="view_board_pie_slot_tag" type="id" />
+    <item name="view_board_power_up_tag" type="id" />
 </resources>

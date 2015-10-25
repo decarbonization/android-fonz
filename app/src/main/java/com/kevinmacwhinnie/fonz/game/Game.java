@@ -186,6 +186,26 @@ public class Game {
     //endregion
 
 
+    //region Power Ups
+
+    public boolean clearAll() {
+        Log.d(LOG_TAG, "clearAll()");
+
+        if (inProgress && board.usePowerUp(PowerUp.CLEAR_ALL)) {
+            for (int i = 0; i < Board.NUMBER_PIES; i++) {
+                board.getPie(i).reset();
+            }
+            doNewCountUp();
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //endregion
+
+
     //region Timer
 
     @Subscribe public void onCountUpCompleted(@NonNull CountUp.Completed ignored) {

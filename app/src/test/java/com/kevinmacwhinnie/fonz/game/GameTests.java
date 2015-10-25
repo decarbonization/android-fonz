@@ -33,6 +33,7 @@ import com.kevinmacwhinnie.fonz.data.Piece;
 import com.kevinmacwhinnie.fonz.data.PowerUp;
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
 import com.kevinmacwhinnie.fonz.events.BaseEvent;
+import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Life;
 import com.kevinmacwhinnie.fonz.state.Pie;
 import com.kevinmacwhinnie.fonz.state.Score;
@@ -225,5 +226,25 @@ public class GameTests extends FonzTestCase {
         assertThat(game.getUpcomingPiece(), is(nullValue()));
 
         assertThat(events, hasItem(new Game.GameOver(Game.GameOver.How.GAME_LOGIC, 0)));
+    }
+
+
+    @Test
+    public void clearAll() {
+        game.newGame();
+
+        for (int i = 0; i < Board.NUMBER_PIES; i++) {
+            game.board.getPie(i).tryPlacePiece(Pie.SLOT_TOP_LEFT, Piece.PURPLE);
+        }
+
+        assertThat(game.clearAll(), is(false));
+
+        game.board.addPowerUp(PowerUp.CLEAR_ALL);
+
+        assertThat(game.clearAll(), is(true));
+        assertThat(game.board.hasPowerUp(PowerUp.CLEAR_ALL), is(false));
+        for (int i = 0; i < Board.NUMBER_PIES; i++) {
+            assertThat(game.board.getPie(i).getOccupiedSlotCount(), is(equalTo(0)));
+        }
     }
 }

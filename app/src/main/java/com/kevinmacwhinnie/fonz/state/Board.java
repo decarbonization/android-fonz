@@ -33,6 +33,7 @@ import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
 import com.squareup.otto.Bus;
 
 import java.util.EnumSet;
+import java.util.Iterator;
 
 public class Board {
     public static final int NUMBER_PIES = 6;
@@ -95,7 +96,13 @@ public class Board {
         for (int i = 0; i < NUMBER_PIES; i++) {
             pies[i].reset();
         }
-        powerUps.clear();
+
+        final Iterator<PowerUp> iterator = powerUps.iterator();
+        while (iterator.hasNext()) {
+            final PowerUp powerUp = iterator.next();
+            iterator.remove();
+            bus.post(new PowerUpChanged(powerUp));
+        }
     }
 
 

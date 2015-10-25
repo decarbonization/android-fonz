@@ -55,7 +55,7 @@ import is.hello.go99.animators.AnimatorContext;
 import is.hello.go99.animators.OnAnimationCompleted;
 
 public class MainActivity extends GraphActivity
-        implements BoardView.OnPieClickListener, AnimatorContext.Scene {
+        implements BoardView.Listener, AnimatorContext.Scene {
     private final AnimatorContext animatorContext = new AnimatorContext(getClass().getSimpleName());
 
     @Inject Game game;
@@ -81,7 +81,7 @@ public class MainActivity extends GraphActivity
         boardView.setBoard(game.board);
         boardView.setUpcomingPiece(game.getUpcomingPiece());
         boardView.setAnimatorContext(getAnimatorContext());
-        boardView.setOnPieClickListener(this);
+        boardView.setListener(this);
 
         game.bus.register(this);
     }
@@ -168,6 +168,21 @@ public class MainActivity extends GraphActivity
                     }
                 }
             });
+        }
+    }
+
+    @Override
+    public void onPowerUpClicked(@NonNull PowerUp powerUp) {
+        switch (powerUp) {
+            case MULTIPLY_SCORE:
+                break;
+
+            case CLEAR_ALL:
+                game.clearAll();
+                break;
+
+            case SLOW_TIMER:
+                break;
         }
     }
 

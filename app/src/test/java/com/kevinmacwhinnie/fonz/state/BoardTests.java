@@ -77,6 +77,7 @@ public class BoardTests extends FonzTestCase {
         board.addPowerUp(PowerUp.CLEAR_ALL);
 
         board.reset();
+        assertThat(events.size(), is(equalTo(2)));
 
         for (int i = 0; i < Board.NUMBER_PIES; i++) {
             assertThat(board.getPie(i).getPiece(Pie.SLOT_TOP_LEFT), is(equalTo(Piece.EMPTY)));

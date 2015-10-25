@@ -54,14 +54,14 @@ import is.hello.go99.animators.AnimatorTemplate;
 import is.hello.go99.animators.OnAnimationCompleted;
 
 public class BoardView extends LinearLayout
-        implements View.OnClickListener, PieceDrawable.PieceProvider {
+        implements PieceDrawable.PieceProvider {
     private final PieView[] pieViews;
     private final Button[] powerUpButtons;
     private final UpcomingPieceView upcomingPieceView;
     private final PieceDrawable placementPieceDrawable;
 
     private Board board;
-    private OnPieClickListener onPieClickListener;
+    private Listener listener;
 
     private @NonNull AnimatorTemplate placementTemplate = Animations.PLACEMENT_TEMPLATE;
     private @Nullable AnimatorContext animatorContext;
@@ -96,11 +96,11 @@ public class BoardView extends LinearLayout
                 (PieView) findViewById(R.id.view_game_board_pie_center_bottom),
                 (PieView) findViewById(R.id.view_game_board_pie_right_bottom),
         };
-        for (int i = 0, pieViewsLength = pieViews.length; i < pieViewsLength; i++) {
+        for (int i = 0, length = pieViews.length; i < length; i++) {
             final PieView pieView = pieViews[i];
             pieView.setTag(R.id.view_board_pie_slot_tag, i);
             pieView.setPieceDrawing(pieceDrawing);
-            pieView.setOnClickListener(this);
+            pieView.setOnClickListener(ON_PIE_CLICKED);
         }
 
         this.powerUpButtons = new Button[] {
@@ -108,9 +108,14 @@ public class BoardView extends LinearLayout
                 (Button) findViewById(R.id.view_game_board_power_up_clear_all),
                 (Button) findViewById(R.id.view_game_board_power_up_slow_down),
         };
+        for (int i = 0, length = powerUpButtons.length; i < length; i++) {
+            final Button powerUpButton = powerUpButtons[i];
+            powerUpButton.setTag(R.id.view_board_power_up_tag, PowerUp.values()[i]);
+            powerUpButton.setOnClickListener(ON_POWER_UP_CLICKED);
+        }
 
         this.upcomingPieceView = (UpcomingPieceView) findViewById(R.id.view_game_board_upcoming_piece);
-        upcomingPieceView.setOnClickListener(this);
+        upcomingPieceView.setOnClickListener(ON_UPCOMING_PIE_CLICKED);
         upcomingPieceView.setPieceDrawing(pieceDrawing);
 
         this.placementPieceDrawable = new PieceDrawable(this, pieceDrawing);
@@ -133,6 +138,11 @@ public class BoardView extends LinearLayout
         for (int i = 0; i < Board.NUMBER_PIES; i++) {
             pieViews[i].setPie(board.getPie(i));
         }
+
+        final PowerUp[] powerUps = PowerUp.values();
+        for (int i = 0, length = powerUps.length; i < length; i++) {
+            powerUpButtons[i].setEnabled(board.hasPowerUp(powerUps[i]));
+        }
     }
 
     public void setUpcomingPiece(@Nullable UpcomingPiece upcomingPiece) {
@@ -148,8 +158,8 @@ public class BoardView extends LinearLayout
         powerUpButtons[position].setEnabled(available);
     }
 
-    public void setOnPieClickListener(@Nullable OnPieClickListener onPieClickListener) {
-        this.onPieClickListener = onPieClickListener;
+    public void setListener(@Nullable Listener listener) {
+        this.listener = listener;
     }
 
     public void setTick(int tick) {
@@ -254,23 +264,44 @@ public class BoardView extends LinearLayout
 
     //region Events
 
-    @Override
-    public void onClick(View pieView) {
-        if (onPieClickListener != null && board != null) {
-            if (pieView == upcomingPieceView) {
-                onPieClickListener.onUpcomingPieClicked();
-            } else {
+    @SuppressWarnings("FieldCanBeLocal")
+    private final OnClickListener ON_PIE_CLICKED = new OnClickListener() {
+        @Override
+        public void onClick(View pieView) {
+            if (listener != null && board != null) {
                 final int slot = (int) pieView.getTag(R.id.view_board_pie_slot_tag);
-                onPieClickListener.onPieClicked(slot, board.getPie(slot));
+                listener.onPieClicked(slot, board.getPie(slot));
             }
         }
-    }
+    };
+
+    @SuppressWarnings("FieldCanBeLocal")
+    private final OnClickListener ON_UPCOMING_PIE_CLICKED = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (listener != null && board != null) {
+                listener.onUpcomingPieClicked();
+            }
+        }
+    };
+
+    @SuppressWarnings("FieldCanBeLocal")
+    private final OnClickListener ON_POWER_UP_CLICKED = new OnClickListener() {
+        @Override
+        public void onClick(View powerUpButton) {
+            if (listener != null && board != null) {
+                final PowerUp powerUp = (PowerUp) powerUpButton.getTag(R.id.view_board_power_up_tag);
+                listener.onPowerUpClicked(powerUp);
+            }
+        }
+    };
 
     //endregion
 
 
-    public interface OnPieClickListener {
+    public interface Listener {
         void onUpcomingPieClicked();
         void onPieClicked(int pieSlot, @NonNull Pie pie);
+        void onPowerUpClicked(@NonNull PowerUp powerUp);
     }
 }
