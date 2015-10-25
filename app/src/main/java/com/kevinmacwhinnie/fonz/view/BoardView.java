@@ -26,7 +26,11 @@
  */
 package com.kevinmacwhinnie.fonz.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -35,20 +39,31 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.kevinmacwhinnie.fonz.R;
+import com.kevinmacwhinnie.fonz.data.Piece;
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
 import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Pie;
+import com.kevinmacwhinnie.fonz.view.util.Animations;
 import com.kevinmacwhinnie.fonz.view.util.PieceDrawing;
+import com.kevinmacwhinnie.fonz.view.util.Views;
 
+import is.hello.go99.animators.AnimatorContext;
+import is.hello.go99.animators.AnimatorTemplate;
 import is.hello.go99.animators.OnAnimationCompleted;
 
 public class BoardView extends LinearLayout
-        implements View.OnClickListener {
+        implements View.OnClickListener, PieceDrawable.PieceProvider {
     private final PieView[] pieViews;
     private final UpcomingPieceView upcomingPieceView;
+    private final PieceDrawable placementPieceDrawable;
 
     private Board board;
     private OnPieClickListener onPieClickListener;
+
+    private @NonNull AnimatorTemplate placementTemplate = Animations.PLACEMENT_TEMPLATE;
+    private @Nullable AnimatorContext animatorContext;
+    private @Nullable UpcomingPiece placementPiece;
+    private @Nullable ValueAnimator placementAnimator;
 
     //region Lifecycle
 
@@ -89,6 +104,7 @@ public class BoardView extends LinearLayout
         upcomingPieceView.setOnClickListener(this);
         upcomingPieceView.setPieceDrawing(pieceDrawing);
 
+        this.placementPieceDrawable = new PieceDrawable(this, pieceDrawing);
     }
 
     public void destroy() {
@@ -112,6 +128,10 @@ public class BoardView extends LinearLayout
 
     public void setUpcomingPiece(@Nullable UpcomingPiece upcomingPiece) {
         upcomingPieceView.setUpcomingPiece(upcomingPiece);
+
+        if (placementAnimator != null) {
+            placementAnimator.cancel();
+        }
     }
 
     public void setOnPieClickListener(@Nullable OnPieClickListener onPieClickListener) {
@@ -127,9 +147,92 @@ public class BoardView extends LinearLayout
 
     //region Animations
 
+    @Override
+    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+
+        if (visibility != VISIBLE) {
+            clearAnimation();
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        clearAnimation();
+    }
+
+    @Override
+    public void clearAnimation() {
+        super.clearAnimation();
+
+        if (placementAnimator != null) {
+            placementAnimator.cancel();
+        }
+    }
+
+    public void setPlacementTemplate(@NonNull AnimatorTemplate placementTemplate) {
+        this.placementTemplate = placementTemplate;
+    }
+
+    public void setAnimatorContext(@Nullable AnimatorContext animatorContext) {
+        this.animatorContext = animatorContext;
+    }
+
     public void animateCurrentPieceIntoPie(final int pieSlot,
                                            @NonNull final OnAnimationCompleted onAnimationCompleted) {
-        onAnimationCompleted.onAnimationCompleted(true);
+        if (placementAnimator != null) {
+            placementAnimator.cancel();
+        }
+
+        final Rect startRect = Views.copyChildRect(this, upcomingPieceView);
+        startRect.inset(upcomingPieceView.getPieceInset(),
+                        upcomingPieceView.getPieceInset());
+
+        final Rect endRect = Views.copyChildRect(this, pieViews[pieSlot]);
+
+        this.placementAnimator = placementTemplate.createRectAnimator(startRect, endRect);
+        placementAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                final Rect rect = (Rect) animator.getAnimatedValue();
+                placementPieceDrawable.setBounds(rect);
+            }
+        });
+        placementAnimator.addListener(new OnAnimationCompleted.Adapter(onAnimationCompleted));
+        placementAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (animation == placementAnimator) {
+                    BoardView.this.placementAnimator = null;
+                    BoardView.this.placementPiece = null;
+
+                    getOverlay().remove(placementPieceDrawable);
+                }
+            }
+        });
+
+        this.placementPiece = upcomingPieceView.getUpcomingPiece();
+        upcomingPieceView.setUpcomingPiece(null);
+
+        placementPieceDrawable.setBounds(startRect);
+        getOverlay().add(placementPieceDrawable);
+
+        if (animatorContext != null) {
+            animatorContext.bind(placementAnimator, "BoardView#placementAnimator");
+        }
+        placementAnimator.start();
+    }
+
+    @NonNull
+    @Override
+    public Piece getPiece(@Pie.Slot int slot) {
+        if (placementPiece != null && slot == placementPiece.slot) {
+            return placementPiece.piece;
+        } else {
+            return Piece.EMPTY;
+        }
     }
 
     //endregion

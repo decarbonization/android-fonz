@@ -49,10 +49,13 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import is.hello.go99.animators.AnimatorContext;
 import is.hello.go99.animators.OnAnimationCompleted;
 
 public class MainActivity extends GraphActivity
-        implements BoardView.OnPieClickListener {
+        implements BoardView.OnPieClickListener, AnimatorContext.Scene {
+    private final AnimatorContext animatorContext = new AnimatorContext(getClass().getSimpleName());
+
     @Inject Game game;
     @Inject Sounds sounds;
     @Inject SharedPreferences preferences;
@@ -75,6 +78,7 @@ public class MainActivity extends GraphActivity
 
         boardView.setBoard(game.board);
         boardView.setUpcomingPiece(game.getUpcomingPiece());
+        boardView.setAnimatorContext(getAnimatorContext());
         boardView.setOnPieClickListener(this);
 
         game.bus.register(this);
@@ -149,7 +153,7 @@ public class MainActivity extends GraphActivity
             boardView.animateCurrentPieceIntoPie(pieSlot, new OnAnimationCompleted() {
                 @Override
                 public void onAnimationCompleted(boolean finished) {
-                    if (!game.tryPlaceCurrentPiece(pie)) {
+                    if (finished && !game.tryPlaceCurrentPiece(pie)) {
                         sounds.playForbiddenPlacement();
                     }
                 }
@@ -169,6 +173,17 @@ public class MainActivity extends GraphActivity
         } else {
             game.newGame();
         }
+    }
+
+    //endregion
+
+
+    //region Animations
+
+    @NonNull
+    @Override
+    public AnimatorContext getAnimatorContext() {
+        return animatorContext;
     }
 
     //endregion

@@ -122,6 +122,11 @@ public class UpcomingPieceView extends View implements PieceDrawable.PieceProvid
         setWillNotDraw(pieceDrawable == null || upcomingPiece == null);
     }
 
+    @Nullable
+    public UpcomingPiece getUpcomingPiece() {
+        return upcomingPiece;
+    }
+
     public void setTick(int tick) {
         timerDrawable.setTick(tick);
     }
@@ -134,6 +139,10 @@ public class UpcomingPieceView extends View implements PieceDrawable.PieceProvid
         } else {
             return Piece.EMPTY;
         }
+    }
+
+    public int getPieceInset() {
+        return pieceInset;
     }
 
     //endregion
