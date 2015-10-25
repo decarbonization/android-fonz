@@ -63,9 +63,12 @@ public class Game {
         this.life = new Life(bus);
         this.score = new Score(bus);
         this.board = new Board(bus);
+
+        bus.register(this);
     }
 
     public void destroy() {
+        bus.unregister(this);
         reset();
     }
 
