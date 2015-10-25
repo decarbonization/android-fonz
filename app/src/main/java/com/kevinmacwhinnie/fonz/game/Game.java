@@ -45,7 +45,10 @@ public class Game {
     public static final String LOG_TAG = Game.class.getSimpleName();
 
     public final Bus bus;
+
     public final CountUp countUp;
+    public final Expiration expiration;
+
     public final Life life;
     public final Score score;
     public final Board board;
@@ -59,7 +62,10 @@ public class Game {
 
     public Game(@NonNull Bus bus) {
         this.bus = bus;
+
         this.countUp = new CountUp(bus);
+        this.expiration = new Expiration(bus);
+
         this.life = new Life(bus);
         this.score = new Score(bus);
         this.board = new Board(bus);
@@ -108,7 +114,10 @@ public class Game {
         Log.d(LOG_TAG, "reset()");
 
         pieceFactory.reset();
+
         countUp.reset();
+        expiration.reset();
+
         life.reset();
         score.reset();
         board.reset();
@@ -204,6 +213,11 @@ public class Game {
         } else {
             return false;
         }
+    }
+
+    @Subscribe public void onPowerUpExpired(@NonNull Expiration.PowerUpExpired expiration) {
+        Log.d(LOG_TAG, "onPowerUpExpired(" + expiration.value + ")");
+        board.usePowerUp(expiration.value);
     }
 
     //endregion
