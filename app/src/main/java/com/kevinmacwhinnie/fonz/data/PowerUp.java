@@ -28,7 +28,8 @@
 package com.kevinmacwhinnie.fonz.data;
 
 public enum PowerUp {
+    // Must match layout of board.
+    MULTIPLY_SCORE,
     CLEAR_ALL,
-    SCORE_MULTIPLIER,
     SLOW_TIMER,
 }

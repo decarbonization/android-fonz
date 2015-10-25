@@ -30,4 +30,9 @@
         <item name="colorControlHighlight">@color/color_accent</item>
     </style>
 
+    <style name="Fonz.Button" parent="Base.Widget.AppCompat.Button" />
+    <style name="Fonz.Button.PowerUp" parent="Widget.AppCompat.Button.Borderless.Colored">
+        
+    </style>
+
 </resources>

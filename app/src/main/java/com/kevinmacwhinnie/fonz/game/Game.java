@@ -31,6 +31,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
+import com.kevinmacwhinnie.fonz.data.PowerUp;
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
 import com.kevinmacwhinnie.fonz.events.BaseEvent;
 import com.kevinmacwhinnie.fonz.state.Board;
@@ -142,6 +143,11 @@ public class Game {
 
                 if (isSingleColor) {
                     life.increment();
+
+                    final int slot = board.getSlot(pie);
+                    if (board.pieHasPowerUp(slot)) {
+                        board.addPowerUp(PowerUp.values()[slot]);
+                    }
                 }
             }
 

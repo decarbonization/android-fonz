@@ -26,7 +26,6 @@
         android:id="@+id/activity_main_board"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/gap_small"
         android:layout_above="@id/activity_main_game_control"
         android:layout_below="@id/activity_main_stats"/>
     

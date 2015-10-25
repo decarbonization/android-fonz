@@ -30,6 +30,7 @@ import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.FonzTestCase;
 import com.kevinmacwhinnie.fonz.data.Piece;
+import com.kevinmacwhinnie.fonz.data.PowerUp;
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
 import com.kevinmacwhinnie.fonz.events.BaseEvent;
 import com.kevinmacwhinnie.fonz.state.Life;
@@ -154,6 +155,7 @@ public class GameTests extends FonzTestCase {
         assertThat(events, hasItem(new Score.Changed(60)));
         assertThat(events, hasItem(new Life.Changed(Life.INITIAL_VALUE + 1)));
         assertThat(game.countUp.getTickDuration(), is(equalTo(990L)));
+        assertThat(game.board.hasPowerUp(PowerUp.MULTIPLY_SCORE), is(true));
 
         assertThat(occurrencesOf(events, Game.UpcomingPieceAvailable.INSTANCE), is(equalTo(2)));
     }
@@ -181,6 +183,7 @@ public class GameTests extends FonzTestCase {
         assertThat(events, hasItem(new Score.Changed(30)));
         assertThat(events, not(hasItem(new Life.Changed(Life.INITIAL_VALUE + 1))));
         assertThat(game.countUp.getTickDuration(), is(equalTo(990L)));
+        assertThat(game.board.hasPowerUp(PowerUp.MULTIPLY_SCORE), is(false));
 
         assertThat(occurrencesOf(events, Game.UpcomingPieceAvailable.INSTANCE), is(equalTo(2)));
     }

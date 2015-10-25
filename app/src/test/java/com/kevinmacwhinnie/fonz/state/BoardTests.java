@@ -74,12 +74,24 @@ public class BoardTests extends FonzTestCase {
         for (int i = 0; i < Board.NUMBER_PIES; i++) {
             board.getPie(i).tryPlacePiece(Pie.SLOT_TOP_LEFT, Piece.GREEN);
         }
+        board.addPowerUp(PowerUp.CLEAR_ALL);
 
         board.reset();
 
         for (int i = 0; i < Board.NUMBER_PIES; i++) {
             assertThat(board.getPie(i).getPiece(Pie.SLOT_TOP_LEFT), is(equalTo(Piece.EMPTY)));
         }
+        assertThat(board.hasPowerUp(PowerUp.CLEAR_ALL), is(false));
+    }
+
+    @Test
+    public void pieHasPowerUp() {
+        assertThat(board.pieHasPowerUp(0), is(true));
+        assertThat(board.pieHasPowerUp(1), is(true));
+        assertThat(board.pieHasPowerUp(2), is(true));
+        assertThat(board.pieHasPowerUp(3), is(false));
+        assertThat(board.pieHasPowerUp(4), is(false));
+        assertThat(board.pieHasPowerUp(5), is(false));
     }
 
     @Test

@@ -12,4 +12,8 @@
     <string name="score_name_default">Dina</string>
     <string name="title_high_scores">High Scores</string>
     <string name="action_clear_scores">Clear All</string>
+
+    <string name="power_up_clear_all">Clear All</string>
+    <string name="power_up_multiply_score">2x</string>
+    <string name="power_up_slow_down">Slow</string>
 </resources>

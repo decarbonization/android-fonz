@@ -50,8 +50,21 @@ public class Board {
         }
     }
 
+    public int getSlot(@NonNull Pie pie) {
+        for (int i = 0, length = pies.length; i < length; i++) {
+            if (pies[i].equals(pie)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public Pie getPie(int slot) {
         return pies[slot];
+    }
+
+    public boolean pieHasPowerUp(int slot) {
+        return (slot < PowerUp.values().length);
     }
 
     public boolean addPowerUp(@NonNull PowerUp powerUp) {
@@ -82,6 +95,7 @@ public class Board {
         for (int i = 0; i < NUMBER_PIES; i++) {
             pies[i].reset();
         }
+        powerUps.clear();
     }
 
 

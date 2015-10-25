@@ -32,11 +32,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Button;
 
+import com.kevinmacwhinnie.fonz.data.PowerUp;
 import com.kevinmacwhinnie.fonz.data.Preferences;
 import com.kevinmacwhinnie.fonz.game.CountUp;
 import com.kevinmacwhinnie.fonz.game.Game;
 import com.kevinmacwhinnie.fonz.game.Sounds;
 import com.kevinmacwhinnie.fonz.graph.GraphActivity;
+import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Life;
 import com.kevinmacwhinnie.fonz.state.Pie;
 import com.kevinmacwhinnie.fonz.state.Score;
@@ -113,6 +115,11 @@ public class MainActivity extends GraphActivity
         boardView.setUpcomingPiece(game.getUpcomingPiece());
     }
 
+    @Subscribe public void onPowerUpChanged(@NonNull Board.PowerUpChanged change) {
+        final PowerUp powerUp = change.value;
+        boardView.setPowerUpAvailable(powerUp, game.board.hasPowerUp(powerUp));
+    }
+
     @Subscribe public void onCountUpTicked(@NonNull CountUp.Ticked tick) {
         boardView.setTick(tick.getValue());
     }
@@ -126,6 +133,9 @@ public class MainActivity extends GraphActivity
         gameToggle.setText(R.string.action_new_game);
         boardView.setUpcomingPiece(null);
         boardView.setTick(0);
+        for (final PowerUp powerUp : PowerUp.values()) {
+            boardView.setPowerUpAvailable(powerUp, false);
+        }
 
         if (event.how == Game.GameOver.How.GAME_LOGIC) {
             final Intent scoresActivity = new Intent(this, ScoresActivity.class);

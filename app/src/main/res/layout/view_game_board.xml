@@ -10,6 +10,14 @@
         android:layout_weight="1"
         android:gravity="center">
 
+        <Button
+            android:id="@+id/view_game_board_power_up_multiply_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="@string/power_up_multiply_score"
+            style="@style/Fonz.Button.PowerUp"/>
+
         <com.kevinmacwhinnie.fonz.view.PieView
             android:id="@+id/view_game_board_pie_left_top"
             android:layout_width="@dimen/view_pie_width"
@@ -30,6 +38,14 @@
         android:layout_weight="1"
         android:gravity="center">
 
+        <Button
+            android:id="@+id/view_game_board_power_up_clear_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="@string/power_up_clear_all"
+            style="@style/Fonz.Button.PowerUp"/>
+
         <com.kevinmacwhinnie.fonz.view.PieView
             android:id="@+id/view_game_board_pie_center_top"
             android:layout_width="@dimen/view_pie_width"
@@ -39,9 +55,7 @@
         <com.kevinmacwhinnie.fonz.view.UpcomingPieceView
             android:id="@+id/view_game_board_upcoming_piece"
             android:layout_width="@dimen/view_upcoming_piece_width"
-            android:layout_height="@dimen/view_upcoming_piece_height"
-            android:layout_marginTop="@dimen/gap_large"
-            android:layout_marginBottom="@dimen/gap_large" />
+            android:layout_height="@dimen/view_upcoming_piece_height" />
 
         <com.kevinmacwhinnie.fonz.view.PieView
             android:id="@+id/view_game_board_pie_center_bottom"
@@ -57,6 +71,14 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center">
+
+        <Button
+            android:id="@+id/view_game_board_power_up_slow_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="@string/power_up_slow_down"
+            style="@style/Fonz.Button.PowerUp"/>
 
         <com.kevinmacwhinnie.fonz.view.PieView
             android:id="@+id/view_game_board_pie_right_top"
