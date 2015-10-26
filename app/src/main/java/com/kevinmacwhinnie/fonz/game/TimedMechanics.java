@@ -38,31 +38,31 @@ import com.squareup.otto.Bus;
 
 import java.util.EnumSet;
 
-public class Expiration implements Handler.Callback {
+public class TimedMechanics implements Handler.Callback {
     public static final long DEFAULT_DURATION = 15 * 1000L;
 
-    private static final int MSG_EXPIRE = 0;
+    private static final int MSG_POWER_UP_EXPIRE = 0;
 
     private final Handler handler = new Handler(Looper.getMainLooper(), this);
     private final EnumSet<PowerUp> pending = EnumSet.noneOf(PowerUp.class);
     private final Bus bus;
 
-    public Expiration(@NonNull Bus bus) {
+    public TimedMechanics(@NonNull Bus bus) {
         this.bus = bus;
     }
 
 
     //region Scheduling
 
-    public void schedule(@NonNull PowerUp powerUp, long howLong) {
-        final Message expiration = handler.obtainMessage(MSG_EXPIRE, powerUp);
+    public void schedulePowerUp(@NonNull PowerUp powerUp, long howLong) {
+        final Message expiration = handler.obtainMessage(MSG_POWER_UP_EXPIRE, powerUp);
         handler.sendMessageDelayed(expiration, howLong);
-
         pending.add(powerUp);
+        bus.post(new PowerUpScheduled(powerUp));
     }
 
     public void reset() {
-        handler.removeMessages(MSG_EXPIRE);
+        handler.removeMessages(MSG_POWER_UP_EXPIRE);
         pending.clear();
     }
 
@@ -77,13 +77,19 @@ public class Expiration implements Handler.Callback {
 
     @Override
     public boolean handleMessage(Message msg) {
-        if (msg.what == MSG_EXPIRE) {
+        if (msg.what == MSG_POWER_UP_EXPIRE) {
             final PowerUp powerUp = (PowerUp) msg.obj;
             pending.remove(powerUp);
             bus.post(new PowerUpExpired(powerUp));
         }
 
         return false;
+    }
+
+    public static class PowerUpScheduled extends ValueBaseEvent<PowerUp> {
+        public PowerUpScheduled(@NonNull PowerUp value) {
+            super(value);
+        }
     }
 
     public static class PowerUpExpired extends ValueBaseEvent<PowerUp> {

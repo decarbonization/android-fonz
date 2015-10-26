@@ -37,6 +37,7 @@ import com.kevinmacwhinnie.fonz.data.Preferences;
 import com.kevinmacwhinnie.fonz.game.CountUp;
 import com.kevinmacwhinnie.fonz.game.Game;
 import com.kevinmacwhinnie.fonz.game.Sounds;
+import com.kevinmacwhinnie.fonz.game.TimedMechanics;
 import com.kevinmacwhinnie.fonz.graph.GraphActivity;
 import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Life;
@@ -120,6 +121,10 @@ public class MainActivity extends GraphActivity
         boardView.setPowerUpAvailable(powerUp, game.board.hasPowerUp(powerUp));
     }
 
+    @Subscribe public void onPowerUpScheduled(@NonNull TimedMechanics.PowerUpScheduled change) {
+        // Do nothing for now.
+    }
+
     @Subscribe public void onCountUpTicked(@NonNull CountUp.Ticked tick) {
         boardView.setTick(tick.getValue());
     }
@@ -145,6 +150,11 @@ public class MainActivity extends GraphActivity
 
         sounds.playGameOver();
     }
+
+    //endregion
+
+
+    //region Interaction
 
     @Override
     public void onUpcomingPieClicked() {
