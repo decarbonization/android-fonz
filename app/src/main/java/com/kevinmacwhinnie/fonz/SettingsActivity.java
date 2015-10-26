@@ -58,6 +58,7 @@ public class SettingsActivity extends GraphActivity implements SharedPreferences
 
         versionFooter.setText(getString(R.string.version_fmt,
                                         BuildConfig.VERSION_NAME,
+                                        BuildConfig.BUILD_TYPE,
                                         BuildConfig.VERSION_CODE));
 
         preferences.registerOnSharedPreferenceChangeListener(this);

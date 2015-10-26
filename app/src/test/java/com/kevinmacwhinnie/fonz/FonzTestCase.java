@@ -38,7 +38,8 @@ import org.robolectric.annotation.Config;
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class,
         sdk = Build.VERSION_CODES.LOLLIPOP,
-        application = FonzTestApplication.class)
+        application = FonzTestApplication.class,
+        packageName = "com.kevinmacwhinnie.fonz")
 public abstract class FonzTestCase {
     protected Context getContext() {
         return RuntimeEnvironment.application.getApplicationContext();
