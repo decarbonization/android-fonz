@@ -27,9 +27,11 @@
 
 package com.kevinmacwhinnie.fonz;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
@@ -77,6 +79,11 @@ public class SettingsActivity extends GraphActivity implements SharedPreferences
         preferences.edit()
                    .putBoolean(Preferences.SKIP_ON_UPCOMING_CLICK, sender.isChecked())
                    .apply();
+    }
+
+    @OnClick(R.id.activity_settings_high_scores)
+    public void onHighScoresClicked(@NonNull Button sender) {
+        startActivity(new Intent(this, ScoresActivity.class));
     }
 
     @Override
