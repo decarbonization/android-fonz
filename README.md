@@ -1,5 +1,7 @@
 # Fonz
 
+[![Circle CI](https://circleci.com/gh/decarbonization/android-fonz/tree/master.svg?style=svg&circle-token=f4212f192ae698963c57dc6dde54be7ad4d9bce6)](https://circleci.com/gh/decarbonization/android-fonz/tree/master)
+
 A clone of the iconfactory's excellent [Freznic](http://frenzic.com/) game for Android.
 
 # License
