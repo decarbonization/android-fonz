@@ -1,4 +1,18 @@
+import java.text.SimpleDateFormat
+
 apply plugin: 'com.android.application'
+
+def generateVersionCode() {
+    def formatter = new SimpleDateFormat("yyyyMMddhh")
+    def now = new Date()
+    return Integer.parseInt(formatter.format(now))
+}
+
+def generateVersionName() {
+    def formatter = new SimpleDateFormat("yyyy.MM.dd")
+    def now = new Date()
+    return formatter.format(now)
+}
 
 android {
     compileSdkVersion 23
@@ -8,8 +22,8 @@ android {
         applicationId "com.kevinmacwhinnie.fonz"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 1
-        versionName "0.0.1"
+        versionCode generateVersionCode()
+        versionName generateVersionName()
     }
     lintOptions {
         disable 'InvalidPackage'
