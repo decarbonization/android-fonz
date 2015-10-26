@@ -215,9 +215,50 @@ public class Game {
         }
     }
 
+    public boolean multiplyScore() {
+        Log.d(LOG_TAG, "useScoreMultiplier()");
+
+        if (inProgress && board.hasPowerUp(PowerUp.MULTIPLY_SCORE) &&
+                !expiration.isPending(PowerUp.MULTIPLY_SCORE)) {
+            score.setMultiplier(2f);
+            expiration.schedule(PowerUp.MULTIPLY_SCORE, Expiration.DEFAULT_DURATION);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean slowDownTime() {
+        Log.d(LOG_TAG, "slowDownTime()");
+
+        if (inProgress && board.hasPowerUp(PowerUp.SLOW_DOWN_TIME) &&
+                !expiration.isPending(PowerUp.SLOW_DOWN_TIME)) {
+            countUp.scaleTickDuration(2f);
+            expiration.schedule(PowerUp.SLOW_DOWN_TIME, Expiration.DEFAULT_DURATION);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Subscribe public void onPowerUpExpired(@NonNull Expiration.PowerUpExpired expiration) {
-        Log.d(LOG_TAG, "onPowerUpExpired(" + expiration.value + ")");
-        board.usePowerUp(expiration.value);
+        final PowerUp powerUp = expiration.value;
+        Log.d(LOG_TAG, "onPowerUpExpired(" + powerUp + ")");
+
+        board.usePowerUp(powerUp);
+        switch (powerUp) {
+            case MULTIPLY_SCORE:
+                score.setMultiplier(1f);
+                break;
+
+            case CLEAR_ALL:
+                // Do nothing.
+                break;
+
+            case SLOW_DOWN_TIME:
+                countUp.scaleTickDuration(0.5f);
+                break;
+        }
     }
 
     //endregion

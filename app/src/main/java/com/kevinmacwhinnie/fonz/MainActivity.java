@@ -175,13 +175,15 @@ public class MainActivity extends GraphActivity
     public void onPowerUpClicked(@NonNull PowerUp powerUp) {
         switch (powerUp) {
             case MULTIPLY_SCORE:
+                game.multiplyScore();
                 break;
 
             case CLEAR_ALL:
                 game.clearAll();
                 break;
 
-            case SLOW_TIMER:
+            case SLOW_DOWN_TIME:
+                game.slowDownTime();
                 break;
         }
     }

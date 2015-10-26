@@ -39,6 +39,8 @@ import com.squareup.otto.Bus;
 import java.util.EnumSet;
 
 public class Expiration implements Handler.Callback {
+    public static final long DEFAULT_DURATION = 15 * 1000L;
+
     private static final int MSG_EXPIRE = 0;
 
     private final Handler handler = new Handler(Looper.getMainLooper(), this);

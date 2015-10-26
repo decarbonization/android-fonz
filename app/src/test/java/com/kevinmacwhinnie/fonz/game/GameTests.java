@@ -43,6 +43,8 @@ import com.squareup.otto.Subscribe;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.robolectric.Robolectric;
+import org.robolectric.util.Scheduler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -246,5 +248,47 @@ public class GameTests extends FonzTestCase {
         for (int i = 0; i < Board.NUMBER_PIES; i++) {
             assertThat(game.board.getPie(i).getOccupiedSlotCount(), is(equalTo(0)));
         }
+    }
+
+    @Test
+    public void multiplyScore() {
+        final Scheduler scheduler = Robolectric.getForegroundThreadScheduler();
+        scheduler.pause();
+
+        game.newGame();
+
+        assertThat(game.multiplyScore(), is(false));
+        game.board.addPowerUp(PowerUp.MULTIPLY_SCORE);
+
+        assertThat(game.multiplyScore(), is(true));
+        assertThat(game.multiplyScore(), is(false));
+        assertThat(game.expiration.isPending(PowerUp.MULTIPLY_SCORE), is(true));
+        assertThat(game.score.getMultiplier(), is(equalTo(2f)));
+
+        scheduler.advanceBy(Expiration.DEFAULT_DURATION + 1L);
+
+        assertThat(game.expiration.isPending(PowerUp.MULTIPLY_SCORE), is(false));
+        assertThat(game.score.getMultiplier(), is(equalTo(1f)));
+    }
+
+    @Test
+    public void slowDownTime() {
+        final Scheduler scheduler = Robolectric.getForegroundThreadScheduler();
+        scheduler.pause();
+
+        game.newGame();
+
+        assertThat(game.slowDownTime(), is(false));
+        game.board.addPowerUp(PowerUp.SLOW_DOWN_TIME);
+
+        assertThat(game.slowDownTime(), is(true));
+        assertThat(game.slowDownTime(), is(false));
+        assertThat(game.expiration.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
+        assertThat(game.countUp.getTickDuration(), is(equalTo(2000L)));
+
+        scheduler.advanceBy(Expiration.DEFAULT_DURATION + 1L);
+
+        assertThat(game.expiration.isPending(PowerUp.SLOW_DOWN_TIME), is(false));
+        assertThat(game.countUp.getTickDuration(), is(not(equalTo(2000L))));
     }
 }

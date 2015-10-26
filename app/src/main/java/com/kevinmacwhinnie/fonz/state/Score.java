@@ -56,6 +56,10 @@ public class Score {
         this.multiplier = multiplier;
     }
 
+    public float getMultiplier() {
+        return multiplier;
+    }
+
     public void reset() {
         this.value = 0;
         this.multiplier = 1f;

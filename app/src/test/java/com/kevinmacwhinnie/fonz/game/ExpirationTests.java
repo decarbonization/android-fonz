@@ -75,13 +75,13 @@ public class ExpirationTests extends FonzTestCase {
         final Scheduler scheduler = Robolectric.getForegroundThreadScheduler();
         scheduler.pause();
 
-        expiration.schedule(PowerUp.SLOW_TIMER, 100L);
-        assertThat(expiration.isPending(PowerUp.SLOW_TIMER), is(true));
+        expiration.schedule(PowerUp.SLOW_DOWN_TIME, 100L);
+        assertThat(expiration.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
 
         scheduler.advanceBy(101L);
         assertThat(events.size(), is(equalTo(1)));
-        assertThat(events, hasItem(new Expiration.PowerUpExpired(PowerUp.SLOW_TIMER)));
-        assertThat(expiration.isPending(PowerUp.SLOW_TIMER), is(false));
+        assertThat(events, hasItem(new Expiration.PowerUpExpired(PowerUp.SLOW_DOWN_TIME)));
+        assertThat(expiration.isPending(PowerUp.SLOW_DOWN_TIME), is(false));
     }
 
     @Test
@@ -89,12 +89,12 @@ public class ExpirationTests extends FonzTestCase {
         final Scheduler scheduler = Robolectric.getForegroundThreadScheduler();
         scheduler.pause();
 
-        expiration.schedule(PowerUp.SLOW_TIMER, 100L);
-        assertThat(expiration.isPending(PowerUp.SLOW_TIMER), is(true));
+        expiration.schedule(PowerUp.SLOW_DOWN_TIME, 100L);
+        assertThat(expiration.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
         expiration.reset();
 
         scheduler.advanceBy(101L);
         assertThat(events.size(), is(equalTo(0)));
-        assertThat(expiration.isPending(PowerUp.SLOW_TIMER), is(false));
+        assertThat(expiration.isPending(PowerUp.SLOW_DOWN_TIME), is(false));
     }
 }

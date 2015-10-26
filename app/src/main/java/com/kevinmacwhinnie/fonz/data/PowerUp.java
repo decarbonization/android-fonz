@@ -31,5 +31,5 @@ public enum PowerUp {
     // Must match layout of board.
     MULTIPLY_SCORE,
     CLEAR_ALL,
-    SLOW_TIMER,
+    SLOW_DOWN_TIME,
 }
