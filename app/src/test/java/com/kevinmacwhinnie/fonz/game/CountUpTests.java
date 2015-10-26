@@ -72,7 +72,6 @@ public class CountUpTests extends FonzTestCase {
     @Test
     public void basicCountDown() {
         final CountUp countUp = new CountUp(bus);
-        countUp.setTickDuration(10L);
 
         assertThat(countUp.isRunning(), is(false));
 
@@ -80,11 +79,11 @@ public class CountUpTests extends FonzTestCase {
         scheduler.pause();
         countUp.start();
 
-        scheduler.advanceBy(41L);
+        scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * 4);
         assertThat(counter, is(equalTo(5)));
         assertThat(completed, is(false));
 
-        scheduler.advanceBy(61L);
+        scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * 6);
         assertThat(counter, is(equalTo(10)));
         assertThat(completed, is(true));
     }
@@ -92,7 +91,6 @@ public class CountUpTests extends FonzTestCase {
     @Test
     public void pause() {
         final CountUp countUp = new CountUp(bus);
-        countUp.setTickDuration(10L);
 
         assertThat(countUp.isRunning(), is(false));
 
@@ -100,19 +98,19 @@ public class CountUpTests extends FonzTestCase {
         scheduler.pause();
         countUp.start();
 
-        scheduler.advanceBy(41L);
+        scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * 4);
         assertThat(counter, is(equalTo(5)));
         assertThat(completed, is(false));
 
         countUp.pause();
         assertThat(countUp.isRunning(), is(true));
 
-        scheduler.advanceBy(61L);
+        scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * 6);
         assertThat(counter, is(equalTo(5)));
         assertThat(completed, is(false));
 
         countUp.resume();
-        scheduler.advanceBy(61L);
+        scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * 6);
         assertThat(counter, is(equalTo(10)));
         assertThat(completed, is(true));
     }
@@ -120,9 +118,11 @@ public class CountUpTests extends FonzTestCase {
     @Test
     public void scaleTickDuration() {
         final CountUp countUp = new CountUp(bus);
-        countUp.setTickDuration(10L);
-        countUp.scaleTickDuration(0.5);
 
-        assertThat(countUp.getTickDuration(), is(equalTo(5L)));
+        countUp.scaleTickDuration(0.5);
+        assertThat(countUp.getTickDuration(), is(equalTo(500L)));
+
+        countUp.scaleTickDuration(0.5);
+        assertThat(countUp.getTickDuration(), is(equalTo(450L)));
     }
 }

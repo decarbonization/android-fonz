@@ -37,6 +37,7 @@ import com.squareup.otto.Bus;
 public class CountUp implements Handler.Callback {
     public static final int NUMBER_TICKS = 10;
     public static final long DEFAULT_TICK_DURATION_MS = 1000L;
+    public static final long MIN_TICK_DURATION = 450L;
     public static final double DEFAULT_SCALE_FACTOR = 0.99;
 
     private static final int MSG_TICK = 0;
@@ -53,17 +54,11 @@ public class CountUp implements Handler.Callback {
         this.handler = new Handler(Looper.getMainLooper(), this);
     }
 
-    public void setTickDuration(long tickDuration) {
-        this.tickDuration = tickDuration;
-
-        handler.removeMessages(MSG_TICK);
-        if (running) {
-            handler.sendEmptyMessageDelayed(MSG_TICK, tickDuration);
-        }
-    }
-
     public void scaleTickDuration(double factor) {
         this.tickDuration = Math.round(tickDuration * factor);
+        if (tickDuration < MIN_TICK_DURATION) {
+            this.tickDuration = MIN_TICK_DURATION;
+        }
 
         handler.removeMessages(MSG_TICK);
         if (running) {
