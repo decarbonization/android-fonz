@@ -65,7 +65,7 @@ public class MainActivity extends GraphActivity
 
     @Bind(R.id.activity_main_stats) StatsView statsView;
     @Bind(R.id.activity_main_board) BoardView boardView;
-    @Bind(R.id.activity_main_game_control) Button gameToggle;
+    @Bind(R.id.activity_main_game_state_control) Button gameToggle;
 
 
     //region Lifecycle
@@ -203,13 +203,23 @@ public class MainActivity extends GraphActivity
 
     //region Actions
 
-    @OnClick(R.id.activity_main_game_control)
+    @OnClick(R.id.activity_main_game_settings)
+    public void onSettingsClicked(@NonNull Button sender) {
+        startActivity(new Intent(this, SettingsActivity.class));
+    }
+
+    @OnClick(R.id.activity_main_game_state_control)
     public void onGameControlClicked(@NonNull Button sender) {
         if (game.isInProgress()) {
             game.gameOver(Game.GameOver.How.USER_INTERVENTION);
         } else {
             game.newGame();
         }
+    }
+
+    @OnClick(R.id.activity_main_game_help)
+    public void onHelpClicked(@NonNull Button sender) {
+        startActivity(new Intent(this, HelpActivity.class));
     }
 
     //endregion

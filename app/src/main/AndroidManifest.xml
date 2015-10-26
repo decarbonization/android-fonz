@@ -33,6 +33,16 @@
             android:label="@string/title_high_scores"
             android:parentActivityName=".MainActivity" />
 
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/action_settings"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".HelpActivity"
+            android:label="@string/action_help"
+            android:parentActivityName=".MainActivity" />
+
     </application>
 
 </manifest>

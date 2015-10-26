@@ -25,32 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.kevinmacwhinnie.fonz.graph;
+package com.kevinmacwhinnie.fonz;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
-import com.kevinmacwhinnie.fonz.MainActivity;
-import com.kevinmacwhinnie.fonz.SettingsActivity;
-
-import dagger.Module;
-import dagger.Provides;
-
-@Module(complete = false,
-        injects = {
-                MainActivity.class,
-                SettingsActivity.class,
-        })
-public class AppModule {
-    private final Context context;
-
-    public AppModule(@NonNull Context context) {
-        this.context = context;
-    }
-
-    @Provides SharedPreferences providePreferences() {
-        return PreferenceManager.getDefaultSharedPreferences(context);
+public class HelpActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_help);
     }
 }
