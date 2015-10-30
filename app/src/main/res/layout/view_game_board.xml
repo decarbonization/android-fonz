@@ -8,7 +8,13 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:minWidth="@dimen/view_pie_width"
         android:gravity="center">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2" />
 
         <Button
             android:id="@+id/view_game_board_power_up_multiply_score"
@@ -24,10 +30,20 @@
             android:layout_height="@dimen/view_pie_height"
             android:layout_marginBottom="@dimen/gap_large" />
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
         <com.kevinmacwhinnie.fonz.view.PieView
             android:id="@+id/view_game_board_pie_left_bottom"
             android:layout_width="@dimen/view_pie_width"
             android:layout_height="@dimen/view_pie_height" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2" />
 
     </LinearLayout>
 
@@ -36,7 +52,13 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:minWidth="@dimen/view_upcoming_piece_width"
         android:gravity="center">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/view_game_board_power_up_clear_all"
@@ -52,16 +74,31 @@
             android:layout_height="@dimen/view_pie_height"
             android:layout_marginBottom="@dimen/gap_large" />
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
         <com.kevinmacwhinnie.fonz.view.UpcomingPieceView
             android:id="@+id/view_game_board_upcoming_piece"
             android:layout_width="@dimen/view_upcoming_piece_width"
             android:layout_height="@dimen/view_upcoming_piece_height" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <com.kevinmacwhinnie.fonz.view.PieView
             android:id="@+id/view_game_board_pie_center_bottom"
             android:layout_width="@dimen/view_pie_width"
             android:layout_height="@dimen/view_pie_height"
             android:layout_marginTop="@dimen/gap_large" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
     </LinearLayout>
 
@@ -70,7 +107,13 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:minWidth="@dimen/view_pie_width"
         android:gravity="center">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2" />
 
         <Button
             android:id="@+id/view_game_board_power_up_slow_down"
@@ -86,10 +129,20 @@
             android:layout_height="@dimen/view_pie_height"
             android:layout_marginBottom="@dimen/gap_large" />
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
         <com.kevinmacwhinnie.fonz.view.PieView
             android:id="@+id/view_game_board_pie_right_bottom"
             android:layout_width="@dimen/view_pie_width"
             android:layout_height="@dimen/view_pie_height" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2" />
 
     </LinearLayout>
 
