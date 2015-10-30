@@ -2,6 +2,7 @@
 
     <style name="Fonz" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowBackground">@color/background</item>
+        <item name="checkboxStyle">@style/Fonz.CheckBox</item>
 
         <item name="alertDialogTheme">@style/Fonz.AlertDialog</item>
 
@@ -30,9 +31,23 @@
         <item name="colorControlHighlight">@color/color_accent</item>
     </style>
 
-    <style name="Fonz.Button" parent="Base.Widget.AppCompat.Button" />
-    <style name="Fonz.Button.PowerUp" parent="Widget.AppCompat.Button.Borderless.Colored">
-        
+    <style name="Fonz.Button" parent="Widget.AppCompat.Button" />
+    <style name="Fonz.Button.PowerUp" parent="Widget.AppCompat.Button.Borderless.Colored" />
+    <style name="Fonz.Button.SettingsOption" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:paddingTop">@dimen/gap_medium</item>
+        <item name="android:paddingBottom">@dimen/gap_medium</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:gravity">start|center_vertical</item>
+    </style>
+
+    <style name="Fonz.CheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox" />
+    <style name="Fonz.CheckBox.Reversed">
+        <item name="android:button">@null</item>
+        <item name="android:drawableEnd">?android:attr/listChoiceIndicatorMultiple</item>
     </style>
 
 </resources>

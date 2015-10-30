@@ -8,6 +8,7 @@
     <color name="color_accent">#F57C00</color>
 
     <color name="transparent">@android:color/transparent</color>
+    <color name="divider">@android:color/darker_gray</color>
 
     <color name="view_pie_background">#263238</color>
     <color name="piece_purple">#7B1FA2</color>
