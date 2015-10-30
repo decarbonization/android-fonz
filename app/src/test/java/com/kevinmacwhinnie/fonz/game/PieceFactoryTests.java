@@ -34,7 +34,10 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
 public class PieceFactoryTests {
@@ -67,5 +70,17 @@ public class PieceFactoryTests {
         assertThat(slots, hasItem(Pie.SLOT_BOTTOM_LEFT));
         assertThat(slots, hasItem(Pie.SLOT_BOTTOM_CENTER));
         assertThat(slots, hasItem(Pie.SLOT_BOTTOM_RIGHT));
+    }
+
+    @Test
+    public void generateUniqueSlot() {
+        final PieceFactory vendor = new PieceFactory();
+
+        @Pie.Slot int lastSlot = Pie.NUMBER_SLOTS;
+        for (int i = 0; i < (PieceFactory.COUNT_PER_SLOT * Pie.NUMBER_SLOTS + 1); i++) {
+            final @Pie.Slot int slot = vendor.generateUniqueSlot();
+            assertThat(slot, is(not(equalTo(lastSlot))));
+            lastSlot = slot;
+        }
     }
 }

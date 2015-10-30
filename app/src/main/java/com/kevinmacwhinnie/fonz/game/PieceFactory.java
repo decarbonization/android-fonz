@@ -41,14 +41,16 @@ public class PieceFactory {
     private final Random random = new Random();
     private final List<Piece> pieces = new ArrayList<>(COUNT_PER_COLOR * Piece.NUMBER_COLORS);
     private final List<Integer> slots = new ArrayList<>(COUNT_PER_SLOT * Pie.NUMBER_SLOTS);
+    private @Pie.Slot int lastSlot = Pie.NUMBER_SLOTS;
 
     public PieceFactory() {
-        reset();
+        populatePieces();
+        populateSlots();
     }
 
     public Piece generatePiece() {
         if (pieces.isEmpty()) {
-            reset();
+            populatePieces();
         }
 
         final int position = random.nextInt(pieces.size());
@@ -57,7 +59,7 @@ public class PieceFactory {
 
     public @Pie.Slot int generateSlot() {
         if (slots.isEmpty()) {
-            reset();
+            populateSlots();
         }
 
         final int position = random.nextInt(slots.size());
@@ -65,20 +67,37 @@ public class PieceFactory {
         return slot;
     }
 
+    public @Pie.Slot int generateUniqueSlot() {
+        @Pie.Slot int slot;
+        //noinspection StatementWithEmptyBody
+        while ((slot = generateSlot()) == lastSlot);
+        this.lastSlot = slot;
+        return slot;
+    }
+
     public UpcomingPiece generateUpcomingPiece() {
-        return new UpcomingPiece(generatePiece(), generateSlot());
+        return new UpcomingPiece(generatePiece(), generateUniqueSlot());
     }
 
     public void reset() {
         pieces.clear();
+        populatePieces();
 
+        slots.clear();
+        populateSlots();
+
+        this.lastSlot = Pie.NUMBER_SLOTS;
+    }
+
+    private void populatePieces() {
         for (final Piece color : Piece.COLORS) {
             for (int i = 0; i < COUNT_PER_COLOR; i++) {
                 pieces.add(color);
             }
         }
+    }
 
-        slots.clear();
+    private void populateSlots() {
         for (int slot = Pie.SLOT_TOP_LEFT; slot < Pie.NUMBER_SLOTS; slot++) {
             for (int i = 0; i < COUNT_PER_SLOT; i++) {
                 slots.add(slot);
