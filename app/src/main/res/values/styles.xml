@@ -32,7 +32,12 @@
     </style>
 
     <style name="Fonz.Button" parent="Widget.AppCompat.Button" />
-    <style name="Fonz.Button.PowerUp" parent="Widget.AppCompat.Button.Borderless.Colored" />
+    <style name="Fonz.Button.PowerUp" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:paddingTop">@dimen/gap_small</item>
+        <item name="android:paddingBottom">@dimen/gap_small</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+    </style>
     <style name="Fonz.Button.SettingsOption" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:paddingTop">@dimen/gap_medium</item>
         <item name="android:paddingBottom">@dimen/gap_medium</item>

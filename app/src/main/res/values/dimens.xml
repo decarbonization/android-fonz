@@ -10,12 +10,12 @@
 
     <dimen name="divider_size">1px</dimen>
 
-    <dimen name="view_pie_width">90dp</dimen>
-    <dimen name="view_pie_height">90dp</dimen>
+    <dimen name="view_pie_width">92dp</dimen>
+    <dimen name="view_pie_height">92dp</dimen>
     <dimen name="view_pie_stroke_width">1dp</dimen>
 
     <!-- should be view_pie_* + timer_stroke -->
-    <dimen name="view_upcoming_piece_width">96dp</dimen>
-    <dimen name="view_upcoming_piece_height">96dp</dimen>
+    <dimen name="view_upcoming_piece_width">98dp</dimen>
+    <dimen name="view_upcoming_piece_height">98dp</dimen>
     <dimen name="timer_stroke">6dp</dimen>
 </resources>

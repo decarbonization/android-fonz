@@ -36,7 +36,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.kevinmacwhinnie.fonz.R;
@@ -56,7 +56,7 @@ import is.hello.go99.animators.OnAnimationCompleted;
 public class BoardView extends LinearLayout
         implements PieceDrawable.PieceProvider {
     private final PieView[] pieViews;
-    private final Button[] powerUpButtons;
+    private final ImageButton[] powerUpButtons;
     private final UpcomingPieceView upcomingPieceView;
     private final PieceDrawable placementPieceDrawable;
 
@@ -103,13 +103,13 @@ public class BoardView extends LinearLayout
             pieView.setOnClickListener(ON_PIE_CLICKED);
         }
 
-        this.powerUpButtons = new Button[] {
-                (Button) findViewById(R.id.view_game_board_power_up_multiply_score),
-                (Button) findViewById(R.id.view_game_board_power_up_clear_all),
-                (Button) findViewById(R.id.view_game_board_power_up_slow_down),
+        this.powerUpButtons = new ImageButton[] {
+                (ImageButton) findViewById(R.id.view_game_board_power_up_multiply_score),
+                (ImageButton) findViewById(R.id.view_game_board_power_up_clear_all),
+                (ImageButton) findViewById(R.id.view_game_board_power_up_slow_down),
         };
         for (int i = 0, length = powerUpButtons.length; i < length; i++) {
-            final Button powerUpButton = powerUpButtons[i];
+            final ImageButton powerUpButton = powerUpButtons[i];
             powerUpButton.setTag(R.id.view_board_power_up_tag, PowerUp.values()[i]);
             powerUpButton.setOnClickListener(ON_POWER_UP_CLICKED);
         }
