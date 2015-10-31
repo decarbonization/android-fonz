@@ -31,9 +31,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -47,6 +45,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.kevinmacwhinnie.fonz.data.Preferences;
+import com.kevinmacwhinnie.fonz.graph.Injector;
+
+import javax.inject.Inject;
 
 public class HighScoreDialogFragment extends AppCompatDialogFragment
         implements Dialog.OnClickListener, TextView.OnEditorActionListener {
@@ -55,14 +56,16 @@ public class HighScoreDialogFragment extends AppCompatDialogFragment
 
     public static final String TAG = HighScoreDialogFragment.class.getSimpleName();
 
-    private SharedPreferences preferences;
+    @Inject Preferences preferences;
+
     private EditText nameText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        final Injector injector = (Injector) getContext().getApplicationContext();
+        injector.inject(this);
     }
 
     @NonNull
@@ -78,10 +81,7 @@ public class HighScoreDialogFragment extends AppCompatDialogFragment
         final View view = inflater.inflate(R.layout.dialog_game_over, null, false);
         this.nameText = (EditText) view.findViewById(R.id.dialog_game_over_name);
         nameText.setOnEditorActionListener(this);
-
-        final String savedName = preferences.getString(Preferences.SAVED_SCORE_NAME,
-                                                       getString(R.string.score_name_default));
-        nameText.setText(savedName);
+        nameText.setText(preferences.getSavedScoreName());
 
         builder.setView(view);
 
@@ -104,9 +104,7 @@ public class HighScoreDialogFragment extends AppCompatDialogFragment
     public void onClick(DialogInterface dialog, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
             final String name = nameText.getText().toString();
-            preferences.edit()
-                       .putString(Preferences.SAVED_SCORE_NAME, name)
-                       .apply();
+            preferences.setSavedScoreName(name);
 
             final Intent response = new Intent(ACTION_SUBMITTED);
             response.putExtra(EXTRA_NAME, name);

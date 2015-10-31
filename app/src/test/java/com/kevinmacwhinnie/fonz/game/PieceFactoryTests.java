@@ -27,6 +27,7 @@
 package com.kevinmacwhinnie.fonz.game;
 
 import com.kevinmacwhinnie.fonz.data.Piece;
+import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
 import com.kevinmacwhinnie.fonz.state.Pie;
 
 import org.junit.Test;
@@ -81,6 +82,22 @@ public class PieceFactoryTests {
             final @Pie.Slot int slot = vendor.generateUniqueSlot();
             assertThat(slot, is(not(equalTo(lastSlot))));
             lastSlot = slot;
+        }
+    }
+
+    @Test
+    public void preventDuplicates() {
+        final PieceFactory vendor = new PieceFactory();
+        vendor.setPreventDuplicatePieces(true);
+
+        Piece lastPiece = Piece.EMPTY;
+        @Pie.Slot int lastSlot = Pie.NUMBER_SLOTS;
+        for (int i = 0; i < (PieceFactory.COUNT_PER_SLOT * Pie.NUMBER_SLOTS + 1); i++) {
+            final UpcomingPiece upcomingPiece = vendor.generateUpcomingPiece();
+            assertThat((upcomingPiece.slot != lastSlot || upcomingPiece.piece != lastPiece),
+                       is(true));
+            lastPiece = upcomingPiece.piece;
+            lastSlot = upcomingPiece.slot;
         }
     }
 }

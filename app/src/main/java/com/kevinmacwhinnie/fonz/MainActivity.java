@@ -27,7 +27,6 @@
 package com.kevinmacwhinnie.fonz;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Button;
@@ -61,7 +60,7 @@ public class MainActivity extends GraphActivity
 
     @Inject Game game;
     @Inject Sounds sounds;
-    @Inject SharedPreferences preferences;
+    @Inject Preferences preferences;
 
     @Bind(R.id.activity_main_stats) StatsView statsView;
     @Bind(R.id.activity_main_board) BoardView boardView;
@@ -84,6 +83,7 @@ public class MainActivity extends GraphActivity
         boardView.setAnimatorContext(getAnimatorContext());
         boardView.setListener(this);
 
+        game.setPreventDuplicatePieces(preferences.getPreventDuplicatePieces());
         game.bus.register(this);
     }
 
@@ -151,6 +151,10 @@ public class MainActivity extends GraphActivity
         sounds.playGameOver();
     }
 
+    @Subscribe public void onPreventDuplicatePiecesChanged(@NonNull Preferences.PreventDuplicatePiecesChanged event) {
+        game.setPreventDuplicatePieces(event.value);
+    }
+
     //endregion
 
 
@@ -158,7 +162,7 @@ public class MainActivity extends GraphActivity
 
     @Override
     public void onUpcomingPieClicked() {
-        final boolean skipEnabled = preferences.getBoolean(Preferences.SKIP_ON_UPCOMING_CLICK, true);
+        final boolean skipEnabled = preferences.getSkipOnUpcomingClick();
         if (skipEnabled) {
             game.skipPiece();
         }

@@ -91,6 +91,10 @@ public class Game {
         return upcomingPiece;
     }
 
+    public void setPreventDuplicatePieces(boolean preventDuplicatePieces) {
+        pieceFactory.setPreventDuplicatePieces(preventDuplicatePieces);
+    }
+
     //endregion
 
 

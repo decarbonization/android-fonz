@@ -32,16 +32,21 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
+import com.kevinmacwhinnie.fonz.HighScoreDialogFragment;
 import com.kevinmacwhinnie.fonz.MainActivity;
 import com.kevinmacwhinnie.fonz.SettingsActivity;
+import com.kevinmacwhinnie.fonz.data.Preferences;
 
 import dagger.Module;
 import dagger.Provides;
 
 @Module(complete = false,
         injects = {
+                Preferences.class,
+
                 MainActivity.class,
                 SettingsActivity.class,
+                HighScoreDialogFragment.class,
         })
 public class AppModule {
     private final Context context;

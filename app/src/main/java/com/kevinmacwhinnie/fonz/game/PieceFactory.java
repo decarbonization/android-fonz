@@ -41,7 +41,9 @@ public class PieceFactory {
     private final Random random = new Random();
     private final List<Piece> pieces = new ArrayList<>(COUNT_PER_COLOR * Piece.NUMBER_COLORS);
     private final List<Integer> slots = new ArrayList<>(COUNT_PER_SLOT * Pie.NUMBER_SLOTS);
+
     private @Pie.Slot int lastSlot = Pie.NUMBER_SLOTS;
+    private boolean preventDuplicatePieces = true;
 
     public PieceFactory() {
         populatePieces();
@@ -76,7 +78,15 @@ public class PieceFactory {
     }
 
     public UpcomingPiece generateUpcomingPiece() {
-        return new UpcomingPiece(generatePiece(), generateUniqueSlot());
+        if (preventDuplicatePieces) {
+            return new UpcomingPiece(generatePiece(), generateUniqueSlot());
+        } else {
+            return new UpcomingPiece(generatePiece(), generateSlot());
+        }
+    }
+
+    public void setPreventDuplicatePieces(boolean preventDuplicatePieces) {
+        this.preventDuplicatePieces = preventDuplicatePieces;
     }
 
     public void reset() {

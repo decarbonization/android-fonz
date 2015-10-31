@@ -28,7 +28,6 @@
 package com.kevinmacwhinnie.fonz;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Button;
@@ -37,6 +36,8 @@ import android.widget.TextView;
 
 import com.kevinmacwhinnie.fonz.data.Preferences;
 import com.kevinmacwhinnie.fonz.graph.GraphActivity;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
@@ -44,42 +45,45 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SettingsActivity extends GraphActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsActivity extends GraphActivity {
     @Bind(R.id.activity_settings_version_footer) TextView versionFooter;
     @Bind(R.id.activity_settings_tap_to_skip_piece) CheckBox tapToSkipPiece;
+    @Bind(R.id.activity_settings_prevent_duplicate_pieces) CheckBox preventDuplicatePieces;
 
-    @Inject SharedPreferences preferences;
+    @Inject Bus bus;
+    @Inject Preferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
+        bus.register(this);
 
         versionFooter.setText(getString(R.string.version_fmt,
                                         BuildConfig.VERSION_NAME,
                                         BuildConfig.BUILD_TYPE,
                                         BuildConfig.VERSION_CODE));
 
-        preferences.registerOnSharedPreferenceChangeListener(this);
-
-        final boolean tapToSkipEnabled = preferences.getBoolean(Preferences.SKIP_ON_UPCOMING_CLICK,
-                                                                true);
-        tapToSkipPiece.setChecked(tapToSkipEnabled);
+        tapToSkipPiece.setChecked(preferences.getSkipOnUpcomingClick());
+        preventDuplicatePieces.setChecked(preferences.getPreventDuplicatePieces());
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        preferences.unregisterOnSharedPreferenceChangeListener(this);
+        bus.unregister(this);
     }
 
     @OnClick(R.id.activity_settings_tap_to_skip_piece)
     public void onTapToSkipClicked(@NonNull CheckBox sender) {
-        preferences.edit()
-                   .putBoolean(Preferences.SKIP_ON_UPCOMING_CLICK, sender.isChecked())
-                   .apply();
+        preferences.setSkipOnUpcomingClick(sender.isChecked());
+    }
+
+    @OnClick(R.id.activity_settings_prevent_duplicate_pieces)
+    public void onPreventDuplicatePiecesClicked(@NonNull CheckBox sender) {
+        preferences.setPreventDuplicatePieces(sender.isChecked());
     }
 
     @OnClick(R.id.activity_settings_high_scores)
@@ -87,11 +91,12 @@ public class SettingsActivity extends GraphActivity implements SharedPreferences
         startActivity(new Intent(this, ScoresActivity.class));
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (Preferences.SKIP_ON_UPCOMING_CLICK.equals(key)) {
-            final boolean tapToSkipEnabled = preferences.getBoolean(key, true);
-            tapToSkipPiece.setChecked(tapToSkipEnabled);
-        }
+
+    @Subscribe public void onSkipOnUpcomingClickChanged(@NonNull Preferences.SkipOnUpcomingClickChanged event) {
+        tapToSkipPiece.setChecked(event.value);
+    }
+
+    @Subscribe public void onPreventDuplicatePiecesChanged(@NonNull Preferences.PreventDuplicatePiecesChanged event) {
+        preventDuplicatePieces.setChecked(event.value);
     }
 }
