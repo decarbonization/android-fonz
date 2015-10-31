@@ -17,7 +17,7 @@
             android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name"
-            android:theme="@style/Fonz.NoActionBar">
+            android:theme="@style/Fonz.Game">
 
             <intent-filter>
 

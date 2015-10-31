@@ -3,9 +3,13 @@
     <color name="background">#EEEEEE</color>
     <color name="background_dark">#BDBDBD</color>
 
-    <color name="color_primary">#7B1FA2</color>
-    <color name="color_primary_dark">#6A1B9A</color>
-    <color name="color_accent">#F57C00</color>
+    <color name="status_bar_game">#455A64</color>
+    <color name="background_game_base">#546E7A</color>
+    <color name="color_accent_game">#ffffff</color>
+
+    <color name="color_primary">#607D8B</color>
+    <color name="color_primary_dark">#546E7A</color>
+    <color name="color_accent">#03A9F4</color>
 
     <color name="transparent">@android:color/transparent</color>
     <color name="divider">@android:color/darker_gray</color>
@@ -15,9 +19,5 @@
     <color name="piece_orange">#F57C00</color>
     <color name="piece_green">#43A047</color>
 
-    <color name="timer_early">#2E7D32</color>
-    <color name="timer_first_mid">#558B2F</color>
-    <color name="timer_second_mid">#9E9D24</color>
-    <color name="timer_third_mid">#F9A825</color>
-    <color name="timer_late">#FF8F00</color>
+    <color name="timer_color">#CFD8DC</color>
 </resources>

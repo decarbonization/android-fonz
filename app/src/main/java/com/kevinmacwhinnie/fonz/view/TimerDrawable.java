@@ -29,14 +29,12 @@ package com.kevinmacwhinnie.fonz.view;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.R;
@@ -48,8 +46,6 @@ public class TimerDrawable extends Drawable {
 
     private final RectF drawingRect = new RectF();
     private final Paint fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-    private final @ColorInt int colors[];
     private final float inset;
 
     private int tick = 0;
@@ -57,16 +53,9 @@ public class TimerDrawable extends Drawable {
     public TimerDrawable(@NonNull Resources resources) {
         final int strokeSize = resources.getDimensionPixelSize(R.dimen.timer_stroke);
         fillPaint.setStyle(Paint.Style.STROKE);
-        fillPaint.setColor(Color.RED);
+        fillPaint.setColor(Drawing.getColor(resources, R.color.timer_color));
         fillPaint.setStrokeWidth(strokeSize);
 
-        this.colors = new int[] {
-                Drawing.getColor(resources, R.color.timer_early),
-                Drawing.getColor(resources, R.color.timer_first_mid),
-                Drawing.getColor(resources, R.color.timer_second_mid),
-                Drawing.getColor(resources, R.color.timer_third_mid),
-                Drawing.getColor(resources, R.color.timer_late),
-        };
         this.inset = strokeSize / 2f;
     }
 
@@ -108,7 +97,6 @@ public class TimerDrawable extends Drawable {
 
     public void setTick(int tick) {
         this.tick = tick;
-        fillPaint.setColor(colors[(tick - 1) / 2]);
         invalidateSelf();
     }
 

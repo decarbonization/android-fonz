@@ -15,10 +15,18 @@
         <item name="colorControlHighlight">@color/color_accent</item>
     </style>
 
-    <style name="Fonz.NoActionBar">
+    <style name="Fonz.Game">
+        <item name="android:windowBackground">@drawable/background_game</item>
+        <item name="android:statusBarColor" tools:ignore="NewApi">@color/status_bar_game</item>
+
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:statusBarColor" tools:ignore="NewApi">@color/background_dark</item>
+
+        <item name="android:textColorPrimary">#FAFAFA</item>
+        <item name="android:textColorSecondary">#EEEEEE</item>
+        <item name="android:textColorPrimaryInverse">#212121</item>
+        <item name="android:textColorSecondaryInverse">#424242</item>
+        <item name="colorAccent">@color/color_accent_game</item>
     </style>
 
     <style name="Fonz.AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
