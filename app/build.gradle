@@ -3,7 +3,7 @@ import java.text.SimpleDateFormat
 apply plugin: 'com.android.application'
 
 def generateVersionCode() {
-    def formatter = new SimpleDateFormat("yyyyMMddhh")
+    def formatter = new SimpleDateFormat("yyyyMMddHH")
     def now = new Date()
     return Integer.parseInt(formatter.format(now))
 }
@@ -24,6 +24,30 @@ android {
         targetSdkVersion 23
         versionCode generateVersionCode()
         versionName generateVersionName()
+    }
+    signingConfigs {
+        def propertiesFile = project.rootProject.file('signing.properties')
+        if (!propertiesFile.exists()) {
+            logger.warn('No signing.properties file, using default keystore')
+            return
+        }
+
+        def properties = new Properties()
+        properties.load((InputStream) propertiesFile.newDataInputStream())
+
+        def keyStoreHome = properties.getProperty('keyStoreHome')
+        debug {
+            storeFile new File(keyStoreHome, properties.getProperty("debugKeyStoreName"))
+            storePassword properties.getProperty("debugKeyStorePassword")
+            keyAlias properties.getProperty("debugKeyStoreAlias")
+            keyPassword properties.getProperty("debugKeyStorePassword")
+        }
+        release {
+            storeFile new File(keyStoreHome, properties.getProperty("releaseKeyStoreName"))
+            storePassword properties.getProperty("releaseKeyStorePassword")
+            keyAlias properties.getProperty("releaseKeyStoreAlias")
+            keyPassword properties.getProperty("releaseKeyStorePassword")
+        }
     }
     lintOptions {
         disable 'InvalidPackage'

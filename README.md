@@ -4,6 +4,32 @@
 
 A clone of the iconfactory's excellent [Freznic](http://frenzic.com/) game for Android.
 
+# Signing
+
+The Fonz project pulls all signing information out of a properties file named `signing.properties`
+placed in the root directory. The properties file specifies the location of your keystore files,
+what they're called, and the information necessary to load them.
+
+```properties
+# An example `signing.properties`
+
+keyStoreHome=path/to/your/keystores
+
+debugKeyStoreName=debug.keystore
+debugKeyStoreAlias=debug
+debugKeyStorePassword=supersecret
+
+releaseKeyStoreName=release.keystore
+releaseKeyStoreAlias=release
+releaseKeyStorePassword=supersecret
+```
+
+The matching keystore directory layout for the example `signing.properties` is as follows:
+
+- `keystores/`
+    + `debug.keystore`
+    + `release.keystore`
+
 # License
 
     Copyright (c) 2015, Peter 'Kevin' MacWhinnie
