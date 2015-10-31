@@ -38,10 +38,9 @@ public class Sounds {
     }
 
     public void playForbiddenPlacement() {
-        vibrator.vibrate(50L);
+        vibrator.vibrate(100L);
     }
 
     public void playGameOver() {
-        vibrator.vibrate(new long[] {100L, 100L, 200L, 100L, 300L, 100L}, -1);
     }
 }
