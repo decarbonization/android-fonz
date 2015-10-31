@@ -46,7 +46,6 @@ import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
 import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Pie;
 import com.kevinmacwhinnie.fonz.view.util.Animations;
-import com.kevinmacwhinnie.fonz.view.util.PieceDrawing;
 import com.kevinmacwhinnie.fonz.view.util.Views;
 
 import is.hello.go99.animators.AnimatorContext;
@@ -86,8 +85,6 @@ public class BoardView extends LinearLayout
         final LayoutInflater inflater = LayoutInflater.from(context);
         inflater.inflate(R.layout.view_game_board, this, true);
 
-        final PieceDrawing pieceDrawing = new PieceDrawing(getResources());
-
         this.pieViews = new PieView[] {
                 (PieView) findViewById(R.id.view_game_board_pie_left_top),
                 (PieView) findViewById(R.id.view_game_board_pie_center_top),
@@ -99,7 +96,6 @@ public class BoardView extends LinearLayout
         for (int i = 0, length = pieViews.length; i < length; i++) {
             final PieView pieView = pieViews[i];
             pieView.setTag(R.id.view_board_pie_slot_tag, i);
-            pieView.setPieceDrawing(pieceDrawing);
             pieView.setOnClickListener(ON_PIE_CLICKED);
         }
 
@@ -116,9 +112,8 @@ public class BoardView extends LinearLayout
 
         this.upcomingPieceView = (UpcomingPieceView) findViewById(R.id.view_game_board_upcoming_piece);
         upcomingPieceView.setOnClickListener(ON_UPCOMING_PIE_CLICKED);
-        upcomingPieceView.setPieceDrawing(pieceDrawing);
 
-        this.placementPieceDrawable = new PieceDrawable(this, pieceDrawing);
+        this.placementPieceDrawable = new PieceDrawable(this, getResources());
     }
 
     public void destroy() {

@@ -26,26 +26,90 @@
  */
 package com.kevinmacwhinnie.fonz.data;
 
-import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 
 import com.kevinmacwhinnie.fonz.R;
+import com.kevinmacwhinnie.fonz.state.Pie;
 
 public enum Piece {
-    ORANGE(R.color.piece_orange, R.string.accessibility_piece_orange),
-    GREEN(R.color.piece_green, R.string.accessibility_piece_green),
-    PURPLE(R.color.piece_purple, R.string.accessibility_piece_purple),
-    EMPTY(R.color.transparent, R.string.accessibility_piece_empty);
+    ORANGE(R.string.accessibility_piece_orange) {
+        @Override
+        public @DrawableRes int getSlotDrawable(@Pie.Slot int forSlot) {
+            switch (forSlot) {
+                case Pie.SLOT_TOP_LEFT:
+                    return R.drawable.piece_top_left_orange;
+                case Pie.SLOT_TOP_CENTER:
+                    return R.drawable.piece_top_center_orange;
+                case Pie.SLOT_TOP_RIGHT:
+                    return R.drawable.piece_top_right_orange;
+                case Pie.SLOT_BOTTOM_LEFT:
+                    return R.drawable.piece_bottom_left_orange;
+                case Pie.SLOT_BOTTOM_CENTER:
+                    return R.drawable.piece_bottom_center_orange;
+                case Pie.SLOT_BOTTOM_RIGHT:
+                    return R.drawable.piece_bottom_right_orange;
+                default:
+                    throw new IllegalArgumentException("unknown slot " + forSlot);
+            }
+        }
+    },
+    GREEN(R.string.accessibility_piece_green) {
+        @Override
+        public @DrawableRes int getSlotDrawable(@Pie.Slot int forSlot) {
+            switch (forSlot) {
+                case Pie.SLOT_TOP_LEFT:
+                    return R.drawable.piece_top_left_green;
+                case Pie.SLOT_TOP_CENTER:
+                    return R.drawable.piece_top_center_green;
+                case Pie.SLOT_TOP_RIGHT:
+                    return R.drawable.piece_top_right_green;
+                case Pie.SLOT_BOTTOM_LEFT:
+                    return R.drawable.piece_bottom_left_green;
+                case Pie.SLOT_BOTTOM_CENTER:
+                    return R.drawable.piece_bottom_center_green;
+                case Pie.SLOT_BOTTOM_RIGHT:
+                    return R.drawable.piece_bottom_right_green;
+                default:
+                    throw new IllegalArgumentException("unknown slot " + forSlot);
+            }
+        }
+    },
+    PURPLE(R.string.accessibility_piece_purple) {
+        @Override
+        public @DrawableRes int getSlotDrawable(@Pie.Slot int forSlot) {
+            switch (forSlot) {
+                case Pie.SLOT_TOP_LEFT:
+                    return R.drawable.piece_top_left_purple;
+                case Pie.SLOT_TOP_CENTER:
+                    return R.drawable.piece_top_center_purple;
+                case Pie.SLOT_TOP_RIGHT:
+                    return R.drawable.piece_top_right_purple;
+                case Pie.SLOT_BOTTOM_LEFT:
+                    return R.drawable.piece_bottom_left_purple;
+                case Pie.SLOT_BOTTOM_CENTER:
+                    return R.drawable.piece_bottom_center_purple;
+                case Pie.SLOT_BOTTOM_RIGHT:
+                    return R.drawable.piece_bottom_right_purple;
+                default:
+                    throw new IllegalArgumentException("unknown slot " + forSlot);
+            }
+        }
+    },
+    EMPTY(R.string.accessibility_piece_empty) {
+        @Override
+        public @DrawableRes int getSlotDrawable(@Pie.Slot int forSlot) {
+            return 0;
+        }
+    };
 
     public static final int NUMBER_COLORS = 3;
     public static final Piece[] COLORS = { ORANGE, GREEN, PURPLE };
 
-    public @ColorRes int color;
-    public @StringRes int accessibilityName;
+    public final @StringRes int accessibilityName;
+    public abstract @DrawableRes int getSlotDrawable(@Pie.Slot int forSlot);
 
-    Piece(@ColorRes int color,
-          @StringRes int accessibilityName) {
-        this.color = color;
+    Piece(@StringRes int accessibilityName) {
         this.accessibilityName = accessibilityName;
     }
 }

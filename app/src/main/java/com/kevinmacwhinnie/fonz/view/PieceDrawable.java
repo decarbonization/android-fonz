@@ -27,56 +27,50 @@
 
 package com.kevinmacwhinnie.fonz.view;
 
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
-import android.graphics.Paint;
 import android.graphics.PixelFormat;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.v4.content.res.ResourcesCompat;
 
 import com.kevinmacwhinnie.fonz.data.Piece;
 import com.kevinmacwhinnie.fonz.state.Pie;
-import com.kevinmacwhinnie.fonz.view.util.PieceDrawing;
 
 public class PieceDrawable extends Drawable {
     private final PieceProvider provider;
-    private final PieceDrawing pieceDrawing;
-    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Resources resources;
 
     public PieceDrawable(@NonNull PieceProvider provider,
-                         @NonNull PieceDrawing pieceDrawing) {
+                         @NonNull Resources resources) {
         this.provider = provider;
-        this.pieceDrawing = pieceDrawing;
+        this.resources = resources;
     }
 
     @Override
     public void draw(Canvas canvas) {
-        final int saveCount = canvas.save();
-        final Rect bounds = getBounds();
-        canvas.translate(bounds.left, bounds.top);
-
         for (@Pie.Slot int slot = Pie.SLOT_TOP_LEFT; slot < Pie.NUMBER_SLOTS; slot++) {
             final Piece piece = provider.getPiece(slot);
             if (piece == Piece.EMPTY) {
                 continue;
             }
 
-            pieceDrawing.draw(slot, piece, canvas, paint);
+            final @DrawableRes int drawableRes = piece.getSlotDrawable(slot);
+            final Drawable drawable = ResourcesCompat.getDrawable(resources, drawableRes, null);
+            assert drawable != null;
+            drawable.setBounds(getBounds());
+            drawable.draw(canvas);
         }
-        canvas.restoreToCount(saveCount);
     }
 
     @Override
     public void setAlpha(int alpha) {
-        paint.setAlpha(alpha);
-        invalidateSelf();
     }
 
     @Override
     public void setColorFilter(ColorFilter colorFilter) {
-        paint.setColorFilter(colorFilter);
-        invalidateSelf();
     }
 
     @Override

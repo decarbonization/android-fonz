@@ -39,7 +39,6 @@ import android.view.View;
 import com.kevinmacwhinnie.fonz.R;
 import com.kevinmacwhinnie.fonz.data.Piece;
 import com.kevinmacwhinnie.fonz.state.Pie;
-import com.kevinmacwhinnie.fonz.view.util.PieceDrawing;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -47,8 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PieView extends View implements PieceDrawable.PieceProvider {
-
-    private PieceDrawable pieceDrawable;
+    private final PieceDrawable pieceDrawable;
     private Pie pie;
 
 
@@ -70,6 +68,8 @@ public class PieView extends View implements PieceDrawable.PieceProvider {
         setAccessibilityLiveRegion(ACCESSIBILITY_LIVE_REGION_ASSERTIVE);
         setWillNotDraw(true);
         setSoundEffectsEnabled(false);
+
+        this.pieceDrawable = new PieceDrawable(this, getResources());
     }
 
     //endregion
@@ -95,17 +95,6 @@ public class PieView extends View implements PieceDrawable.PieceProvider {
 
 
     //region Attributes
-
-    public void setPieceDrawing(@Nullable PieceDrawing pieceDrawing) {
-        if (pieceDrawing != null) {
-            this.pieceDrawable = new PieceDrawable(this, pieceDrawing);
-            pieceDrawable.setBounds(0, 0, getWidth(), getHeight());
-        } else {
-            this.pieceDrawable = null;
-        }
-
-        setWillNotDraw(pieceDrawing == null || pie == null);
-    }
 
     public void setPie(@Nullable Pie pie) {
         if (this.pie != null) {

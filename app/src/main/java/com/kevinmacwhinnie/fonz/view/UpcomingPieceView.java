@@ -42,13 +42,12 @@ import com.kevinmacwhinnie.fonz.R;
 import com.kevinmacwhinnie.fonz.data.Piece;
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
 import com.kevinmacwhinnie.fonz.state.Pie;
-import com.kevinmacwhinnie.fonz.view.util.PieceDrawing;
 
 public class UpcomingPieceView extends View implements PieceDrawable.PieceProvider {
     private final TimerDrawable timerDrawable;
     private final int pieceInset;
+    private final PieceDrawable pieceDrawable;
 
-    private PieceDrawable pieceDrawable;
     private @Nullable UpcomingPiece upcomingPiece;
 
 
@@ -74,6 +73,8 @@ public class UpcomingPieceView extends View implements PieceDrawable.PieceProvid
         final Drawable[] layers = { timerDrawable, pie };
         final LayerDrawable background = new LayerDrawable(layers);
         background.setLayerInset(1, pieceInset, pieceInset, pieceInset, pieceInset);
+
+        this.pieceDrawable = new PieceDrawable(this, resources);
 
         setBackground(background);
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
@@ -104,17 +105,6 @@ public class UpcomingPieceView extends View implements PieceDrawable.PieceProvid
 
 
     //region Attributes
-
-    public void setPieceDrawing(@Nullable PieceDrawing pieceDrawing) {
-        if (pieceDrawing != null) {
-            this.pieceDrawable = new PieceDrawable(this, pieceDrawing);
-            pieceDrawable.setBounds(0, 0, getWidth(), getHeight());
-        } else {
-            this.pieceDrawable = null;
-        }
-
-        setWillNotDraw(pieceDrawable == null || upcomingPiece == null);
-    }
 
     public void setUpcomingPiece(@Nullable UpcomingPiece upcomingPiece) {
         this.upcomingPiece = upcomingPiece;
