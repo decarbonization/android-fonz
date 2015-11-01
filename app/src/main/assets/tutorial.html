@@ -1,0 +1,92 @@
+<!--
+  ~ Copyright (c) 2015, Peter 'Kevin' MacWhinnie
+  ~ All rights reserved.
+  ~
+  ~ Redistribution and use in source and binary forms, with or without
+  ~ modification, are permitted provided that the following conditions are met:
+  ~
+  ~ 1. Redistributions may not be sold, nor may they be used in a commercial
+  ~    product or activity.
+  ~ 2. Redistributions of source code must retain the above copyright notice, this
+  ~    list of conditions and the following disclaimer.
+  ~ 3. Redistributions in binary form must reproduce the above copyright notice,
+  ~    this list of conditions and the following disclaimer in the documentation
+  ~    and/or other materials provided with the distribution.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ~ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  ~ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  ~ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+  ~ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  ~ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  ~ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  ~ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Fonz Tutorial</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            body {
+                font: 13px "Roboto", sans-serif;
+                padding: 16px;
+                margin: 0;
+                background-color: #EEEEEE;
+            }
+            .header {
+                color: #607D8B;
+                font-weight: bold;
+            }
+            p {
+                margin-bottom: 15px;
+            }
+        </style>
+    </head>
+    <body>
+        <span class="header">Goal</span>
+        <p>
+            To score points, place six pieces into pies to create complete circles. In order to
+            successfully place a piece, there must be an open section of the pie that matches
+            the shape of the piece. Do this as quickly as you can, the clock is ticking!
+        </p>
+
+        <span class="header">Scoring</span>
+        <p>
+            When you complete a pie, you get 5 points per piece. If all of the pieces are the same
+            color, the score per piece is increased to 10. For every pie completed with more than
+            one color, you will score 30 points, and for every pie completed with just one color,
+            you will score 60 points.
+        </p>
+
+        <span class="header">Power Ups</span>
+        <p>
+            When you complete a pie with a single color that has a power up above it, that power up
+            immediately becomes available. The three power ups are:
+            <ul>
+                <li>
+                    <i>2x</i>:
+                    all points you score while this power up is active will be multiplied by 2.
+                </li>
+                <li>
+                    <i>The Bomb</i>:
+                    clicking this power up will clear the game board of all pieces. You will receive
+                    no points for the pieces cleared.
+                </li>
+                <li>
+                    <i>Slow Down</i>:
+                    decreases the speed of the count up by a factor of 2.
+                </li>
+            </ul>
+            All power ups are valid for 15 seconds.
+        </p>
+
+        <span class="header">Tips</span>
+        <p>
+            Some aspects of game play can be tweaked in the Settings screen.
+        </p>
+    </body>
+</html>

@@ -29,11 +29,30 @@ package com.kevinmacwhinnie.fonz;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.webkit.WebView;
+
+import com.kevinmacwhinnie.fonz.view.util.Drawing;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class HelpActivity extends AppCompatActivity {
+    @Bind(R.id.activity_help_web_view) WebView webView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
+        ButterKnife.bind(this);
+
+        webView.setBackgroundColor(Drawing.getColor(getResources(), R.color.background));
+        webView.loadUrl("file:///android_asset/tutorial.html");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        webView.destroy();
     }
 }
