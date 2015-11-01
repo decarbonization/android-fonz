@@ -48,6 +48,7 @@ public class UpcomingPieceView extends View implements PieceDrawable.PieceProvid
     private final int pieceInset;
     private final PieceDrawable pieceDrawable;
 
+    private boolean isPaused = false;
     private @Nullable UpcomingPiece upcomingPiece;
 
 
@@ -121,10 +122,16 @@ public class UpcomingPieceView extends View implements PieceDrawable.PieceProvid
         timerDrawable.setTick(tick);
     }
 
+    public void setPaused(boolean isPaused) {
+        this.isPaused = isPaused;
+        setClickable(!isPaused);
+        invalidate();
+    }
+
     @NonNull
     @Override
     public Piece getPiece(@Pie.Slot int slot) {
-        if (upcomingPiece != null && slot == upcomingPiece.slot) {
+        if (!isPaused && upcomingPiece != null && slot == upcomingPiece.slot) {
             return upcomingPiece.piece;
         } else {
             return Piece.EMPTY;

@@ -30,6 +30,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import com.kevinmacwhinnie.fonz.events.BaseEvent;
 import com.squareup.otto.Bus;
@@ -68,6 +69,11 @@ public class CountUp implements Handler.Callback {
 
     public long getTickDuration() {
         return tickDuration;
+    }
+
+    @VisibleForTesting
+    int getTickCurrent() {
+        return tickCurrent;
     }
 
     public void start() {

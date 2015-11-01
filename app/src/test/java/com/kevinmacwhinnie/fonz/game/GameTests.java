@@ -212,6 +212,34 @@ public class GameTests extends FonzTestCase {
     }
 
     @Test
+    public void pause() {
+        final Scheduler scheduler = Robolectric.getForegroundThreadScheduler();
+        scheduler.pause();
+
+        game.newGame();
+        scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * 2L);
+
+        final int beforePause = game.countUp.getTickCurrent();
+        game.pause();
+        assertThat(game.isPaused(), is(true));
+
+        scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * 2L);
+        assertThat(game.countUp.getTickCurrent(), is(equalTo(beforePause)));
+
+        game.resume();
+        assertThat(game.isPaused(), is(false));
+
+        scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * 2L);
+        assertThat(game.countUp.getTickCurrent(), is(not(equalTo(beforePause))));
+
+        game.pause();
+        assertThat(game.isPaused(), is(true));
+
+        game.gameOver(Game.GameOver.How.GAME_LOGIC);
+        assertThat(game.isPaused(), is(false));
+    }
+
+    @Test
     public void gameOver() {
         game.newGame();
 

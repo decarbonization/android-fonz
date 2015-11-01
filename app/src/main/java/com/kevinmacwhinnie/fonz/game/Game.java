@@ -34,6 +34,7 @@ import android.util.Log;
 import com.kevinmacwhinnie.fonz.data.PowerUp;
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
 import com.kevinmacwhinnie.fonz.events.BaseEvent;
+import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
 import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Life;
 import com.kevinmacwhinnie.fonz.state.Pie;
@@ -55,6 +56,7 @@ public class Game {
 
     private final PieceFactory pieceFactory = new PieceFactory();
     private boolean inProgress = false;
+    private boolean isPaused = false;
     @VisibleForTesting UpcomingPiece upcomingPiece;
 
 
@@ -85,6 +87,10 @@ public class Game {
 
     public boolean isInProgress() {
         return inProgress;
+    }
+
+    public boolean isPaused() {
+        return isPaused;
     }
 
     public @Nullable UpcomingPiece getUpcomingPiece() {
@@ -127,6 +133,7 @@ public class Game {
         board.reset();
 
         this.inProgress = false;
+        this.isPaused = false;
         this.upcomingPiece = null;
     }
 
@@ -186,6 +193,28 @@ public class Game {
             } else {
                 gameOver(GameOver.How.GAME_LOGIC);
             }
+        }
+    }
+
+    public void pause() {
+        Log.d(LOG_TAG, "pause()");
+
+        if (!isPaused) {
+            countUp.pause();
+            this.isPaused = true;
+
+            bus.post(new PauseStateChanged(true));
+        }
+    }
+
+    public void resume() {
+        Log.d(LOG_TAG, "resume()");
+
+        if (isPaused) {
+            countUp.resume();
+            this.isPaused = false;
+
+            bus.post(new PauseStateChanged(false));
         }
     }
 
@@ -325,5 +354,11 @@ public class Game {
 
     public static class UpcomingPieceAvailable extends BaseEvent {
         static final UpcomingPieceAvailable INSTANCE = new UpcomingPieceAvailable();
+    }
+
+    public static class PauseStateChanged extends ValueBaseEvent<Boolean> {
+        public PauseStateChanged(boolean value) {
+            super(value);
+        }
     }
 }

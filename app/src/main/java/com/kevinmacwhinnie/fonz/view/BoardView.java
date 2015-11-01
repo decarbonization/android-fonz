@@ -148,6 +148,22 @@ public class BoardView extends LinearLayout
         }
     }
 
+    public void setPaused(boolean isPaused) {
+        upcomingPieceView.setPaused(isPaused);
+
+        for (final ImageButton powerUpButton : powerUpButtons) {
+            powerUpButton.setClickable(!isPaused);
+        }
+        for (final PieView pieView : pieViews) {
+            pieView.setClickable(!isPaused);
+        }
+
+
+        if (placementAnimator != null) {
+            placementAnimator.cancel();
+        }
+    }
+
     public void setPowerUpAvailable(@NonNull PowerUp powerUp, boolean available) {
         final int position = powerUp.ordinal();
         powerUpButtons[position].setEnabled(available);

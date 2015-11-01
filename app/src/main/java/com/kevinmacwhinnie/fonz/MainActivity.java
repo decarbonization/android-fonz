@@ -51,6 +51,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 import is.hello.go99.animators.AnimatorContext;
 import is.hello.go99.animators.OnAnimationCompleted;
 
@@ -81,10 +82,18 @@ public class MainActivity extends GraphActivity
         boardView.setBoard(game.board);
         boardView.setUpcomingPiece(game.getUpcomingPiece());
         boardView.setAnimatorContext(getAnimatorContext());
+        boardView.setPaused(game.isPaused());
         boardView.setListener(this);
 
         game.setPreventDuplicatePieces(preferences.getPreventDuplicatePieces());
         game.bus.register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        game.pause();
     }
 
     @Override
@@ -125,12 +134,22 @@ public class MainActivity extends GraphActivity
         // Do nothing for now.
     }
 
+    @Subscribe public void onPauseStateChanged(@NonNull Game.PauseStateChanged change) {
+        final boolean isPaused = change.value;
+        boardView.setPaused(isPaused);
+        if (isPaused) {
+            gameToggle.setText(R.string.action_resume_game);
+        } else {
+            gameToggle.setText(R.string.action_pause_game);
+        }
+    }
+
     @Subscribe public void onCountUpTicked(@NonNull CountUp.Ticked tick) {
         boardView.setTick(tick.getValue());
     }
 
     @Subscribe public void onNewGame(@NonNull Game.NewGame ignored) {
-        gameToggle.setText(R.string.action_end_game);
+        gameToggle.setText(R.string.action_pause_game);
         boardView.setTick(1);
     }
 
@@ -138,6 +157,7 @@ public class MainActivity extends GraphActivity
         gameToggle.setText(R.string.action_new_game);
         boardView.setUpcomingPiece(null);
         boardView.setTick(0);
+        boardView.setPaused(false);
         for (final PowerUp powerUp : PowerUp.values()) {
             boardView.setPowerUpAvailable(powerUp, false);
         }
@@ -215,9 +235,23 @@ public class MainActivity extends GraphActivity
     @OnClick(R.id.activity_main_game_state_control)
     public void onGameControlClicked(@NonNull Button sender) {
         if (game.isInProgress()) {
-            game.gameOver(Game.GameOver.How.USER_INTERVENTION);
+            if (game.isPaused()) {
+                game.resume();
+            } else {
+                game.pause();
+            }
         } else {
             game.newGame();
+        }
+    }
+
+    @OnLongClick(R.id.activity_main_game_state_control)
+    public boolean onGameControlLongClicked(@NonNull Button sender) {
+        if (game.isInProgress()) {
+            game.gameOver(Game.GameOver.How.USER_INTERVENTION);
+            return true;
+        } else {
+            return false;
         }
     }
 
