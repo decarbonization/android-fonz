@@ -26,6 +26,7 @@
  */
 package com.kevinmacwhinnie.fonz.state;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.FonzTestCase;
@@ -124,5 +125,23 @@ public class ScoreTests extends FonzTestCase {
         score.reset();
         assertThat(events, hasItem(new Score.Changed(0)));
         assertThat(score.getValue(), is(equalTo(0)));
+    }
+
+    @Test
+    public void serialization() {
+        final Score outScore = new Score(bus);
+        outScore.setMultiplier(5f);
+        outScore.addPie(true);
+        outScore.addPie(true);
+        outScore.addPie(true);
+
+        final Bundle savedState = new Bundle();
+        outScore.saveState(savedState);
+
+        final Score inScore = new Score(bus);
+        inScore.restoreState(savedState);
+
+        assertThat(inScore.getMultiplier(), is(equalTo(outScore.getMultiplier())));
+        assertThat(inScore.getValue(), is(equalTo(outScore.getValue())));
     }
 }

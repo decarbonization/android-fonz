@@ -26,6 +26,7 @@
  */
 package com.kevinmacwhinnie.fonz.state;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.FonzTestCase;
@@ -40,6 +41,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -106,5 +108,20 @@ public class LifeTests extends FonzTestCase {
         assertThat(events, hasItem(new Life.Changed(5)));
 
         assertThat(life.isAlive(), is(true));
+    }
+
+    @Test
+    public void serialization() {
+        final Life outLife = new Life(bus);
+        outLife.increment();
+        outLife.increment();
+
+        final Bundle savedState = new Bundle();
+        outLife.saveState(savedState);
+
+        final Life inLife = new Life(bus);
+        inLife.restoreState(savedState);
+
+        assertThat(inLife.getValue(), is(equalTo(outLife.getValue())));
     }
 }

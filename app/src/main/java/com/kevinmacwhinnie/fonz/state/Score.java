@@ -26,12 +26,17 @@
  */
 package com.kevinmacwhinnie.fonz.state;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.kevinmacwhinnie.fonz.data.GamePersistence;
 import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
 import com.squareup.otto.Bus;
 
-public class Score {
+public class Score implements GamePersistence {
+    static final String SAVED_VALUE = Score.class.getName() + ".SAVED_VALUE";
+    static final String SAVED_MULTIPLIER = Score.class.getName() + ".SAVED_MULTIPLIER";
+
     public static final int SCORE_PER_PIECE = 5;
 
     private final Bus bus;
@@ -40,6 +45,18 @@ public class Score {
 
     public Score(@NonNull Bus bus) {
         this.bus = bus;
+    }
+
+    @Override
+    public void restoreState(@NonNull Bundle inState) {
+        this.value = inState.getInt(SAVED_VALUE);
+        this.multiplier = inState.getFloat(SAVED_MULTIPLIER);
+    }
+
+    @Override
+    public void saveState(@NonNull Bundle outState) {
+        outState.putInt(SAVED_VALUE, value);
+        outState.putFloat(SAVED_MULTIPLIER, multiplier);
     }
 
     public void addPie(boolean allSameColor) {

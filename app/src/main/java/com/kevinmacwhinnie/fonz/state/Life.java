@@ -26,12 +26,16 @@
  */
 package com.kevinmacwhinnie.fonz.state;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.kevinmacwhinnie.fonz.data.GamePersistence;
 import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
 import com.squareup.otto.Bus;
 
-public class Life {
+public class Life implements GamePersistence {
+    static final String SAVED_VALUE = Life.class.getName() + ".SAVED_VALUE";
+
     public static int INITIAL_VALUE = 5;
 
     private final Bus bus;
@@ -39,6 +43,16 @@ public class Life {
 
     public Life(@NonNull Bus bus) {
         this.bus = bus;
+    }
+
+    @Override
+    public void restoreState(@NonNull Bundle inState) {
+        this.value = inState.getInt(SAVED_VALUE);
+    }
+
+    @Override
+    public void saveState(@NonNull Bundle outState) {
+        outState.putInt(SAVED_VALUE, value);
     }
 
     public int getValue() {

@@ -26,6 +26,7 @@
  */
 package com.kevinmacwhinnie.fonz.state;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.FonzTestCase;
@@ -160,5 +161,21 @@ public class PieTests extends FonzTestCase {
         pie.tryPlacePiece(Pie.SLOT_BOTTOM_RIGHT, Piece.ORANGE);
 
         assertThat(pie.isSingleColor(), is(true));
+    }
+
+    @Test
+    public void serialization() {
+        final Pie outPie = new Pie(bus);
+        outPie.tryPlacePiece(Pie.SLOT_TOP_LEFT, Piece.ORANGE);
+        outPie.tryPlacePiece(Pie.SLOT_TOP_RIGHT, Piece.PURPLE);
+        outPie.tryPlacePiece(Pie.SLOT_BOTTOM_CENTER, Piece.GREEN);
+
+        final Bundle savedState = new Bundle();
+        outPie.saveState(savedState);
+
+        final Pie inPie = new Pie(bus);
+        inPie.restoreState(savedState);
+
+        assertThat(inPie, is(equalTo(outPie)));
     }
 }

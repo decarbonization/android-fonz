@@ -26,6 +26,7 @@
  */
 package com.kevinmacwhinnie.fonz.state;
 
+import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,6 +34,7 @@ import android.support.annotation.StringRes;
 import android.support.annotation.VisibleForTesting;
 
 import com.kevinmacwhinnie.fonz.R;
+import com.kevinmacwhinnie.fonz.data.GamePersistence;
 import com.kevinmacwhinnie.fonz.data.Piece;
 import com.kevinmacwhinnie.fonz.events.BaseEvent;
 import com.squareup.otto.Bus;
@@ -43,7 +45,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Arrays;
 
-public class Pie {
+public class Pie implements GamePersistence {
+    static final String SAVED_SLOTS = Pie.class.getName() + ".SAVED_SLOTS";
+    static final String SAVED_OCCUPIED_SLOTS = Pie.class.getName() + ".SAVED_OCCUPIED_SLOTS";
+
     public static final int NUMBER_SLOTS = 6;
 
     public static final int SLOT_TOP_LEFT = 0;
@@ -82,6 +87,23 @@ public class Pie {
         for (@Slot int i = SLOT_TOP_LEFT; i < NUMBER_SLOTS; i++) {
             this.slots[i] = Piece.EMPTY;
         }
+    }
+
+    @Override
+    public void restoreState(@NonNull Bundle inState) {
+        final Piece[] savedSlots = (Piece[]) inState.getSerializable(SAVED_SLOTS);
+        assert savedSlots != null;
+        for (int i = 0, length = savedSlots.length; i < length; i++) {
+            this.slots[i] = savedSlots[i];
+        }
+
+        this.occupiedSlots = inState.getInt(SAVED_OCCUPIED_SLOTS);
+    }
+
+    @Override
+    public void saveState(@NonNull Bundle outState) {
+        outState.putSerializable(SAVED_SLOTS, slots);
+        outState.putInt(SAVED_OCCUPIED_SLOTS, occupiedSlots);
     }
 
     public boolean canPlacePiece(@Pie.Slot int slot, @NonNull Piece piece) {
@@ -144,6 +166,23 @@ public class Pie {
         }
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final Pie pie = (Pie) o;
+        return (occupiedSlots == pie.occupiedSlots &&
+                Arrays.equals(slots, pie.slots));
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Arrays.hashCode(slots);
+        result = 31 * result + occupiedSlots;
+        return result;
+    }
 
     @Override
     public String toString() {

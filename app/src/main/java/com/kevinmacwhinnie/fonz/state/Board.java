@@ -26,16 +26,22 @@
  */
 package com.kevinmacwhinnie.fonz.state;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.kevinmacwhinnie.fonz.data.GamePersistence;
 import com.kevinmacwhinnie.fonz.data.PowerUp;
 import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
 import com.squareup.otto.Bus;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Iterator;
 
-public class Board {
+public class Board implements GamePersistence {
+    static final String SAVED_PIES = Board.class.getName() + ".SAVED_PIES";
+    static final String SAVED_POWER_UPS = Board.class.getName() + ".SAVED_POWER_UPS";
+
     public static final int NUMBER_PIES = 6;
 
     public final Bus bus;
@@ -49,6 +55,34 @@ public class Board {
         for (int slot = 0; slot < NUMBER_PIES; slot++) {
             this.pies[slot] = new Pie(bus);
         }
+    }
+
+    @Override
+    public void restoreState(@NonNull Bundle inState) {
+        final ArrayList<Bundle> savedPieStates = inState.getParcelableArrayList(SAVED_PIES);
+        assert savedPieStates != null;
+        for (int i = 0, length = savedPieStates.size(); i < length; i++) {
+            final Bundle savedPieState = savedPieStates.get(i);
+            pies[i].restoreState(savedPieState);
+        }
+        @SuppressWarnings("unchecked")
+        final EnumSet<PowerUp> savedPowerUps =
+                (EnumSet<PowerUp>) inState.getSerializable(SAVED_POWER_UPS);
+        assert savedPowerUps != null;
+        powerUps.clear();
+        powerUps.addAll(savedPowerUps);
+    }
+
+    @Override
+    public void saveState(@NonNull Bundle outState) {
+        final ArrayList<Bundle> savedPies = new ArrayList<>(pies.length);
+        for (final Pie pie : pies) {
+            final Bundle outPieState = new Bundle();
+            pie.saveState(outPieState);
+            savedPies.add(outPieState);
+        }
+        outState.putParcelableArrayList(SAVED_PIES, savedPies);
+        outState.putSerializable(SAVED_POWER_UPS, powerUps);
     }
 
     public int getSlot(@NonNull Pie pie) {

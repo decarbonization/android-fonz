@@ -24,28 +24,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package com.kevinmacwhinnie.fonz.data;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.kevinmacwhinnie.fonz.state.Pie;
-
-import java.io.Serializable;
-
-public class UpcomingPiece implements Serializable {
-    public final Piece piece;
-    public final @Pie.Slot int slot;
-
-    public UpcomingPiece(@NonNull Piece piece, @Pie.Slot int slot) {
-        this.piece = piece;
-        this.slot = slot;
-    }
-
-    @Override
-    public String toString() {
-        return "UpcomingPiece{" +
-                "piece=" + piece +
-                ", slot=" + slot +
-                '}';
-    }
+/**
+ * Defines the contract that game state objects should implement
+ * in order to have their state persisted across application runs.
+ * <p>
+ * All keys read and written to state {@code Bundle}s should be prefixed
+ * with the class's name. {@code Bundle}s may be shared to conserve on space.
+ */
+public interface GamePersistence {
+    void restoreState(@NonNull Bundle inState);
+    void saveState(@NonNull Bundle outState);
 }
