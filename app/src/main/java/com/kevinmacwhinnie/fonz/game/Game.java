@@ -87,6 +87,8 @@ public class Game implements GamePersistence {
             return;
         }
 
+        Log.d(LOG_TAG, "restoreState()");
+
         this.inProgress = inState.getBoolean(SAVED_IN_PROGRESS, false);
         if (inProgress) {
             countUp.restoreState(inState);
@@ -105,6 +107,8 @@ public class Game implements GamePersistence {
 
     @Override
     public void saveState(@NonNull Bundle outState) {
+        Log.d(LOG_TAG, "saveState()");
+
         outState.putBoolean(SAVED_IN_PROGRESS, inProgress);
         if (inProgress) {
             countUp.saveState(outState);

@@ -91,8 +91,7 @@ public class CountUp implements Handler.Callback, GamePersistence {
         return tickDuration;
     }
 
-    @VisibleForTesting
-    int getTickCurrent() {
+    public int getTickCurrent() {
         return tickCurrent;
     }
 

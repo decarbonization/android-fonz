@@ -65,7 +65,7 @@ public class MainActivity extends GraphActivity
 
     @Bind(R.id.activity_main_stats) StatsView statsView;
     @Bind(R.id.activity_main_board) BoardView boardView;
-    @Bind(R.id.activity_main_game_state_control) Button gameToggle;
+    @Bind(R.id.activity_main_game_state_control) Button gameControl;
 
 
     //region Lifecycle
@@ -76,14 +76,24 @@ public class MainActivity extends GraphActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        if (savedInstanceState != null) {
+            game.restoreState(savedInstanceState);
+        }
+
         statsView.setLife(game.life.getValue());
         statsView.setScore(game.score.getValue());
 
+        final boolean gamePaused = game.isPaused();
         boardView.setBoard(game.board);
         boardView.setUpcomingPiece(game.getUpcomingPiece());
         boardView.setAnimatorContext(getAnimatorContext());
-        boardView.setPaused(game.isPaused());
+        boardView.setPaused(gamePaused);
         boardView.setListener(this);
+
+        if (gamePaused) {
+            boardView.setTick(game.countUp.getTickCurrent());
+            gameControl.setText(R.string.action_resume_game);
+        }
 
         game.setPreventDuplicatePieces(preferences.getPreventDuplicatePieces());
         game.bus.register(this);
@@ -97,15 +107,19 @@ public class MainActivity extends GraphActivity
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        game.saveState(outState);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
 
         boardView.destroy();
 
         game.bus.unregister(this);
-
-        game.gameOver(Game.GameOver.How.GAME_LOGIC);
-        game.destroy();
     }
 
     //endregion
@@ -138,9 +152,9 @@ public class MainActivity extends GraphActivity
         final boolean isPaused = change.value;
         boardView.setPaused(isPaused);
         if (isPaused) {
-            gameToggle.setText(R.string.action_resume_game);
+            gameControl.setText(R.string.action_resume_game);
         } else {
-            gameToggle.setText(R.string.action_pause_game);
+            gameControl.setText(R.string.action_pause_game);
         }
     }
 
@@ -149,12 +163,12 @@ public class MainActivity extends GraphActivity
     }
 
     @Subscribe public void onNewGame(@NonNull Game.NewGame ignored) {
-        gameToggle.setText(R.string.action_pause_game);
+        gameControl.setText(R.string.action_pause_game);
         boardView.setTick(1);
     }
 
     @Subscribe public void onGameOver(@NonNull Game.GameOver event) {
-        gameToggle.setText(R.string.action_new_game);
+        gameControl.setText(R.string.action_new_game);
         boardView.setUpcomingPiece(null);
         boardView.setTick(0);
         boardView.setPaused(false);
