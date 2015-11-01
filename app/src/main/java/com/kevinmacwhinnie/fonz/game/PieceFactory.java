@@ -26,28 +26,72 @@
  */
 package com.kevinmacwhinnie.fonz.game;
 
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
+
+import com.kevinmacwhinnie.fonz.data.GamePersistence;
 import com.kevinmacwhinnie.fonz.data.Piece;
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
 import com.kevinmacwhinnie.fonz.state.Pie;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
-public class PieceFactory {
+public class PieceFactory implements GamePersistence {
+    static final String SAVED_SEED = PieceFactory.class.getName() + ".SAVED_SEED";
+    static final String SAVED_PIECES = PieceFactory.class.getName() + ".SAVED_PIECES";
+    static final String SAVED_SLOTS = PieceFactory.class.getName() + ".SAVED_SLOTS";
+    static final String SAVED_LAST_SLOT = PieceFactory.class.getName() + ".SAVED_LAST_SLOT";
+
+
     public static final int COUNT_PER_COLOR = 30;
     public static final int COUNT_PER_SLOT = 20;
 
-    private final Random random = new Random();
-    private final List<Piece> pieces = new ArrayList<>(COUNT_PER_COLOR * Piece.NUMBER_COLORS);
-    private final List<Integer> slots = new ArrayList<>(COUNT_PER_SLOT * Pie.NUMBER_SLOTS);
+    @VisibleForTesting long seed = System.nanoTime();
+    @VisibleForTesting final Random random = new Random(seed);
+    @VisibleForTesting final ArrayList<Piece> pieces =
+            new ArrayList<>(COUNT_PER_COLOR * Piece.NUMBER_COLORS);
+    @VisibleForTesting final ArrayList<Integer> slots =
+            new ArrayList<>(COUNT_PER_SLOT * Pie.NUMBER_SLOTS);
 
-    private @Pie.Slot int lastSlot = Pie.NUMBER_SLOTS;
+    @VisibleForTesting @Pie.Slot int lastSlot = Pie.NUMBER_SLOTS;
     private boolean preventDuplicatePieces = true;
 
     public PieceFactory() {
         populatePieces();
         populateSlots();
+    }
+
+    @Override
+    public void restoreState(@NonNull Bundle inState) {
+        this.seed = inState.getLong(SAVED_SEED);
+        random.setSeed(seed);
+
+        @SuppressWarnings("unchecked")
+        final ArrayList<Piece> savedPieces =
+                (ArrayList<Piece>) inState.getSerializable(SAVED_PIECES);
+        assert savedPieces != null;
+        pieces.clear();
+        pieces.addAll(savedPieces);
+
+        @SuppressWarnings("unchecked")
+        final ArrayList<Integer> savedSlots =
+                (ArrayList<Integer>) inState.getSerializable(SAVED_SLOTS);
+        assert savedSlots != null;
+        slots.clear();
+        slots.addAll(savedSlots);
+
+        //noinspection ResourceType
+        this.lastSlot = inState.getInt(SAVED_LAST_SLOT);
+    }
+
+    @Override
+    public void saveState(@NonNull Bundle outState) {
+        outState.putLong(SAVED_SEED, seed);
+        outState.putSerializable(SAVED_PIECES, pieces);
+        outState.putSerializable(SAVED_SLOTS, slots);
+        outState.putInt(SAVED_LAST_SLOT, lastSlot);
     }
 
     public Piece generatePiece() {

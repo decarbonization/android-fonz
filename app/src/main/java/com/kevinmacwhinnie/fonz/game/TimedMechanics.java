@@ -27,19 +27,23 @@
 
 package com.kevinmacwhinnie.fonz.game;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 
+import com.kevinmacwhinnie.fonz.data.GamePersistence;
 import com.kevinmacwhinnie.fonz.data.PowerUp;
 import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
 import com.squareup.otto.Bus;
 
 import java.util.EnumSet;
 
-public class TimedMechanics implements Handler.Callback {
-    public static final long DEFAULT_DURATION = 15 * 1000L;
+public class TimedMechanics implements Handler.Callback, GamePersistence {
+    static final String SAVED_PENDING = TimedMechanics.class.getName() + ".SAVED_PENDING";
+
+    public static final long DURATION = 15 * 1000L;
 
     private static final int MSG_POWER_UP_EXPIRE = 0;
 
@@ -51,14 +55,38 @@ public class TimedMechanics implements Handler.Callback {
         this.bus = bus;
     }
 
+    @Override
+    public void restoreState(@NonNull Bundle inState) {
+        @SuppressWarnings("unchecked")
+        final EnumSet<PowerUp> savedPending =
+                (EnumSet<PowerUp>) inState.getSerializable(SAVED_PENDING);
+        assert savedPending != null;
+        pending.clear();
+        pending.addAll(savedPending);
+    }
+
+    @Override
+    public void saveState(@NonNull Bundle outState) {
+        outState.putSerializable(SAVED_PENDING, pending);
+    }
 
     //region Scheduling
 
-    public void schedulePowerUp(@NonNull PowerUp powerUp, long howLong) {
+    public void schedulePowerUp(@NonNull PowerUp powerUp) {
         final Message expiration = handler.obtainMessage(MSG_POWER_UP_EXPIRE, powerUp);
-        handler.sendMessageDelayed(expiration, howLong);
+        handler.sendMessageDelayed(expiration, DURATION);
         pending.add(powerUp);
         bus.post(new PowerUpScheduled(powerUp));
+    }
+
+    public void pause() {
+        handler.removeMessages(MSG_POWER_UP_EXPIRE);
+    }
+
+    public void resume() {
+        for (final PowerUp powerUp : pending) {
+            schedulePowerUp(powerUp);
+        }
     }
 
     public void reset() {

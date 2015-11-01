@@ -26,6 +26,9 @@
  */
 package com.kevinmacwhinnie.fonz.game;
 
+import android.os.Bundle;
+
+import com.kevinmacwhinnie.fonz.FonzTestCase;
 import com.kevinmacwhinnie.fonz.data.Piece;
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
 import com.kevinmacwhinnie.fonz.state.Pie;
@@ -41,7 +44,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
-public class PieceFactoryTests {
+public class PieceFactoryTests extends FonzTestCase {
     @Test
     public void generatePiece() {
         final PieceFactory vendor = new PieceFactory();
@@ -99,5 +102,24 @@ public class PieceFactoryTests {
             lastPiece = upcomingPiece.piece;
             lastSlot = upcomingPiece.slot;
         }
+    }
+
+    @Test
+    public void serialization() {
+        final PieceFactory outPieceFactory = new PieceFactory();
+        outPieceFactory.generateUpcomingPiece();
+        outPieceFactory.generateUpcomingPiece();
+        outPieceFactory.generateUpcomingPiece();
+
+        final Bundle savedState = new Bundle();
+        outPieceFactory.saveState(savedState);
+
+        final PieceFactory inPieceFactory = new PieceFactory();
+        inPieceFactory.restoreState(savedState);
+
+        assertThat(inPieceFactory.seed, is(equalTo(outPieceFactory.seed)));
+        assertThat(inPieceFactory.pieces, is(equalTo(outPieceFactory.pieces)));
+        assertThat(inPieceFactory.slots, is(equalTo(outPieceFactory.slots)));
+        assertThat(inPieceFactory.lastSlot, is(equalTo(outPieceFactory.lastSlot)));
     }
 }

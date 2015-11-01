@@ -27,6 +27,7 @@
 
 package com.kevinmacwhinnie.fonz.game;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.FonzTestCase;
@@ -79,10 +80,10 @@ public class TimedMechanicsTests extends FonzTestCase {
         final Scheduler scheduler = Robolectric.getForegroundThreadScheduler();
         scheduler.pause();
 
-        timedMechanics.schedulePowerUp(PowerUp.SLOW_DOWN_TIME, 100L);
+        timedMechanics.schedulePowerUp(PowerUp.SLOW_DOWN_TIME);
         assertThat(timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
 
-        scheduler.advanceBy(101L);
+        scheduler.advanceBy(TimedMechanics.DURATION + 10L);
         assertThat(events.size(), is(equalTo(2)));
         assertThat(events, hasItem(new TimedMechanics.PowerUpScheduled(PowerUp.SLOW_DOWN_TIME)));
         assertThat(events, hasItem(new TimedMechanics.PowerUpExpired(PowerUp.SLOW_DOWN_TIME)));
@@ -94,12 +95,50 @@ public class TimedMechanicsTests extends FonzTestCase {
         final Scheduler scheduler = Robolectric.getForegroundThreadScheduler();
         scheduler.pause();
 
-        timedMechanics.schedulePowerUp(PowerUp.SLOW_DOWN_TIME, 100L);
+        timedMechanics.schedulePowerUp(PowerUp.SLOW_DOWN_TIME);
         assertThat(timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
         timedMechanics.reset();
 
-        scheduler.advanceBy(101L);
+        scheduler.advanceBy(TimedMechanics.DURATION + 10L);
         assertThat(events.size(), is(equalTo(1)));
         assertThat(timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(false));
+    }
+
+    @Test
+    public void pause() {
+        final Scheduler scheduler = Robolectric.getForegroundThreadScheduler();
+        scheduler.pause();
+
+        timedMechanics.schedulePowerUp(PowerUp.SLOW_DOWN_TIME);
+        assertThat(timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
+
+        timedMechanics.pause();
+
+        scheduler.advanceBy(TimedMechanics.DURATION + 10L);
+        assertThat(timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
+
+        timedMechanics.resume();
+
+        scheduler.advanceBy(TimedMechanics.DURATION + 10L);
+        assertThat(timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(false));
+    }
+
+    @Test
+    public void serialization() {
+        final Scheduler scheduler = Robolectric.getForegroundThreadScheduler();
+        scheduler.pause();
+
+        timedMechanics.schedulePowerUp(PowerUp.SLOW_DOWN_TIME);
+        assertThat(timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
+
+        final Bundle savedState = new Bundle();
+        timedMechanics.saveState(savedState);
+
+        final TimedMechanics restored = new TimedMechanics(bus);
+        restored.restoreState(savedState);
+
+        assertThat(restored.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
+        assertThat(restored.isPending(PowerUp.MULTIPLY_SCORE), is(false));
+        assertThat(restored.isPending(PowerUp.CLEAR_ALL), is(false));
     }
 }

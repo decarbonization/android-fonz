@@ -26,16 +26,22 @@
  */
 package com.kevinmacwhinnie.fonz.game;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import com.kevinmacwhinnie.fonz.data.GamePersistence;
 import com.kevinmacwhinnie.fonz.events.BaseEvent;
 import com.squareup.otto.Bus;
 
-public class CountUp implements Handler.Callback {
+public class CountUp implements Handler.Callback, GamePersistence {
+    static final String SAVED_RUNNING = CountUp.class.getName() + ".SAVED_RUNNING";
+    static final String SAVED_TICK_DURATION = CountUp.class.getName() + ".SAVED_TICK_DURATION";
+    static final String SAVED_CURRENT = CountUp.class.getName() + ".SAVED_CURRENT";
+
     public static final int NUMBER_TICKS = 10;
     public static final long DEFAULT_TICK_DURATION_MS = 1000L;
     public static final long MIN_TICK_DURATION = 450L;
@@ -46,13 +52,27 @@ public class CountUp implements Handler.Callback {
     private final Bus bus;
     private final Handler handler;
 
-    private boolean running = false;
-    private int tickCurrent = 0;
-    private long tickDuration = DEFAULT_TICK_DURATION_MS;
+    @VisibleForTesting boolean running = false;
+    @VisibleForTesting int tickCurrent = 0;
+    @VisibleForTesting long tickDuration = DEFAULT_TICK_DURATION_MS;
 
     public CountUp(@NonNull Bus bus) {
         this.bus = bus;
         this.handler = new Handler(Looper.getMainLooper(), this);
+    }
+
+    @Override
+    public void restoreState(@NonNull Bundle inState) {
+        this.running = inState.getBoolean(SAVED_RUNNING);
+        this.tickCurrent = inState.getInt(SAVED_CURRENT);
+        this.tickDuration = inState.getLong(SAVED_TICK_DURATION);
+    }
+
+    @Override
+    public void saveState(@NonNull Bundle outState) {
+        outState.putBoolean(SAVED_RUNNING, running);
+        outState.putInt(SAVED_CURRENT, tickCurrent);
+        outState.putLong(SAVED_TICK_DURATION, tickDuration);
     }
 
     public void scaleTickDuration(double factor) {

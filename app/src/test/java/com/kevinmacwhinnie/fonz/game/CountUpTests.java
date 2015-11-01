@@ -26,6 +26,7 @@
  */
 package com.kevinmacwhinnie.fonz.game;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.FonzTestCase;
@@ -124,5 +125,22 @@ public class CountUpTests extends FonzTestCase {
 
         countUp.scaleTickDuration(0.5);
         assertThat(countUp.getTickDuration(), is(equalTo(450L)));
+    }
+
+    @Test
+    public void serialization() {
+        final CountUp outCountUp = new CountUp(bus);
+        outCountUp.running = true;
+        outCountUp.tickCurrent = 20;
+
+        final Bundle savedState = new Bundle();
+        outCountUp.saveState(savedState);
+
+        final CountUp inCountUp = new CountUp(bus);
+        inCountUp.restoreState(savedState);
+
+        assertThat(inCountUp.running, is(equalTo(outCountUp.running)));
+        assertThat(inCountUp.tickCurrent, is(equalTo(outCountUp.tickCurrent)));
+        assertThat(inCountUp.tickDuration, is(equalTo(outCountUp.tickDuration)));
     }
 }
