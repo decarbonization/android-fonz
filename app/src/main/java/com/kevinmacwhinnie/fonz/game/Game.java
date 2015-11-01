@@ -26,11 +26,13 @@
  */
 package com.kevinmacwhinnie.fonz.game;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
+import com.kevinmacwhinnie.fonz.data.GamePersistence;
 import com.kevinmacwhinnie.fonz.data.PowerUp;
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
 import com.kevinmacwhinnie.fonz.events.BaseEvent;
@@ -42,7 +44,10 @@ import com.kevinmacwhinnie.fonz.state.Score;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
-public class Game {
+public class Game implements GamePersistence {
+    static final String SAVED_IN_PROGRESS = Game.class.getName() + ".SAVED_IN_PROGRESS";
+    static final String SAVED_UPCOMING_PIECE = Game.class.getName() + ".SAVED_UPCOMING_PIECE";
+
     public static final String LOG_TAG = Game.class.getSimpleName();
 
     public final Bus bus;
@@ -55,8 +60,9 @@ public class Game {
     public final Board board;
 
     private final PieceFactory pieceFactory = new PieceFactory();
+    private boolean hasRestoredState = false;
     private boolean inProgress = false;
-    private boolean isPaused = false;
+    private boolean paused = false;
     @VisibleForTesting UpcomingPiece upcomingPiece;
 
 
@@ -75,6 +81,43 @@ public class Game {
         bus.register(this);
     }
 
+    @Override
+    public void restoreState(@NonNull Bundle inState) {
+        if (hasRestoredState) {
+            return;
+        }
+
+        this.inProgress = inState.getBoolean(SAVED_IN_PROGRESS, false);
+        if (inProgress) {
+            countUp.restoreState(inState);
+            timedMechanics.restoreState(inState);
+            life.restoreState(inState);
+            score.restoreState(inState);
+            board.restoreState(inState);
+            pieceFactory.restoreState(inState);
+
+            this.paused = true;
+            this.upcomingPiece = (UpcomingPiece) inState.getSerializable(SAVED_UPCOMING_PIECE);
+        }
+
+        this.hasRestoredState = true;
+    }
+
+    @Override
+    public void saveState(@NonNull Bundle outState) {
+        outState.putBoolean(SAVED_IN_PROGRESS, inProgress);
+        if (inProgress) {
+            countUp.saveState(outState);
+            timedMechanics.saveState(outState);
+            life.saveState(outState);
+            score.saveState(outState);
+            board.saveState(outState);
+            pieceFactory.saveState(outState);
+
+            outState.putSerializable(SAVED_UPCOMING_PIECE, upcomingPiece);
+        }
+    }
+
     public void destroy() {
         bus.unregister(this);
         reset();
@@ -90,7 +133,7 @@ public class Game {
     }
 
     public boolean isPaused() {
-        return isPaused;
+        return paused;
     }
 
     public @Nullable UpcomingPiece getUpcomingPiece() {
@@ -133,7 +176,7 @@ public class Game {
         board.reset();
 
         this.inProgress = false;
-        this.isPaused = false;
+        this.paused = false;
         this.upcomingPiece = null;
     }
 
@@ -199,10 +242,10 @@ public class Game {
     public void pause() {
         Log.d(LOG_TAG, "pause()");
 
-        if (!isPaused) {
+        if (!paused) {
             countUp.pause();
             timedMechanics.pause();
-            this.isPaused = true;
+            this.paused = true;
 
             bus.post(new PauseStateChanged(true));
         }
@@ -211,10 +254,10 @@ public class Game {
     public void resume() {
         Log.d(LOG_TAG, "resume()");
 
-        if (isPaused) {
+        if (paused) {
             countUp.resume();
             timedMechanics.resume();
-            this.isPaused = false;
+            this.paused = false;
 
             bus.post(new PauseStateChanged(false));
         }

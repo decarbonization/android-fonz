@@ -26,6 +26,7 @@
  */
 package com.kevinmacwhinnie.fonz.state;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.FonzTestCase;
@@ -117,5 +118,27 @@ public class BoardTests extends FonzTestCase {
 
         assertThat(board.usePowerUp(PowerUp.CLEAR_ALL), is(false));
         assertThat(events.size(), is(equalTo(2)));
+    }
+
+    @Test
+    public void serialization() {
+        for (int i = 0; i < Board.NUMBER_PIES; i++) {
+            board.getPie(i).tryPlacePiece(Pie.SLOT_TOP_LEFT, Piece.GREEN);
+        }
+        assertThat(board.addPowerUp(PowerUp.CLEAR_ALL), is(true));
+
+        final Bundle savedState = new Bundle();
+        board.saveState(savedState);
+
+        final Board restored = new Board(bus);
+        restored.restoreState(savedState);
+
+        for (int i = 0; i < Board.NUMBER_PIES; i++) {
+            assertThat(restored.getPie(i), is(equalTo(board.getPie(i))));
+        }
+
+        for (final PowerUp powerUp : PowerUp.values()) {
+            assertThat(restored.hasPowerUp(powerUp), is(equalTo(board.hasPowerUp(powerUp))));
+        }
     }
 }
