@@ -48,14 +48,13 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:text="@string/settings_section_game_play"/>
 
-        <CheckBox
+        <Switch
             android:id="@+id/activity_settings_tap_to_skip_piece"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:text="@string/title_setting_tap_to_skip_piece"
-            style="@style/Fonz.CheckBox.Reversed" />
+            android:text="@string/title_setting_tap_to_skip_piece" />
 
         <TextView
             android:layout_width="match_parent"
@@ -67,14 +66,13 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             android:text="@string/info_setting_tap_to_skip_piece"/>
 
-        <CheckBox
+        <Switch
             android:id="@+id/activity_settings_prevent_duplicate_pieces"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:text="@string/title_setting_prevent_duplicate_pieces"
-            style="@style/Fonz.CheckBox.Reversed" />
+            android:text="@string/title_setting_prevent_duplicate_pieces" />
 
         <TextView
             android:layout_width="match_parent"

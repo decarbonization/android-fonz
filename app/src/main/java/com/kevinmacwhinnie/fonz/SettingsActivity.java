@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.kevinmacwhinnie.fonz.data.Preferences;
@@ -47,8 +48,8 @@ import butterknife.OnClick;
 
 public class SettingsActivity extends GraphActivity {
     @Bind(R.id.activity_settings_version_footer) TextView versionFooter;
-    @Bind(R.id.activity_settings_tap_to_skip_piece) CheckBox tapToSkipPiece;
-    @Bind(R.id.activity_settings_prevent_duplicate_pieces) CheckBox preventDuplicatePieces;
+    @Bind(R.id.activity_settings_tap_to_skip_piece) Switch tapToSkipPiece;
+    @Bind(R.id.activity_settings_prevent_duplicate_pieces) Switch preventDuplicatePieces;
 
     @Inject Bus bus;
     @Inject Preferences preferences;
