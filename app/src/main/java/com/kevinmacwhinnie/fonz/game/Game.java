@@ -246,7 +246,7 @@ public class Game implements GamePersistence {
     public void pause() {
         Log.d(LOG_TAG, "pause()");
 
-        if (!paused) {
+        if (!paused && inProgress) {
             countUp.pause();
             timedMechanics.pause();
             this.paused = true;
@@ -258,7 +258,7 @@ public class Game implements GamePersistence {
     public void resume() {
         Log.d(LOG_TAG, "resume()");
 
-        if (paused) {
+        if (paused && inProgress) {
             countUp.resume();
             timedMechanics.resume();
             this.paused = false;
