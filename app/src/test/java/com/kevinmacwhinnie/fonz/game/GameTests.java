@@ -217,20 +217,23 @@ public class GameTests extends FonzTestCase {
         scheduler.pause();
 
         game.newGame();
+        game.timedMechanics.schedulePowerUp(PowerUp.MULTIPLY_SCORE);
         scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * 2L);
 
         final int beforePause = game.countUp.getTickCurrent();
         game.pause();
         assertThat(game.isPaused(), is(true));
 
-        scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * 2L);
+        scheduler.advanceBy(TimedMechanics.DURATION + 10L);
         assertThat(game.countUp.getTickCurrent(), is(equalTo(beforePause)));
+        assertThat(game.timedMechanics.isPending(PowerUp.MULTIPLY_SCORE), is(true));
 
         game.resume();
         assertThat(game.isPaused(), is(false));
 
-        scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * 2L);
+        scheduler.advanceBy(TimedMechanics.DURATION + 10L);
         assertThat(game.countUp.getTickCurrent(), is(not(equalTo(beforePause))));
+        assertThat(game.timedMechanics.isPending(PowerUp.MULTIPLY_SCORE), is(false));
 
         game.pause();
         assertThat(game.isPaused(), is(true));

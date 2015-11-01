@@ -201,6 +201,7 @@ public class Game {
 
         if (!isPaused) {
             countUp.pause();
+            timedMechanics.pause();
             this.isPaused = true;
 
             bus.post(new PauseStateChanged(true));
@@ -212,6 +213,7 @@ public class Game {
 
         if (isPaused) {
             countUp.resume();
+            timedMechanics.resume();
             this.isPaused = false;
 
             bus.post(new PauseStateChanged(false));
