@@ -16,7 +16,7 @@ def generateVersionName() {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "com.kevinmacwhinnie.fonz"
@@ -29,24 +29,23 @@ android {
         def propertiesFile = project.rootProject.file('signing.properties')
         if (!propertiesFile.exists()) {
             logger.warn('No signing.properties file, using default keystore')
-            return
-        }
+        } else {
+            def properties = new Properties()
+            properties.load((InputStream) propertiesFile.newDataInputStream())
 
-        def properties = new Properties()
-        properties.load((InputStream) propertiesFile.newDataInputStream())
-
-        def keyStoreHome = properties.getProperty('keyStoreHome')
-        debug {
-            storeFile new File(keyStoreHome, properties.getProperty("debugKeyStoreName"))
-            storePassword properties.getProperty("debugKeyStorePassword")
-            keyAlias properties.getProperty("debugKeyStoreAlias")
-            keyPassword properties.getProperty("debugKeyStorePassword")
-        }
-        release {
-            storeFile new File(keyStoreHome, properties.getProperty("releaseKeyStoreName"))
-            storePassword properties.getProperty("releaseKeyStorePassword")
-            keyAlias properties.getProperty("releaseKeyStoreAlias")
-            keyPassword properties.getProperty("releaseKeyStorePassword")
+            def keyStoreHome = properties.getProperty('keyStoreHome')
+            debug {
+                storeFile new File(keyStoreHome, properties.getProperty("debugKeyStoreName"))
+                storePassword properties.getProperty("debugKeyStorePassword")
+                keyAlias properties.getProperty("debugKeyStoreAlias")
+                keyPassword properties.getProperty("debugKeyStorePassword")
+            }
+            release {
+                storeFile new File(keyStoreHome, properties.getProperty("releaseKeyStoreName"))
+                storePassword properties.getProperty("releaseKeyStorePassword")
+                keyAlias properties.getProperty("releaseKeyStoreAlias")
+                keyPassword properties.getProperty("releaseKeyStorePassword")
+            }
         }
     }
     lintOptions {
