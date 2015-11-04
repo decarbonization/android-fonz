@@ -48,13 +48,13 @@ import static org.junit.Assert.assertThat;
 public class ScoresAdapterTests extends FonzTestCase {
     private final Bus bus = new Bus("ScoresAdapterTests#bus");
     private final ScoresStore scoresStore = new ScoresStore(getContext(), bus);
-    private ScoresAdapter2 adapter;
+    private ScoresAdapter adapter;
 
     @Before
     public void setUp() {
         assertThat(scoresStore.insert("Dina", 9000), is(true));
 
-        this.adapter = new ScoresAdapter2(getContext(), scoresStore);
+        this.adapter = new ScoresAdapter(getContext(), scoresStore);
     }
 
     @After
@@ -83,7 +83,7 @@ public class ScoresAdapterTests extends FonzTestCase {
     public void entryRendering() {
         final FrameLayout fakeParent = new FrameLayout(getContext());
 
-        final ScoresAdapter2.ViewHolder holder1 =
+        final ScoresAdapter.ViewHolder holder1 =
                 adapter.onCreateViewHolder(fakeParent,
                                            adapter.getItemViewType(0));
         assertThat(holder1, is(notNullValue()));
@@ -94,7 +94,7 @@ public class ScoresAdapterTests extends FonzTestCase {
         assertThat(holder1.score.getText().toString(), is(equalTo("9,000")));
 
 
-        final ScoresAdapter2.ViewHolder holder2 =
+        final ScoresAdapter.ViewHolder holder2 =
                 adapter.onCreateViewHolder(fakeParent,
                                            adapter.getItemViewType(1));
         assertThat(holder2, is(notNullValue()));

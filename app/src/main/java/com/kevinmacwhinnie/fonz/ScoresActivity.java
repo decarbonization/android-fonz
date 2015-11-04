@@ -38,7 +38,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
 
-import com.kevinmacwhinnie.fonz.data.Scores;
+import com.kevinmacwhinnie.fonz.data.ScoresStore;
 import com.kevinmacwhinnie.fonz.graph.GraphActivity;
 import com.kevinmacwhinnie.fonz.view.ScoresAdapter;
 
@@ -51,9 +51,11 @@ import butterknife.OnClick;
 public class ScoresActivity extends GraphActivity {
     public static final String EXTRA_SCORE = ScoresActivity.class.getName() + ".EXTRA_SCORE";
 
-    @Inject Scores scores;
+    @Inject ScoresStore scoreStore;
 
     @Bind(R.id.activity_scores_recycler) RecyclerView recyclerView;
+
+    private ScoresAdapter adapter;
 
 
     //region Lifecycle
@@ -74,12 +76,10 @@ public class ScoresActivity extends GraphActivity {
             showNewScoreDialog();
         }
 
-        scores.initialize(false);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
-        final ScoresAdapter adapter = new ScoresAdapter(this, scores);
+        this.adapter = new ScoresAdapter(this, scoreStore);
         recyclerView.setAdapter(adapter);
 
         final IntentFilter intentFilter = new IntentFilter(HighScoreDialogFragment.ACTION_SUBMITTED);
@@ -92,6 +92,7 @@ public class ScoresActivity extends GraphActivity {
         super.onDestroy();
 
         recyclerView.setAdapter(null);
+        adapter.destroy();
 
         LocalBroadcastManager.getInstance(this)
                              .unregisterReceiver(ON_SCORE_SUBMITTED);
@@ -107,7 +108,7 @@ public class ScoresActivity extends GraphActivity {
         public void onReceive(Context context, Intent intent) {
             final String name = intent.getStringExtra(HighScoreDialogFragment.EXTRA_NAME);
             final int score = getIntent().getIntExtra(EXTRA_SCORE, 0);
-            scores.trackScore(name, score);
+            scoreStore.insert(name, score);
         }
     };
 
@@ -118,7 +119,7 @@ public class ScoresActivity extends GraphActivity {
 
     @OnClick(R.id.activity_scores_clear)
     public void clearScores(@NonNull Button sender) {
-        scores.clear();
+        scoreStore.clear();
     }
 
     //endregion

@@ -32,7 +32,7 @@ import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.MainActivity;
 import com.kevinmacwhinnie.fonz.ScoresActivity;
-import com.kevinmacwhinnie.fonz.data.Scores;
+import com.kevinmacwhinnie.fonz.data.ScoresStore;
 import com.kevinmacwhinnie.fonz.game.Game;
 import com.kevinmacwhinnie.fonz.game.Sounds;
 import com.squareup.otto.Bus;
@@ -63,8 +63,8 @@ public class GameModule {
         return new Game(bus);
     }
 
-    @Singleton @Provides Scores provideScores(@NonNull Bus bus) {
-        return new Scores(context, bus);
+    @Singleton @Provides ScoresStore provideScores(@NonNull Bus bus) {
+        return new ScoresStore(context, bus);
     }
 
     @Singleton @Provides Sounds provideSounds() {

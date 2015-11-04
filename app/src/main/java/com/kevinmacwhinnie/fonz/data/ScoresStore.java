@@ -101,7 +101,7 @@ public class ScoresStore extends SQLiteOpenHelper {
 
     private void insertDefaults(@NonNull SQLiteDatabase database) {
         final long now = System.currentTimeMillis();
-        for (int i = 0; i < Scores.NUMBER_SCORES; i++) {
+        for (int i = 0; i < SCORE_LIMIT; i++) {
             final ContentValues values = new ContentValues(4);
             values.put(COLUMN_NAME, NAME_DEFAULT);
             values.put(COLUMN_SCORE, SCORE_DEFAULT);
@@ -116,7 +116,7 @@ public class ScoresStore extends SQLiteOpenHelper {
         final String delete =
                 ("DELETE FROM " + TABLE_SCORES + " WHERE " + COLUMN_ID + " NOT IN " +
                  "(SELECT " + COLUMN_ID + " FROM " + TABLE_SCORES + " ORDER BY " +
-                  COLUMN_ID + " DESC LIMIT " + Scores.NUMBER_SCORES + ")");
+                  COLUMN_ID + " DESC LIMIT " + SCORE_LIMIT + ")");
         database.execSQL(delete);
     }
 
