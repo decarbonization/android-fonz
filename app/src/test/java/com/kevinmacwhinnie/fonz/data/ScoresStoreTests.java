@@ -28,12 +28,19 @@
 package com.kevinmacwhinnie.fonz.data;
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.FonzTestCase;
+import com.kevinmacwhinnie.fonz.events.BaseEvent;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -41,16 +48,25 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
 public class ScoresStoreTests extends FonzTestCase {
-    private final ScoresStore scoresStore = new ScoresStore(getContext());
+    private final Bus bus = new Bus("ScoresStoreTests#bus");
+    private final ScoresStore scoresStore = new ScoresStore(getContext(), bus);
+    private final List<BaseEvent> events = new ArrayList<>();
 
     @Before
     public void setUp() {
         scoresStore.removeOutdatedEntries();
+        bus.register(this);
     }
 
     @After
     public void tearDown() {
+        bus.unregister(this);
+        events.clear();
         scoresStore.clear();
+    }
+
+    @Subscribe public void onScoresStoreChanged(@NonNull ScoresStore.Changed event) {
+        events.add(event);
     }
 
 
@@ -59,6 +75,8 @@ public class ScoresStoreTests extends FonzTestCase {
         assertThat(scoresStore.insert("Dina", 500), is(true));
         assertThat(scoresStore.insert("Gene", 900), is(true));
         assertThat(scoresStore.insert("Louise", 9000), is(true));
+
+        assertThat(events.size(), is(equalTo(3)));
     }
 
     @Test
@@ -87,6 +105,8 @@ public class ScoresStoreTests extends FonzTestCase {
             assertThat(highScoresAfter.getInt(ScoresStore.COLUMN_TIMESTAMP_INDEX),
                        is(not(equalTo(0))));
         }
+
+        assertThat(events.size(), is(equalTo(2)));
     }
 
     @Test

@@ -27,14 +27,14 @@
 
 package com.kevinmacwhinnie.fonz.view;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.widget.FrameLayout;
 
 import com.kevinmacwhinnie.fonz.FonzTestCase;
-import com.kevinmacwhinnie.fonz.data.Scores;
+import com.kevinmacwhinnie.fonz.data.ScoresStore;
 import com.squareup.otto.Bus;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,64 +46,62 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class ScoresAdapterTests extends FonzTestCase {
-    private final Bus bus = new Bus("test-bus");
-    private ScoresAdapter adapter;
+    private final Bus bus = new Bus("ScoresAdapterTests#bus");
+    private final ScoresStore scoresStore = new ScoresStore(getContext(), bus);
+    private ScoresAdapter2 adapter;
 
     @Before
     public void setUp() {
-        final Context context = getContext();
+        assertThat(scoresStore.insert("Dina", 9000), is(true));
 
-        final Scores scores = new Scores(context, bus);
-        scores.initialize(true);
+        this.adapter = new ScoresAdapter2(getContext(), scoresStore);
+    }
 
-        this.adapter = new ScoresAdapter(context, scores);
+    @After
+    public void tearDown() {
+        adapter.destroy();
+        scoresStore.clear();
     }
 
 
     @Test
-    public void clearUpdates() {
+    public void changes() {
         final AtomicBoolean changed = new AtomicBoolean(false);
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
-            public void onItemRangeChanged(int positionStart, int itemCount) {
-                assertThat(positionStart, is(equalTo(0)));
-                assertThat(itemCount, is(equalTo(adapter.getItemCount())));
-
+            public void onChanged() {
                 changed.set(true);
             }
         });
 
-        adapter.onScoresCleared(new Scores.Cleared());
-        assertThat(changed.get(), is(true));
-    }
+        scoresStore.clear();
 
-    @Test
-    public void trackUpdates() {
-        final AtomicBoolean changed = new AtomicBoolean(false);
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onItemRangeChanged(int positionStart, int itemCount) {
-                assertThat(positionStart, is(equalTo(2)));
-                assertThat(itemCount, is(equalTo(adapter.getItemCount() - 2)));
-
-                changed.set(true);
-            }
-        });
-
-        adapter.onScoreTracked(new Scores.TrackedAtPosition(2));
         assertThat(changed.get(), is(true));
     }
 
     @Test
     public void entryRendering() {
         final FrameLayout fakeParent = new FrameLayout(getContext());
-        final ScoresAdapter.EntryViewHolder holder = adapter.onCreateViewHolder(fakeParent,
-                                                                                adapter.getItemViewType(0));
-        assertThat(holder, is(notNullValue()));
 
-        adapter.onBindViewHolder(holder, 0);
+        final ScoresAdapter2.ViewHolder holder1 =
+                adapter.onCreateViewHolder(fakeParent,
+                                           adapter.getItemViewType(0));
+        assertThat(holder1, is(notNullValue()));
 
-        assertThat(holder.name.getText().toString(), is(equalTo("Dina")));
-        assertThat(holder.score.getText().toString(), is(equalTo("100")));
+        adapter.bindViewHolder(holder1, 0);
+
+        assertThat(holder1.name.getText().toString(), is(equalTo("Dina")));
+        assertThat(holder1.score.getText().toString(), is(equalTo("9,000")));
+
+
+        final ScoresAdapter2.ViewHolder holder2 =
+                adapter.onCreateViewHolder(fakeParent,
+                                           adapter.getItemViewType(1));
+        assertThat(holder2, is(notNullValue()));
+
+        adapter.bindViewHolder(holder2, 1);
+
+        assertThat(holder2.name.getText().toString(), is(equalTo("--")));
+        assertThat(holder2.score.getText().toString(), is(equalTo("0")));
     }
 }

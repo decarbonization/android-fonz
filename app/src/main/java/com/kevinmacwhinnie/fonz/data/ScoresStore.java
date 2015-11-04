@@ -36,6 +36,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import com.kevinmacwhinnie.fonz.events.BaseEvent;
+import com.squareup.otto.Bus;
+
 public class ScoresStore extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "HighScoresDB";
     public static final int VERSION = 1;
@@ -45,14 +48,17 @@ public class ScoresStore extends SQLiteOpenHelper {
 
     //region Columns
 
+    public static final String COLUMN_ID = "_id";
+    public static final int COLUMN_ID_INDEX = 0;
+
     public static final String COLUMN_NAME = "name";
-    public static final int COLUMN_NAME_INDEX = 0;
+    public static final int COLUMN_NAME_INDEX = 1;
 
     public static final String COLUMN_SCORE = "score";
-    public static final int COLUMN_SCORE_INDEX = 1;
+    public static final int COLUMN_SCORE_INDEX = 2;
 
     public static final String COLUMN_TIMESTAMP = "timestamp";
-    public static final int COLUMN_TIMESTAMP_INDEX = 2;
+    public static final int COLUMN_TIMESTAMP_INDEX = 3;
 
     public static final String NAME_DEFAULT = "--";
     public static final int SCORE_DEFAULT = 0;
@@ -60,16 +66,26 @@ public class ScoresStore extends SQLiteOpenHelper {
     //endregion
 
 
+    private final Bus bus;
+
+
     //region Lifecycle
 
-    public ScoresStore(@NonNull Context context) {
+    public ScoresStore(@NonNull Context context, @NonNull Bus bus) {
         super(context, DATABASE_NAME, null, VERSION);
+
+        this.bus = bus;
+    }
+
+    public Bus getBus() {
+        return bus;
     }
 
     @Override
     public void onCreate(SQLiteDatabase database) {
         final String createTables =
                 ("CREATE TABLE IF NOT EXISTS " + TABLE_SCORES + " (" +
+                        COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         COLUMN_NAME + " TEXT, " +
                         COLUMN_SCORE + " INTEGER, " +
                         COLUMN_TIMESTAMP + " INTEGER" +
@@ -98,9 +114,9 @@ public class ScoresStore extends SQLiteOpenHelper {
     void removeOutdatedEntries() {
         final SQLiteDatabase database = getWritableDatabase();
         final String delete =
-                ("DELETE FROM " + TABLE_SCORES + " WHERE ROWID NOT IN " +
-                 "(SELECT ROWID FROM " + TABLE_SCORES +
-                 " ORDER BY ROWID DESC LIMIT " + Scores.NUMBER_SCORES + ")");
+                ("DELETE FROM " + TABLE_SCORES + " WHERE " + COLUMN_ID + " NOT IN " +
+                 "(SELECT " + COLUMN_ID + " FROM " + TABLE_SCORES + " ORDER BY " +
+                  COLUMN_ID + " DESC LIMIT " + Scores.NUMBER_SCORES + ")");
         database.execSQL(delete);
     }
 
@@ -125,6 +141,7 @@ public class ScoresStore extends SQLiteOpenHelper {
         values.put(COLUMN_TIMESTAMP, System.currentTimeMillis());
         if (database.insert(TABLE_SCORES, null, values) != -1) {
             removeOutdatedEntries();
+            bus.post(Changed.INSTANCE);
             return true;
         } else {
             return false;
@@ -135,18 +152,25 @@ public class ScoresStore extends SQLiteOpenHelper {
         final SQLiteDatabase database = getWritableDatabase();
         database.delete(TABLE_SCORES, null, null);
         insertDefaults(database);
+
+        bus.post(Changed.INSTANCE);
     }
 
     public Cursor queryHighScores() {
         final SQLiteDatabase database = getReadableDatabase();
-        final String[] columns = { COLUMN_NAME, COLUMN_SCORE, COLUMN_TIMESTAMP };
+        final String[] columns = { COLUMN_ID, COLUMN_NAME, COLUMN_SCORE, COLUMN_TIMESTAMP };
         final String selection = null;
-        final String orderBy = "ROWID DESC";
+        final String orderBy = COLUMN_ID  + " DESC";
         return database.query(TABLE_SCORES,
                               columns,
                               selection,
                               null, null, null,
                               orderBy,
                               Integer.toString(SCORE_LIMIT, 10));
+    }
+
+
+    public static final class Changed extends BaseEvent {
+        static final Changed INSTANCE = new Changed();
     }
 }
