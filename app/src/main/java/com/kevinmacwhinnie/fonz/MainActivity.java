@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Button;
 
+import com.kevinmacwhinnie.fonz.data.Formatting;
 import com.kevinmacwhinnie.fonz.data.PowerUp;
 import com.kevinmacwhinnie.fonz.data.Preferences;
 import com.kevinmacwhinnie.fonz.data.ScoresStore;
@@ -64,6 +65,7 @@ public class MainActivity extends GraphActivity
     @Inject ScoresStore scores;
     @Inject Sounds sounds;
     @Inject Preferences preferences;
+    @Inject Formatting formatting;
 
     @Bind(R.id.activity_main_stats) StatsView statsView;
     @Bind(R.id.activity_main_board) BoardView boardView;
@@ -82,8 +84,8 @@ public class MainActivity extends GraphActivity
             game.restoreState(savedInstanceState);
         }
 
-        statsView.setLife(game.life.getValue());
-        statsView.setScore(game.score.getValue());
+        statsView.setLife(formatting, game.life.getValue());
+        statsView.setScore(formatting, game.score.getValue());
 
         final boolean gamePaused = game.isPaused();
         boardView.setBoard(game.board);
@@ -130,11 +132,11 @@ public class MainActivity extends GraphActivity
     //region Events
 
     @Subscribe public void onLifeChanged(@NonNull Life.Changed change) {
-        statsView.setLife(change.value);
+        statsView.setLife(formatting, change.value);
     }
 
     @Subscribe public void onScoreChanged(@NonNull Score.Changed change) {
-        statsView.setScore(change.value);
+        statsView.setScore(formatting, change.value);
     }
 
     @Subscribe public void onUpcomingPieceAvailable(@NonNull Game.UpcomingPieceAvailable ignored) {

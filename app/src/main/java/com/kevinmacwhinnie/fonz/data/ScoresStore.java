@@ -160,7 +160,7 @@ public class ScoresStore extends SQLiteOpenHelper {
         final SQLiteDatabase database = getReadableDatabase();
         final String[] columns = { COLUMN_ID, COLUMN_NAME, COLUMN_SCORE, COLUMN_TIMESTAMP };
         final String selection = null;
-        final String orderBy = COLUMN_ID  + " DESC";
+        final String orderBy = COLUMN_SCORE  + " DESC";
         return database.query(TABLE_SCORES,
                               columns,
                               selection,

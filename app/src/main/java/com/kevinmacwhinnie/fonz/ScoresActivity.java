@@ -41,6 +41,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import com.kevinmacwhinnie.fonz.data.Formatting;
 import com.kevinmacwhinnie.fonz.data.ScoresStore;
 import com.kevinmacwhinnie.fonz.graph.GraphActivity;
 import com.kevinmacwhinnie.fonz.view.ScoresAdapter;
@@ -54,6 +55,7 @@ import butterknife.OnClick;
 public class ScoresActivity extends GraphActivity {
     public static final String EXTRA_SCORE = ScoresActivity.class.getName() + ".EXTRA_SCORE";
 
+    @Inject Formatting formatting;
     @Inject ScoresStore scoreStore;
 
     @Bind(R.id.activity_scores_recycler) RecyclerView recyclerView;
@@ -81,7 +83,7 @@ public class ScoresActivity extends GraphActivity {
 
         recyclerView.setHasFixedSize(true);
 
-        this.adapter = new ScoresAdapter(this, scoreStore);
+        this.adapter = new ScoresAdapter(this, scoreStore, formatting);
         recyclerView.setAdapter(adapter);
 
         final IntentFilter intentFilter = new IntentFilter(HighScoreDialogFragment.ACTION_SUBMITTED);
@@ -134,7 +136,8 @@ public class ScoresActivity extends GraphActivity {
     };
 
     private void showNewScoreDialog() {
-        final HighScoreDialogFragment dialogFragment = new HighScoreDialogFragment();
+        final int newScore = getIntent().getIntExtra(EXTRA_SCORE, 0);
+        final HighScoreDialogFragment dialogFragment = HighScoreDialogFragment.newInstance(newScore);
         dialogFragment.show(getSupportFragmentManager(), HighScoreDialogFragment.TAG);
     }
 

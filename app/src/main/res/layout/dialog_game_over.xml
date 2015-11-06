@@ -3,22 +3,14 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/gap_medium"
-    android:paddingLeft="25dp"
-    android:paddingRight="25dp">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/gap_small"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:text="@string/caption_player_name"
-        android:labelFor="@+id/dialog_game_over_name" />
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin">
 
     <EditText
         android:id="@+id/dialog_game_over_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/caption_player_name"
         android:selectAllOnFocus="true"
         android:inputType="textPersonName"
         android:imeOptions="actionDone|flagNoExtractUi">

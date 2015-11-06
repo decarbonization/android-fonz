@@ -31,6 +31,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.FrameLayout;
 
 import com.kevinmacwhinnie.fonz.FonzTestCase;
+import com.kevinmacwhinnie.fonz.data.Formatting;
 import com.kevinmacwhinnie.fonz.data.ScoresStore;
 import com.squareup.otto.Bus;
 
@@ -47,6 +48,7 @@ import static org.junit.Assert.assertThat;
 
 public class ScoresAdapterTests extends FonzTestCase {
     private final Bus bus = new Bus("ScoresAdapterTests#bus");
+    private final Formatting formatting = new Formatting(getContext());
     private final ScoresStore scoresStore = new ScoresStore(getContext(), bus);
     private ScoresAdapter adapter;
 
@@ -54,7 +56,7 @@ public class ScoresAdapterTests extends FonzTestCase {
     public void setUp() {
         assertThat(scoresStore.insert("Dina", 9000), is(true));
 
-        this.adapter = new ScoresAdapter(getContext(), scoresStore);
+        this.adapter = new ScoresAdapter(getContext(), scoresStore, formatting);
     }
 
     @After

@@ -27,14 +27,19 @@
 
 package com.kevinmacwhinnie.fonz.graph;
 
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
+import android.support.annotation.NonNull;
 
-public abstract class GraphActivity extends AppCompatActivity {
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+public class Injection {
+    public static Injector getInjector(@NonNull Context context) {
+        return (Injector) context.getApplicationContext();
+    }
 
-        Injection.inject(this);
+    public static <T> void inject(@NonNull Context context, @NonNull T target) {
+        getInjector(context).inject(target);
+    }
+
+    public static <T extends Context> void inject(@NonNull T target) {
+        inject(target, target);
     }
 }

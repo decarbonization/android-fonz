@@ -10,7 +10,7 @@
     <string name="action_resume_game">Resume</string>
     <string name="dialog_game_over_title">Game Over</string>
     <string name="action_no_thanks">No, Thanks</string>
-    <string name="caption_player_name">Enter your name:</string>
+    <string name="caption_player_name">Name</string>
     <string name="score_name_default">Dina</string>
     <string name="title_high_scores">High Scores</string>
     <string name="action_clear_scores">Clear</string>
@@ -30,4 +30,5 @@
     <string name="alert_clear_scores_confirm_title">Clear Scores</string>
     <string name="alert_clear_scores_confirm_message">Are you sure you want to clear your high scores? This operation cannot be undone.</string>
     <string name="action_done">Done</string>
+    <string name="new_score_message_fmt">You\'ve achieved a new high score of %1$s</string>
 </resources>

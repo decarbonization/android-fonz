@@ -45,6 +45,7 @@ import dagger.Provides;
 
 @Module(complete = false,
         injects = {
+                Game.class,
                 MainActivity.class,
                 ScoresActivity.class,
         })

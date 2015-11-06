@@ -37,22 +37,22 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.kevinmacwhinnie.fonz.R;
+import com.kevinmacwhinnie.fonz.data.Formatting;
 import com.kevinmacwhinnie.fonz.data.ScoresStore;
 import com.squareup.otto.Subscribe;
 
-import java.text.NumberFormat;
-
 public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ViewHolder> {
     private final LayoutInflater inflater;
-    private final NumberFormat scoreFormat;
+    private final Formatting formatting;
     private final ScoresStore scoresStore;
     private Cursor cursor;
 
     public ScoresAdapter(@NonNull Context context,
-                         @NonNull ScoresStore scoresStore) {
+                         @NonNull ScoresStore scoresStore,
+                         @NonNull Formatting formatting) {
         this.inflater = LayoutInflater.from(context);
-        this.scoreFormat = NumberFormat.getIntegerInstance();
         this.scoresStore = scoresStore;
+        this.formatting = formatting;
 
         scoresStore.getBus().register(this);
         query();
@@ -95,7 +95,7 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ViewHolder
         holder.name.setText(name);
 
         final int score = cursor.getInt(ScoresStore.COLUMN_SCORE_INDEX);
-        holder.score.setText(scoreFormat.format(score));
+        holder.score.setText(formatting.formatScore(score));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

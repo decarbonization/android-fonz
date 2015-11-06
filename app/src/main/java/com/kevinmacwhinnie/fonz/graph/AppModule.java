@@ -34,18 +34,24 @@ import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.HighScoreDialogFragment;
 import com.kevinmacwhinnie.fonz.MainActivity;
+import com.kevinmacwhinnie.fonz.ScoresActivity;
 import com.kevinmacwhinnie.fonz.SettingsActivity;
+import com.kevinmacwhinnie.fonz.data.Formatting;
 import com.kevinmacwhinnie.fonz.data.Preferences;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
 @Module(complete = false,
+        includes = { GameModule.class },
         injects = {
                 Preferences.class,
 
                 MainActivity.class,
                 SettingsActivity.class,
+                ScoresActivity.class,
                 HighScoreDialogFragment.class,
         })
 public class AppModule {
@@ -53,6 +59,10 @@ public class AppModule {
 
     public AppModule(@NonNull Context context) {
         this.context = context;
+    }
+
+    @Singleton @Provides Formatting provideFormatting() {
+        return new Formatting(context);
     }
 
     @Provides SharedPreferences providePreferences() {

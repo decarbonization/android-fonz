@@ -35,6 +35,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kevinmacwhinnie.fonz.R;
+import com.kevinmacwhinnie.fonz.data.Formatting;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -66,12 +67,12 @@ public class StatsView extends RelativeLayout {
 
     //region Attributes
 
-    public void setLife(int life) {
-        lifeText.setText(String.format("%d", life));
+    public void setLife(@NonNull Formatting formatting, int life) {
+        lifeText.setText(formatting.formatLives(life));
     }
 
-    public void setScore(int score) {
-        scoreText.setText(String.format("%d", score));
+    public void setScore(@NonNull Formatting formatting, int score) {
+        scoreText.setText(formatting.formatScore(score));
     }
 
     //endregion

@@ -25,16 +25,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.kevinmacwhinnie.fonz.graph;
+package com.kevinmacwhinnie.fonz.data;
 
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import com.kevinmacwhinnie.fonz.FonzTestCase;
 
-public abstract class GraphActivity extends AppCompatActivity {
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+import org.junit.Test;
 
-        Injection.inject(this);
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+public class FormattingTests extends FonzTestCase {
+    private final Formatting formatting = new Formatting(getContext());
+
+    @Test
+    public void formatLives() {
+        assertThat(formatting.formatLives(0), is(equalTo("0")));
+        assertThat(formatting.formatLives(10), is(equalTo("10")));
+        assertThat(formatting.formatLives(100), is(equalTo("100")));
+        assertThat(formatting.formatLives(1000), is(equalTo("1,000")));
+        assertThat(formatting.formatLives(10000), is(equalTo("10,000")));
+        assertThat(formatting.formatLives(100000), is(equalTo("100,000")));
+        assertThat(formatting.formatLives(1000000), is(equalTo("1,000,000")));
+    }
+
+    @Test
+    public void formatScore() {
+        assertThat(formatting.formatScore(0), is(equalTo("0")));
+        assertThat(formatting.formatScore(10), is(equalTo("10")));
+        assertThat(formatting.formatScore(100), is(equalTo("100")));
+        assertThat(formatting.formatScore(1000), is(equalTo("1,000")));
+        assertThat(formatting.formatScore(10000), is(equalTo("10,000")));
+        assertThat(formatting.formatScore(100000), is(equalTo("100,000")));
+        assertThat(formatting.formatScore(1000000), is(equalTo("1,000,000")));
     }
 }

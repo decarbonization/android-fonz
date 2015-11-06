@@ -25,16 +25,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.kevinmacwhinnie.fonz.graph;
+package com.kevinmacwhinnie.fonz.data;
 
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
+import android.support.annotation.NonNull;
 
-public abstract class GraphActivity extends AppCompatActivity {
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+import java.text.NumberFormat;
+import java.util.Locale;
 
-        Injection.inject(this);
+public class Formatting {
+    private final NumberFormat numberFormat;
+
+    public Formatting(@NonNull Context context) {
+        final Locale locale = context.getResources().getConfiguration().locale;
+        this.numberFormat = NumberFormat.getIntegerInstance(locale);
+    }
+
+    public String formatLives(int lives) {
+        return numberFormat.format(lives);
+    }
+
+    public String formatScore(int score) {
+        return numberFormat.format(score);
     }
 }

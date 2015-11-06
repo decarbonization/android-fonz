@@ -44,8 +44,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.kevinmacwhinnie.fonz.data.Formatting;
 import com.kevinmacwhinnie.fonz.data.Preferences;
-import com.kevinmacwhinnie.fonz.graph.Injector;
+import com.kevinmacwhinnie.fonz.graph.Injection;
 
 import javax.inject.Inject;
 
@@ -55,17 +56,33 @@ public class HighScoreDialogFragment extends AppCompatDialogFragment
     public static final String EXTRA_NAME = HighScoreDialogFragment.class.getName() + ".EXTRA_NAME";
 
     public static final String TAG = HighScoreDialogFragment.class.getSimpleName();
+    public static final String ARG_SCORE = HighScoreDialogFragment.class.getName() + ".ARG_SCORE";
 
     @Inject Preferences preferences;
+    @Inject Formatting formatting;
 
+    private int score;
     private EditText nameText;
+
+
+    //region Lifecycle
+
+    public static HighScoreDialogFragment newInstance(int score) {
+        final HighScoreDialogFragment fragment = new HighScoreDialogFragment();
+
+        final Bundle arguments = new Bundle();
+        arguments.putInt(ARG_SCORE, score);
+        fragment.setArguments(arguments);
+
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Injection.inject(getActivity(), this);
 
-        final Injector injector = (Injector) getContext().getApplicationContext();
-        injector.inject(this);
+        this.score = getArguments().getInt(ARG_SCORE);
     }
 
     @NonNull
@@ -73,6 +90,8 @@ public class HighScoreDialogFragment extends AppCompatDialogFragment
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.dialog_game_over_title);
+        builder.setMessage(getString(R.string.new_score_message_fmt,
+                                     formatting.formatScore(score)));
         builder.setPositiveButton(android.R.string.ok, this);
         builder.setNegativeButton(R.string.action_no_thanks, this);
 
@@ -99,6 +118,11 @@ public class HighScoreDialogFragment extends AppCompatDialogFragment
             imm.hideSoftInputFromWindow(nameText.getWindowToken(), 0);
         }
     }
+
+    //endregion
+
+
+    //region Events
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
@@ -127,4 +151,6 @@ public class HighScoreDialogFragment extends AppCompatDialogFragment
 
         return false;
     }
+
+    //endregion
 }
