@@ -29,7 +29,7 @@ package com.kevinmacwhinnie.fonz.data;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
-import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
+import com.kevinmacwhinnie.fonz.events.BaseValueEvent;
 import com.kevinmacwhinnie.fonz.game.CountUp;
 import com.squareup.otto.Bus;
 
@@ -129,19 +129,19 @@ import javax.inject.Singleton;
 
     //region Events
 
-    public static class SkipOnUpcomingClickChanged extends ValueBaseEvent<Boolean> {
+    public static class SkipOnUpcomingClickChanged extends BaseValueEvent<Boolean> {
         public SkipOnUpcomingClickChanged(boolean value) {
             super(value);
         }
     }
 
-    public static class PreventDuplicatePiecesChanged extends ValueBaseEvent<Boolean> {
+    public static class PreventDuplicatePiecesChanged extends BaseValueEvent<Boolean> {
         public PreventDuplicatePiecesChanged(boolean value) {
             super(value);
         }
     }
 
-    public static class TimerScaleFactorChanged extends ValueBaseEvent<Float> {
+    public static class TimerScaleFactorChanged extends BaseValueEvent<Float> {
         public TimerScaleFactorChanged(float value) {
             super(value);
         }

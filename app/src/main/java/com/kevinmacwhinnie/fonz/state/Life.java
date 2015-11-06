@@ -30,7 +30,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.data.GamePersistence;
-import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
+import com.kevinmacwhinnie.fonz.events.BaseValueEvent;
 import com.squareup.otto.Bus;
 
 public class Life implements GamePersistence {
@@ -88,7 +88,7 @@ public class Life implements GamePersistence {
     }
 
 
-    public static class Changed extends ValueBaseEvent<Integer> {
+    public static class Changed extends BaseValueEvent<Integer> {
         public Changed(Integer value) {
             super(value);
         }

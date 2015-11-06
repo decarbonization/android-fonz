@@ -35,7 +35,7 @@ import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.data.GamePersistence;
 import com.kevinmacwhinnie.fonz.data.PowerUp;
-import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
+import com.kevinmacwhinnie.fonz.events.BaseValueEvent;
 import com.squareup.otto.Bus;
 
 import java.util.EnumSet;
@@ -114,13 +114,13 @@ public class TimedMechanics implements Handler.Callback, GamePersistence {
         return false;
     }
 
-    public static class PowerUpScheduled extends ValueBaseEvent<PowerUp> {
+    public static class PowerUpScheduled extends BaseValueEvent<PowerUp> {
         public PowerUpScheduled(@NonNull PowerUp value) {
             super(value);
         }
     }
 
-    public static class PowerUpExpired extends ValueBaseEvent<PowerUp> {
+    public static class PowerUpExpired extends BaseValueEvent<PowerUp> {
         public PowerUpExpired(@NonNull PowerUp value) {
             super(value);
         }

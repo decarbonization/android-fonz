@@ -36,7 +36,7 @@ import com.kevinmacwhinnie.fonz.data.GamePersistence;
 import com.kevinmacwhinnie.fonz.data.PowerUp;
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
 import com.kevinmacwhinnie.fonz.events.BaseEvent;
-import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
+import com.kevinmacwhinnie.fonz.events.BaseValueEvent;
 import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Life;
 import com.kevinmacwhinnie.fonz.state.Pie;
@@ -410,7 +410,7 @@ public class Game implements GamePersistence {
         static final UpcomingPieceAvailable INSTANCE = new UpcomingPieceAvailable();
     }
 
-    public static class PauseStateChanged extends ValueBaseEvent<Boolean> {
+    public static class PauseStateChanged extends BaseValueEvent<Boolean> {
         public PauseStateChanged(boolean value) {
             super(value);
         }

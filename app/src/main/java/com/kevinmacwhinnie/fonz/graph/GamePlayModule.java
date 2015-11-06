@@ -48,10 +48,10 @@ import dagger.Provides;
                 MainActivity.class,
                 ScoresActivity.class,
         })
-public class GameModule {
+public class GamePlayModule {
     private final Context context;
 
-    public GameModule(@NonNull Context context) {
+    public GamePlayModule(@NonNull Context context) {
         this.context = context;
     }
 

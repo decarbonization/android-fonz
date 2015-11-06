@@ -26,10 +26,10 @@
  */
 package com.kevinmacwhinnie.fonz.events;
 
-public abstract class ValueBaseEvent<T> extends BaseEvent {
+public abstract class BaseValueEvent<T> extends BaseEvent {
     public final T value;
 
-    public ValueBaseEvent(T value) {
+    public BaseValueEvent(T value) {
         this.value = value;
     }
 
@@ -38,7 +38,7 @@ public abstract class ValueBaseEvent<T> extends BaseEvent {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ValueBaseEvent<?> that = (ValueBaseEvent<?>) o;
+        final BaseValueEvent<?> that = (BaseValueEvent<?>) o;
 
         return !(value != null ? !value.equals(that.value) : that.value != null);
 

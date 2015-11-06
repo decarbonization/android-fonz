@@ -45,7 +45,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(complete = false,
-        includes = { GameModule.class },
+        includes = { GamePlayModule.class },
         injects = {
                 Preferences.class,
 

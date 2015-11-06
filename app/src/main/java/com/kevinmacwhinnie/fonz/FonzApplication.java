@@ -31,7 +31,7 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.graph.AppModule;
-import com.kevinmacwhinnie.fonz.graph.GameModule;
+import com.kevinmacwhinnie.fonz.graph.GamePlayModule;
 import com.kevinmacwhinnie.fonz.graph.Injector;
 
 import dagger.ObjectGraph;
@@ -44,7 +44,7 @@ public class FonzApplication extends Application implements Injector {
         super.onCreate();
 
         this.objectGraph = ObjectGraph.create(new AppModule(this),
-                                              new GameModule(this));
+                                              new GamePlayModule(this));
     }
 
     @Override

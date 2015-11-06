@@ -31,7 +31,7 @@ import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.data.GamePersistence;
 import com.kevinmacwhinnie.fonz.data.PowerUp;
-import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
+import com.kevinmacwhinnie.fonz.events.BaseValueEvent;
 import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
@@ -140,7 +140,7 @@ public class Board implements GamePersistence {
     }
 
 
-    public static class PowerUpChanged extends ValueBaseEvent<PowerUp> {
+    public static class PowerUpChanged extends BaseValueEvent<PowerUp> {
         public PowerUpChanged(@NonNull PowerUp value) {
             super(value);
         }
