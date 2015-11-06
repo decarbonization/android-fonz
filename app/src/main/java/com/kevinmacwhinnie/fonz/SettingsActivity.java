@@ -31,7 +31,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -78,12 +77,12 @@ public class SettingsActivity extends GraphActivity {
     }
 
     @OnClick(R.id.activity_settings_tap_to_skip_piece)
-    public void onTapToSkipClicked(@NonNull CheckBox sender) {
+    public void onTapToSkipClicked(@NonNull Switch sender) {
         preferences.setSkipOnUpcomingClick(sender.isChecked());
     }
 
     @OnClick(R.id.activity_settings_prevent_duplicate_pieces)
-    public void onPreventDuplicatePiecesClicked(@NonNull CheckBox sender) {
+    public void onPreventDuplicatePiecesClicked(@NonNull Switch sender) {
         preferences.setPreventDuplicatePieces(sender.isChecked());
     }
 
