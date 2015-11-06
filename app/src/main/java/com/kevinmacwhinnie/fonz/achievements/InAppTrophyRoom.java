@@ -25,55 +25,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.kevinmacwhinnie.fonz.graph;
+package com.kevinmacwhinnie.fonz.achievements;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
-import com.kevinmacwhinnie.fonz.MainActivity;
-import com.kevinmacwhinnie.fonz.ScoresActivity;
-import com.kevinmacwhinnie.fonz.achievements.InAppTrophyRoom;
-import com.kevinmacwhinnie.fonz.achievements.TrophyRoom;
-import com.kevinmacwhinnie.fonz.data.ScoresStore;
-import com.kevinmacwhinnie.fonz.game.Game;
-import com.kevinmacwhinnie.fonz.game.Sounds;
 import com.squareup.otto.Bus;
-import com.squareup.otto.ThreadEnforcer;
 
-import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
 
-import dagger.Module;
-import dagger.Provides;
+public class InAppTrophyRoom implements TrophyRoom {
+    static final String PREFERENCES_NAME = "trophy_room";
 
-@Module(complete = false,
-        injects = {
-                MainActivity.class,
-                ScoresActivity.class,
-        })
-public class GamePlayModule {
-    private final Context context;
+    private final Bus bus;
+    private final SharedPreferences preferences;
 
-    public GamePlayModule(@NonNull Context context) {
-        this.context = context;
+    public InAppTrophyRoom(@NonNull Bus bus, @NonNull Context context) {
+        this.bus = bus;
+        this.preferences = context.getSharedPreferences(PREFERENCES_NAME, 0);
     }
 
-    @Singleton @Provides Bus provideBus() {
-        return new Bus(ThreadEnforcer.MAIN, "Fonz Bus");
+    @NonNull
+    @Override
+    public List<Achievement> getUnlockedAchievements() {
+        final List<Achievement> achievements = new ArrayList<>();
+        for (final Achievement achievement : Achievement.values()) {
+            if (isAchievementUnlocked(achievement)) {
+                achievements.add(achievement);
+            }
+        }
+        return achievements;
     }
 
-    @Singleton @Provides Game provideGame(@NonNull Bus bus) {
-        return new Game(bus);
+    @Override
+    public boolean isAchievementUnlocked(@NonNull Achievement achievement) {
+        return preferences.getBoolean(achievement.name(), false);
     }
 
-    @Singleton @Provides ScoresStore provideScores(@NonNull Bus bus) {
-        return new ScoresStore(context, bus);
-    }
+    @Override
+    public void achievementUnlocked(@NonNull Achievement achievement) {
+        final String name = achievement.name();
+        if (!preferences.getBoolean(name, false)) {
+            preferences.edit()
+                       .putBoolean(name, true)
+                       .apply();
 
-    @Singleton @Provides Sounds provideSounds() {
-        return new Sounds(context);
-    }
-
-    @Singleton @Provides TrophyRoom provideTrophyRoom(@NonNull Bus bus) {
-        return new InAppTrophyRoom(bus, context);
+            bus.post(new AchievementUnlocked(achievement));
+        }
     }
 }

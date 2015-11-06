@@ -41,6 +41,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import com.kevinmacwhinnie.fonz.achievements.Achievement;
+import com.kevinmacwhinnie.fonz.achievements.TrophyRoom;
 import com.kevinmacwhinnie.fonz.data.Formatting;
 import com.kevinmacwhinnie.fonz.data.ScoresStore;
 import com.kevinmacwhinnie.fonz.graph.GraphActivity;
@@ -57,6 +59,7 @@ public class ScoresActivity extends GraphActivity {
 
     @Inject Formatting formatting;
     @Inject ScoresStore scoreStore;
+    @Inject TrophyRoom trophyRoom;
 
     @Bind(R.id.activity_scores_recycler) RecyclerView recyclerView;
 
@@ -132,6 +135,16 @@ public class ScoresActivity extends GraphActivity {
             final String name = intent.getStringExtra(HighScoreDialogFragment.EXTRA_NAME);
             final int score = getIntent().getIntExtra(EXTRA_SCORE, 0);
             scoreStore.insert(name, score);
+
+            if (score > 1000000) {
+                trophyRoom.achievementUnlocked(Achievement.SCORE_OVER_1_000_000);
+            } else if (score > 100000) {
+                trophyRoom.achievementUnlocked(Achievement.SCORE_OVER_100_000);
+            } else if (score > 10000) {
+                trophyRoom.achievementUnlocked(Achievement.SCORE_OVER_10_000);
+            } else if (score > 1000) {
+                trophyRoom.achievementUnlocked(Achievement.SCORE_OVER_1_000);
+            }
         }
     };
 

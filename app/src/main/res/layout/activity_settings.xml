@@ -144,7 +144,7 @@
             android:id="@+id/activity_settings_high_scores"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/title_high_scores"
+            android:text="@string/action_high_scores"
             style="@style/Fonz.Button.SettingsOption" />
 
         <Button
@@ -169,7 +169,7 @@
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:gravity="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-            android:text="@string/version_fmt"/>
+            android:text="@string/settings_version_fmt"/>
 
     </LinearLayout>
 

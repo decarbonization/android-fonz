@@ -152,7 +152,7 @@ public class GameTests extends FonzTestCase {
         }
 
         game.upcomingPiece = new UpcomingPiece(Piece.PURPLE, Pie.SLOT_TOP_LEFT);
-        assertThat(game.tryPlaceCurrentPiece(pie), is(true));
+        assertThat(game.tryPlaceCurrentPiece(pie), is(Game.PlacementResult.PIE_COMPLETED_SINGLE_COLOR));
 
         assertThat(pie.getOccupiedSlotCount(), is(equalTo(0)));
         assertThat(events, hasItem(new Score.Changed(120)));
@@ -180,7 +180,7 @@ public class GameTests extends FonzTestCase {
         }
 
         game.upcomingPiece = new UpcomingPiece(Piece.GREEN, Pie.SLOT_TOP_LEFT);
-        assertThat(game.tryPlaceCurrentPiece(pie), is(true));
+        assertThat(game.tryPlaceCurrentPiece(pie), is(Game.PlacementResult.PIE_COMPLETED_MULTI_COLOR));
 
         assertThat(pie.getOccupiedSlotCount(), is(equalTo(0)));
         assertThat(events, hasItem(new Score.Changed(60)));

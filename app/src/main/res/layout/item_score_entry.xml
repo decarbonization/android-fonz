@@ -44,7 +44,7 @@
         android:singleLine="true"
         android:ellipsize="end"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:text="@string/score_name_default" />
+        android:text="@string/label_name_field" />
 
     <TextView
         android:id="@+id/item_score_entry_score"

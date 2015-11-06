@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:contentDescription="@string/power_up_multiply_score"
+            android:contentDescription="@string/accessibility_power_up_2x_score"
             android:src="@drawable/power_up_2x"
             style="@style/Fonz.Button.PowerUp"/>
 
@@ -66,7 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:contentDescription="@string/power_up_clear_all"
+            android:contentDescription="@string/accessibility_power_up_clear_all"
             android:src="@drawable/power_up_clear_all"
             style="@style/Fonz.Button.PowerUp"/>
 
@@ -122,7 +122,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:contentDescription="@string/power_up_slow_down"
+            android:contentDescription="@string/accessibility_power_up_slow_down_time"
             android:src="@drawable/power_up_timer"
             style="@style/Fonz.Button.PowerUp"/>
 

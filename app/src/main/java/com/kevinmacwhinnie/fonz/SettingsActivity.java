@@ -71,7 +71,7 @@ public class SettingsActivity extends GraphActivity {
         ButterKnife.bind(this);
         bus.register(this);
 
-        versionFooter.setText(getString(R.string.version_fmt,
+        versionFooter.setText(getString(R.string.settings_version_fmt,
                                         BuildConfig.VERSION_NAME,
                                         BuildConfig.BUILD_TYPE,
                                         BuildConfig.VERSION_CODE));

@@ -25,55 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.kevinmacwhinnie.fonz.graph;
+package com.kevinmacwhinnie.fonz.achievements;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.kevinmacwhinnie.fonz.MainActivity;
-import com.kevinmacwhinnie.fonz.ScoresActivity;
-import com.kevinmacwhinnie.fonz.achievements.InAppTrophyRoom;
-import com.kevinmacwhinnie.fonz.achievements.TrophyRoom;
-import com.kevinmacwhinnie.fonz.data.ScoresStore;
-import com.kevinmacwhinnie.fonz.game.Game;
-import com.kevinmacwhinnie.fonz.game.Sounds;
-import com.squareup.otto.Bus;
-import com.squareup.otto.ThreadEnforcer;
+import com.kevinmacwhinnie.fonz.events.BaseValueEvent;
 
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
-
-@Module(complete = false,
-        injects = {
-                MainActivity.class,
-                ScoresActivity.class,
-        })
-public class GamePlayModule {
-    private final Context context;
-
-    public GamePlayModule(@NonNull Context context) {
-        this.context = context;
-    }
-
-    @Singleton @Provides Bus provideBus() {
-        return new Bus(ThreadEnforcer.MAIN, "Fonz Bus");
-    }
-
-    @Singleton @Provides Game provideGame(@NonNull Bus bus) {
-        return new Game(bus);
-    }
-
-    @Singleton @Provides ScoresStore provideScores(@NonNull Bus bus) {
-        return new ScoresStore(context, bus);
-    }
-
-    @Singleton @Provides Sounds provideSounds() {
-        return new Sounds(context);
-    }
-
-    @Singleton @Provides TrophyRoom provideTrophyRoom(@NonNull Bus bus) {
-        return new InAppTrophyRoom(bus, context);
+public class AchievementUnlocked extends BaseValueEvent<Achievement> {
+    public AchievementUnlocked(@NonNull Achievement value) {
+        super(value);
     }
 }

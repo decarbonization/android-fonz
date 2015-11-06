@@ -89,8 +89,8 @@ public class HighScoreDialogFragment extends AppCompatDialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.dialog_game_over_title);
-        builder.setMessage(getString(R.string.new_score_message_fmt,
+        builder.setTitle(R.string.alert_game_over_title);
+        builder.setMessage(getString(R.string.alert_game_over_message_fmt,
                                      formatting.formatScore(score)));
         builder.setPositiveButton(android.R.string.ok, this);
         builder.setNegativeButton(R.string.action_no_thanks, this);

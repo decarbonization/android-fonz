@@ -31,6 +31,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Button;
 
+import com.kevinmacwhinnie.fonz.achievements.Achievement;
+import com.kevinmacwhinnie.fonz.achievements.TrophyRoom;
 import com.kevinmacwhinnie.fonz.data.Formatting;
 import com.kevinmacwhinnie.fonz.data.PowerUp;
 import com.kevinmacwhinnie.fonz.data.Preferences;
@@ -64,6 +66,7 @@ public class MainActivity extends GraphActivity
     @Inject Game game;
     @Inject ScoresStore scores;
     @Inject Sounds sounds;
+    @Inject TrophyRoom trophyRoom;
     @Inject Preferences preferences;
     @Inject Formatting formatting;
 
@@ -134,6 +137,10 @@ public class MainActivity extends GraphActivity
 
     @Subscribe public void onLifeChanged(@NonNull Life.Changed change) {
         statsView.setLife(formatting, change.value);
+
+        if (change.value >= Achievement.KING_OF_LIVES_THRESHOLD) {
+            trophyRoom.achievementUnlocked(Achievement.KING_OF_LIVES);
+        }
     }
 
     @Subscribe public void onScoreChanged(@NonNull Score.Changed change) {
@@ -147,6 +154,12 @@ public class MainActivity extends GraphActivity
     @Subscribe public void onPowerUpChanged(@NonNull Board.PowerUpChanged change) {
         final PowerUp powerUp = change.value;
         boardView.setPowerUpAvailable(powerUp, game.board.hasPowerUp(powerUp));
+
+        if (game.board.getPowerUpCount() == PowerUp.values().length) {
+            trophyRoom.achievementUnlocked(Achievement.ALL_POWER_UPS_UNLOCKED);
+        } else {
+            trophyRoom.achievementUnlocked(Achievement.FIRST_POWER_UP);
+        }
     }
 
     @Subscribe public void onPowerUpScheduled(@NonNull TimedMechanics.PowerUpScheduled change) {
@@ -182,6 +195,8 @@ public class MainActivity extends GraphActivity
         }
 
         if (event.how == Game.GameOver.How.GAME_LOGIC && scores.isNewHighScore(event.score)) {
+            trophyRoom.achievementUnlocked(Achievement.FIRST_HIGH_SCORE);
+
             final Intent scoresActivity = new Intent(this, ScoresActivity.class);
             scoresActivity.putExtras(ScoresActivity.getArguments(event.score));
             startActivity(scoresActivity);
@@ -220,8 +235,15 @@ public class MainActivity extends GraphActivity
             boardView.animateCurrentPieceIntoPie(pieSlot, new OnAnimationCompleted() {
                 @Override
                 public void onAnimationCompleted(boolean finished) {
-                    if (finished && !game.tryPlaceCurrentPiece(pie)) {
+                    if (!finished) {
+                        return;
+                    }
+
+                    final Game.PlacementResult placementResult = game.tryPlaceCurrentPiece(pie);
+                    if (placementResult == Game.PlacementResult.PIECE_REJECTED) {
                         sounds.playForbiddenPlacement();
+                    } else if (placementResult == Game.PlacementResult.PIE_COMPLETED_SINGLE_COLOR) {
+                        trophyRoom.achievementUnlocked(Achievement.FIRST_SINGLE_COLOR_PIE);
                     }
                 }
             });

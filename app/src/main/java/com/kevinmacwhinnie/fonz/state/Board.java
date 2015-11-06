@@ -126,6 +126,10 @@ public class Board implements GamePersistence {
         return powerUps.contains(powerUp);
     }
 
+    public int getPowerUpCount() {
+        return powerUps.size();
+    }
+
     public void reset() {
         for (int i = 0; i < NUMBER_PIES; i++) {
             pies[i].reset();

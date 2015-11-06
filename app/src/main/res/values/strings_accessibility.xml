@@ -6,6 +6,10 @@
     <string name="accessibility_piece_purple">purple</string>
     <string name="accessibility_piece_empty">empty</string>
 
+    <string name="accessibility_power_up_clear_all">Clear All</string>
+    <string name="accessibility_power_up_2x_score">2 times score</string>
+    <string name="accessibility_power_up_slow_down_time">Slow Down</string>
+
     <string name="accessibility_pie_empty">An empty puzzle with 6 slots open</string>
     <plurals name="accessibility_pie_partially_filled">
         <item quantity="one">A puzzle with 1 slot filled where %2$s</item>

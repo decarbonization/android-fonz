@@ -209,8 +209,9 @@ public class Game implements GamePersistence {
         return (inProgress && pie.canPlacePiece(upcomingPiece.slot, upcomingPiece.piece));
     }
 
-    public boolean tryPlaceCurrentPiece(@NonNull Pie pie) {
+    public PlacementResult tryPlaceCurrentPiece(@NonNull Pie pie) {
         if (inProgress && pie.tryPlacePiece(upcomingPiece.slot, upcomingPiece.piece)) {
+            PlacementResult result = PlacementResult.PIECE_ACCEPTED;
             if (pie.isFull()) {
                 final boolean isSingleColor = pie.isSingleColor();
                 score.addPie(isSingleColor);
@@ -223,14 +224,18 @@ public class Game implements GamePersistence {
                     if (board.pieHasPowerUp(slot)) {
                         board.addPowerUp(PowerUp.values()[slot]);
                     }
+
+                    result = PlacementResult.PIE_COMPLETED_SINGLE_COLOR;
+                } else {
+                    result = PlacementResult.PIE_COMPLETED_MULTI_COLOR;
                 }
             }
 
             countUp.scaleTickDuration(timerScaleFactor);
             doNewCountUp();
-            return true;
+            return result;
         } else {
-            return false;
+            return PlacementResult.PIECE_REJECTED;
         }
     }
 
@@ -379,10 +384,9 @@ public class Game implements GamePersistence {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            GameOver gameOver = (GameOver) o;
+            final GameOver gameOver = (GameOver) o;
 
-            return score == gameOver.score && how == gameOver.how;
-
+            return (score == gameOver.score && how == gameOver.how);
         }
 
         @Override
@@ -414,5 +418,13 @@ public class Game implements GamePersistence {
         public PauseStateChanged(boolean value) {
             super(value);
         }
+    }
+
+
+    public enum PlacementResult {
+        PIE_COMPLETED_MULTI_COLOR,
+        PIE_COMPLETED_SINGLE_COLOR,
+        PIECE_ACCEPTED,
+        PIECE_REJECTED,
     }
 }

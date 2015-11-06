@@ -1,37 +1,56 @@
 <resources>
     <string name="app_name">Fonz</string>
-    <string name="label_lives">Lives</string>
-    <string name="label_score">Score</string>
     <string name="data_placeholder">--</string>
 
+
+    <!-- Actions -->
     <string name="action_new_game">Start</string>
     <string name="action_end_game">End</string>
     <string name="action_pause_game">Pause</string>
     <string name="action_resume_game">Resume</string>
-    <string name="dialog_game_over_title">Game Over</string>
     <string name="action_no_thanks">No, Thanks</string>
-    <string name="caption_player_name">Name</string>
-    <string name="score_name_default">Dina</string>
-    <string name="title_high_scores">High Scores</string>
     <string name="action_clear_scores">Clear</string>
-
-    <string name="power_up_clear_all">Clear All</string>
-    <string name="power_up_multiply_score">2x</string>
-    <string name="power_up_slow_down">Slow Down</string>
     <string name="action_settings">Options</string>
     <string name="action_help">Tutorial</string>
+    <string name="action_done">Done</string>
+    <string name="action_restore_defaults">Restore Defaults</string>
+    <string name="action_high_scores">High Scores</string>
+
+
+    <!-- Alerts -->
+    <string name="alert_game_over_title">Game Over</string>
+    <string name="alert_game_over_message_fmt">You\'ve achieved a new high score of %1$s</string>
+    <string name="alert_clear_scores_confirm_title">Clear Scores</string>
+    <string name="alert_clear_scores_confirm_message">Are you sure you want to clear your high scores? This operation cannot be undone.</string>
+
+
+    <!-- Labels -->
+    <string name="label_name_field">Name</string>
+    <string name="label_lives">Lives</string>
+    <string name="label_score">Score</string>
+
+
+    <!-- Settings -->
     <string name="settings_section_game_play">Game Play</string>
-    <string name="settings_section_options">Options</string>
     <string name="title_setting_tap_to_skip_piece">Tap to skip piece</string>
     <string name="info_setting_tap_to_skip_piece">When enabled, tapping on the upcoming piece in the center of the game board will advance to the next piece, and deduct one life.</string>
     <string name="title_setting_prevent_duplicate_pieces">Prevent duplicate pieces</string>
     <string name="info_setting_prevent_duplicate_pieces">When enabled, you will never get the same pie piece twice in a row.</string>
-    <string name="version_fmt">Version %1$s (%2$s, %3$s)</string>
-    <string name="alert_clear_scores_confirm_title">Clear Scores</string>
-    <string name="alert_clear_scores_confirm_message">Are you sure you want to clear your high scores? This operation cannot be undone.</string>
-    <string name="action_done">Done</string>
-    <string name="new_score_message_fmt">You\'ve achieved a new high score of %1$s</string>
     <string name="title_setting_timer_scale_factor">Timer scale factor</string>
     <string name="info_setting_timer_scale_factor">The fraction the game timer\'s duration is multiplied by after a pie is completed.</string>
-    <string name="action_restore_defaults">Restore Defaults</string>
+    <string name="settings_section_options">Options</string>
+    <string name="settings_version_fmt">Version %1$s (%2$s, %3$s)</string>
+
+
+    <!-- Achievements -->
+    <string name="achievement_first_single_color_pie">Pie completed with single color</string>
+    <string name="achievement_first_power_up">First power up unlocked</string>
+    <string name="achievement_first_high_score">First high score</string>
+    <string name="achievement_beat_the_clock">Beat the clock</string>
+    <string name="achievement_all_power_ups_unlocked">Power Mad</string>
+    <string name="achievement_king_of_lives">All the lives!</string>
+    <string name="achievement_score_over_1_000">Quadruple digit club</string>
+    <string name="achievement_score_over_10_000">It\'s over 9,000!</string>
+    <string name="achievement_score_over_100_000">That\'s a big score!</string>
+    <string name="achievement_score_over_1_000_000">Go outside!</string>
 </resources>
