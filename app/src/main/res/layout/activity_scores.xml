@@ -26,10 +26,26 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<android.support.v7.widget.RecyclerView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_scores_recycler"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+    android:layout_height="match_parent">
+
+  <Button
+      android:id="@+id/activity_scores_done"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/gap_small"
+      android:layout_alignParentBottom="true"
+      android:text="@string/action_done"
+      style="@style/Widget.AppCompat.Button.Colored" />
+
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/activity_scores_recycler"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_above="@id/activity_scores_done"
+      app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+</RelativeLayout>

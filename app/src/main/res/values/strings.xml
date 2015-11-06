@@ -29,4 +29,5 @@
     <string name="version_fmt">Version %1$s (%2$s, %3$s)</string>
     <string name="alert_clear_scores_confirm_title">Clear Scores</string>
     <string name="alert_clear_scores_confirm_message">Are you sure you want to clear your high scores? This operation cannot be undone.</string>
+    <string name="action_done">Done</string>
 </resources>

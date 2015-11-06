@@ -33,11 +33,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import com.kevinmacwhinnie.fonz.data.ScoresStore;
 import com.kevinmacwhinnie.fonz.graph.GraphActivity;
@@ -47,6 +49,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ScoresActivity extends GraphActivity {
     public static final String EXTRA_SCORE = ScoresActivity.class.getName() + ".EXTRA_SCORE";
@@ -147,6 +150,11 @@ public class ScoresActivity extends GraphActivity {
             }
         });
         confirm.show();
+    }
+
+    @OnClick(R.id.activity_scores_done)
+    public void done(@NonNull Button sender) {
+        finish();
     }
 
     //endregion
