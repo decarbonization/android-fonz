@@ -23,15 +23,17 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/action_settings"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+            style="@style/Widget.AppCompat.Button.Colored" />
 
         <Button
             android:id="@+id/activity_main_game_state_control"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginLeft="@dimen/gap_medium"
+            android:layout_marginRight="@dimen/gap_medium"
             android:text="@string/action_new_game"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+            style="@style/Widget.AppCompat.Button.Colored" />
 
         <Button
             android:id="@+id/activity_main_game_help"
@@ -39,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/action_help"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+            style="@style/Widget.AppCompat.Button.Colored" />
 
     </LinearLayout>
 
