@@ -31,4 +31,7 @@
     <string name="alert_clear_scores_confirm_message">Are you sure you want to clear your high scores? This operation cannot be undone.</string>
     <string name="action_done">Done</string>
     <string name="new_score_message_fmt">You\'ve achieved a new high score of %1$s</string>
+    <string name="title_setting_timer_scale_factor">Timer scale factor</string>
+    <string name="info_setting_timer_scale_factor">The fraction the game timer\'s duration is multiplied by after a pie is completed.</string>
+    <string name="action_restore_defaults">Restore Defaults</string>
 </resources>

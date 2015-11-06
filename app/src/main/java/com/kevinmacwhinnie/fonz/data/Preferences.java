@@ -30,6 +30,7 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.events.ValueBaseEvent;
+import com.kevinmacwhinnie.fonz.game.CountUp;
 import com.squareup.otto.Bus;
 
 import javax.inject.Inject;
@@ -39,6 +40,7 @@ import javax.inject.Singleton;
     public static final String SAVED_SCORE_NAME = "saved_score_name";
     public static final String SKIP_ON_UPCOMING_CLICK = "skip_on_upcoming_click";
     public static final String PREVENT_DUPLICATE_PIECES = "prevent_duplicate_pieces";
+    public static final String TIMER_SCALE_FACTOR = "timer_scale_factor";
 
     private final SharedPreferences preferences;
     private final Bus bus;
@@ -61,6 +63,11 @@ import javax.inject.Singleton;
 
             case PREVENT_DUPLICATE_PIECES: {
                 bus.post(new PreventDuplicatePiecesChanged(getPreventDuplicatePieces()));
+                break;
+            }
+
+            case TIMER_SCALE_FACTOR: {
+                bus.post(new TimerScaleFactorChanged(getTimerScaleFactor()));
                 break;
             }
         }
@@ -99,6 +106,24 @@ import javax.inject.Singleton;
         return preferences.getBoolean(PREVENT_DUPLICATE_PIECES, true);
     }
 
+    public void setTimerScaleFactor(float scaleFactor) {
+        preferences.edit()
+                   .putFloat(TIMER_SCALE_FACTOR, scaleFactor)
+                   .apply();
+    }
+
+    public float getTimerScaleFactor() {
+        return preferences.getFloat(TIMER_SCALE_FACTOR, CountUp.DEFAULT_SCALE_FACTOR);
+    }
+
+    public void restoreDefaults() {
+        preferences.edit()
+                   .remove(SKIP_ON_UPCOMING_CLICK)
+                   .remove(PREVENT_DUPLICATE_PIECES)
+                   .remove(TIMER_SCALE_FACTOR)
+                   .apply();
+    }
+
     //endregion
 
 
@@ -112,6 +137,12 @@ import javax.inject.Singleton;
 
     public static class PreventDuplicatePiecesChanged extends ValueBaseEvent<Boolean> {
         public PreventDuplicatePiecesChanged(boolean value) {
+            super(value);
+        }
+    }
+
+    public static class TimerScaleFactorChanged extends ValueBaseEvent<Float> {
+        public TimerScaleFactorChanged(float value) {
             super(value);
         }
     }

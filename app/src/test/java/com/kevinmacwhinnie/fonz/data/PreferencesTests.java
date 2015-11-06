@@ -33,6 +33,7 @@ import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.FonzTestCase;
 import com.kevinmacwhinnie.fonz.events.BaseEvent;
+import com.kevinmacwhinnie.fonz.game.CountUp;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -79,15 +80,21 @@ public class PreferencesTests extends FonzTestCase {
         events.add(event);
     }
 
+    @Subscribe public void onTimerScaleFactorChanged(@NonNull Preferences.TimerScaleFactorChanged event) {
+        events.add(event);
+    }
+
 
     @Test
     public void changeEvents() {
         preferences.setPreventDuplicatePieces(false);
         preferences.setSkipOnUpcomingClick(false);
+        preferences.setTimerScaleFactor(0.90f);
 
-        assertThat(events.size(), is(equalTo(2)));
+        assertThat(events.size(), is(equalTo(3)));
         assertThat(events, hasItem(new Preferences.SkipOnUpcomingClickChanged(false)));
         assertThat(events, hasItem(new Preferences.PreventDuplicatePiecesChanged(false)));
+        assertThat(events, hasItem(new Preferences.TimerScaleFactorChanged(0.90f)));
     }
 
     @Test
@@ -106,5 +113,26 @@ public class PreferencesTests extends FonzTestCase {
 
         preferences.setSkipOnUpcomingClick(false);
         assertThat(preferences.getSkipOnUpcomingClick(), is(false));
+
+        preferences.setTimerScaleFactor(0.90f);
+        assertThat(preferences.getTimerScaleFactor(), is(equalTo(0.90f)));
+    }
+
+    @Test
+    public void restoreDefaults() {
+        preferences.setPreventDuplicatePieces(false);
+        preferences.setSkipOnUpcomingClick(false);
+        preferences.setTimerScaleFactor(0.90f);
+
+        assertThat(events.size(), is(equalTo(3)));
+        events.clear();
+
+        preferences.restoreDefaults();
+
+        assertThat(events.size(), is(equalTo(3)));
+
+        assertThat(preferences.getPreventDuplicatePieces(), is(equalTo(true)));
+        assertThat(preferences.getSkipOnUpcomingClick(), is(equalTo(true)));
+        assertThat(preferences.getTimerScaleFactor(), is(equalTo(CountUp.DEFAULT_SCALE_FACTOR)));
     }
 }

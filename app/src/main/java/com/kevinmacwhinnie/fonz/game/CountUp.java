@@ -45,7 +45,7 @@ public class CountUp implements Handler.Callback, GamePersistence {
     public static final int NUMBER_TICKS = 10;
     public static final long DEFAULT_TICK_DURATION_MS = 1000L;
     public static final long MIN_TICK_DURATION = 450L;
-    public static final double DEFAULT_SCALE_FACTOR = 0.99;
+    public static final float DEFAULT_SCALE_FACTOR = 0.95f;
 
     private static final int MSG_TICK = 0;
 

@@ -37,7 +37,7 @@ public class Score implements GamePersistence {
     static final String SAVED_VALUE = Score.class.getName() + ".SAVED_VALUE";
     static final String SAVED_MULTIPLIER = Score.class.getName() + ".SAVED_MULTIPLIER";
 
-    public static final int SCORE_PER_PIECE = 5;
+    public static final int SCORE_PER_PIECE = 10;
 
     private final Bus bus;
     private int value = 0;

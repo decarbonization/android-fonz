@@ -84,6 +84,46 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             android:text="@string/info_setting_prevent_duplicate_pieces"/>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin">
+
+            <EditText
+                android:id="@+id/activity_settings_timer_scale_factor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:selectAllOnFocus="true"
+                android:gravity="center"
+                android:fontFamily="monospace"
+                android:singleLine="true"
+                android:minEms="3"
+                android:inputType="numberDecimal"
+                android:imeOptions="actionGo" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/activity_settings_timer_scale_factor"
+                android:layout_alignBaseline="@id/activity_settings_timer_scale_factor"
+                android:labelFor="@id/activity_settings_timer_scale_factor"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:text="@string/title_setting_timer_scale_factor"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/gap_small"
+            android:layout_marginBottom="@dimen/gap_small"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:text="@string/info_setting_timer_scale_factor"/>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_size"
@@ -105,6 +145,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/title_high_scores"
+            style="@style/Fonz.Button.SettingsOption" />
+
+        <Button
+            android:id="@+id/activity_settings_restore_defaults"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/action_restore_defaults"
             style="@style/Fonz.Button.SettingsOption" />
 
         <Space

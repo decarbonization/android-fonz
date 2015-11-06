@@ -73,12 +73,12 @@ public class ScoreTests extends FonzTestCase {
         assertThat(score.getValue(), is(equalTo(0)));
 
         score.addPie(false);
-        assertThat(events, hasItem(new Score.Changed(30)));
-        assertThat(score.getValue(), is(equalTo(30)));
-
-        score.addPie(false);
         assertThat(events, hasItem(new Score.Changed(60)));
         assertThat(score.getValue(), is(equalTo(60)));
+
+        score.addPie(false);
+        assertThat(events, hasItem(new Score.Changed(120)));
+        assertThat(score.getValue(), is(equalTo(120)));
     }
 
     @Test
@@ -88,12 +88,12 @@ public class ScoreTests extends FonzTestCase {
         assertThat(score.getValue(), is(equalTo(0)));
 
         score.addPie(true);
-        assertThat(events, hasItem(new Score.Changed(60)));
-        assertThat(score.getValue(), is(equalTo(60)));
+        assertThat(events, hasItem(new Score.Changed(120)));
+        assertThat(score.getValue(), is(equalTo(120)));
 
         score.addPie(false);
-        assertThat(events, hasItem(new Score.Changed(90)));
-        assertThat(score.getValue(), is(equalTo(90)));
+        assertThat(events, hasItem(new Score.Changed(180)));
+        assertThat(score.getValue(), is(equalTo(180)));
     }
 
     @Test
@@ -104,12 +104,12 @@ public class ScoreTests extends FonzTestCase {
 
         score.setMultiplier(3f);
         score.addPie(false);
-        assertThat(events, hasItem(new Score.Changed(90)));
-        assertThat(score.getValue(), is(equalTo(90)));
+        assertThat(events, hasItem(new Score.Changed(180)));
+        assertThat(score.getValue(), is(equalTo(180)));
 
         score.addPie(true);
-        assertThat(events, hasItem(new Score.Changed(270)));
-        assertThat(score.getValue(), is(equalTo(270)));
+        assertThat(events, hasItem(new Score.Changed(540)));
+        assertThat(score.getValue(), is(equalTo(540)));
     }
 
     @Test
@@ -119,8 +119,8 @@ public class ScoreTests extends FonzTestCase {
         assertThat(score.getValue(), is(equalTo(0)));
 
         score.addPie(false);
-        assertThat(events, hasItem(new Score.Changed(30)));
-        assertThat(score.getValue(), is(equalTo(30)));
+        assertThat(events, hasItem(new Score.Changed(60)));
+        assertThat(score.getValue(), is(equalTo(60)));
 
         score.reset();
         assertThat(events, hasItem(new Score.Changed(0)));

@@ -31,7 +31,8 @@
         <activity
             android:name=".ScoresActivity"
             android:label="@string/title_high_scores"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".SettingsActivity"

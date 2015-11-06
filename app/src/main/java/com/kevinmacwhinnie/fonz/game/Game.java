@@ -60,6 +60,7 @@ public class Game implements GamePersistence {
     public final Board board;
 
     private final PieceFactory pieceFactory = new PieceFactory();
+    private double timerScaleFactor = CountUp.DEFAULT_SCALE_FACTOR;
     private boolean hasRestoredState = false;
     private boolean inProgress = false;
     private boolean paused = false;
@@ -148,6 +149,10 @@ public class Game implements GamePersistence {
         pieceFactory.setPreventDuplicatePieces(preventDuplicatePieces);
     }
 
+    public void setTimerScaleFactor(double timerScaleFactor) {
+        this.timerScaleFactor = timerScaleFactor;
+    }
+
     //endregion
 
 
@@ -221,7 +226,7 @@ public class Game implements GamePersistence {
                 }
             }
 
-            countUp.scaleTickDuration(CountUp.DEFAULT_SCALE_FACTOR);
+            countUp.scaleTickDuration(timerScaleFactor);
             doNewCountUp();
             return true;
         } else {

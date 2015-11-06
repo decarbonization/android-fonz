@@ -100,6 +100,7 @@ public class MainActivity extends GraphActivity
         }
 
         game.setPreventDuplicatePieces(preferences.getPreventDuplicatePieces());
+        game.setTimerScaleFactor(preferences.getTimerScaleFactor());
         game.bus.register(this);
     }
 
@@ -191,6 +192,10 @@ public class MainActivity extends GraphActivity
 
     @Subscribe public void onPreventDuplicatePiecesChanged(@NonNull Preferences.PreventDuplicatePiecesChanged event) {
         game.setPreventDuplicatePieces(event.value);
+    }
+
+    @Subscribe public void onTimerScaleFactorChanged(@NonNull Preferences.TimerScaleFactorChanged event) {
+        game.setTimerScaleFactor(event.value);
     }
 
     //endregion

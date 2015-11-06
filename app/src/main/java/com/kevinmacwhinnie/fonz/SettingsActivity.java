@@ -27,10 +27,16 @@
 
 package com.kevinmacwhinnie.fonz;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -44,14 +50,19 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
 
 public class SettingsActivity extends GraphActivity {
     @Bind(R.id.activity_settings_version_footer) TextView versionFooter;
     @Bind(R.id.activity_settings_tap_to_skip_piece) Switch tapToSkipPiece;
     @Bind(R.id.activity_settings_prevent_duplicate_pieces) Switch preventDuplicatePieces;
+    @Bind(R.id.activity_settings_timer_scale_factor) EditText timerScaleFactor;
 
     @Inject Bus bus;
     @Inject Preferences preferences;
+
+
+    //region Lifecycle
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,14 +78,26 @@ public class SettingsActivity extends GraphActivity {
 
         tapToSkipPiece.setChecked(preferences.getSkipOnUpcomingClick());
         preventDuplicatePieces.setChecked(preferences.getPreventDuplicatePieces());
+        timerScaleFactor.setText(formatTimerScaleFactor(preferences.getTimerScaleFactor()));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
+        if (timerScaleFactor.isFocused()) {
+            final InputMethodManager imm =
+                    (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(timerScaleFactor.getWindowToken(), 0);
+        }
+
         bus.unregister(this);
     }
+
+    //endregion
+
+
+    //region Preferences
 
     @OnClick(R.id.activity_settings_tap_to_skip_piece)
     public void onTapToSkipClicked(@NonNull Switch sender) {
@@ -86,11 +109,46 @@ public class SettingsActivity extends GraphActivity {
         preferences.setPreventDuplicatePieces(sender.isChecked());
     }
 
+    @OnEditorAction(R.id.activity_settings_timer_scale_factor)
+    public boolean onTimerScaleFactorEditorAction(@NonNull TextView sender,
+                                                  int editorAction,
+                                                  @NonNull KeyEvent event) {
+        if (editorAction == EditorInfo.IME_ACTION_GO ||
+                event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+            try {
+                final float timerScaleFactor =
+                        Float.parseFloat(this.timerScaleFactor.getText().toString());
+                preferences.setTimerScaleFactor(timerScaleFactor);
+            } catch (NumberFormatException e) {
+                Log.w(getClass().getSimpleName(), "Could not parse scale factor", e);
+                timerScaleFactor.setText(formatTimerScaleFactor(preferences.getTimerScaleFactor()));
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    //endregion
+
+
+    //region Actions
+
     @OnClick(R.id.activity_settings_high_scores)
     public void onHighScoresClicked(@NonNull Button sender) {
         startActivity(new Intent(this, ScoresActivity.class));
     }
 
+    @OnClick(R.id.activity_settings_restore_defaults)
+    public void onRestoreDefaultsClicked(@NonNull Button sender) {
+        preferences.restoreDefaults();
+    }
+
+    //endregion
+
+
+    //region Events
 
     @Subscribe public void onSkipOnUpcomingClickChanged(@NonNull Preferences.SkipOnUpcomingClickChanged event) {
         tapToSkipPiece.setChecked(event.value);
@@ -98,5 +156,16 @@ public class SettingsActivity extends GraphActivity {
 
     @Subscribe public void onPreventDuplicatePiecesChanged(@NonNull Preferences.PreventDuplicatePiecesChanged event) {
         preventDuplicatePieces.setChecked(event.value);
+    }
+
+    @Subscribe public void onTimerScaleFactorChanged(@NonNull Preferences.TimerScaleFactorChanged event) {
+        timerScaleFactor.setText(formatTimerScaleFactor(event.value));
+    }
+
+    //endregion
+
+
+    private static String formatTimerScaleFactor(float scaleFactor) {
+        return String.format("%.2f", scaleFactor);
     }
 }

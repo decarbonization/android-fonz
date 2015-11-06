@@ -155,9 +155,9 @@ public class GameTests extends FonzTestCase {
         assertThat(game.tryPlaceCurrentPiece(pie), is(true));
 
         assertThat(pie.getOccupiedSlotCount(), is(equalTo(0)));
-        assertThat(events, hasItem(new Score.Changed(60)));
+        assertThat(events, hasItem(new Score.Changed(120)));
         assertThat(events, hasItem(new Life.Changed(Life.INITIAL_VALUE + 1)));
-        assertThat(game.countUp.getTickDuration(), is(equalTo(990L)));
+        assertThat(game.countUp.getTickDuration(), is(equalTo(950L)));
         assertThat(game.board.hasPowerUp(PowerUp.MULTIPLY_SCORE), is(true));
 
         assertThat(occurrencesOf(events, Game.UpcomingPieceAvailable.INSTANCE), is(equalTo(2)));
@@ -183,9 +183,9 @@ public class GameTests extends FonzTestCase {
         assertThat(game.tryPlaceCurrentPiece(pie), is(true));
 
         assertThat(pie.getOccupiedSlotCount(), is(equalTo(0)));
-        assertThat(events, hasItem(new Score.Changed(30)));
+        assertThat(events, hasItem(new Score.Changed(60)));
         assertThat(events, not(hasItem(new Life.Changed(Life.INITIAL_VALUE + 1))));
-        assertThat(game.countUp.getTickDuration(), is(equalTo(990L)));
+        assertThat(game.countUp.getTickDuration(), is(equalTo(950L)));
         assertThat(game.board.hasPowerUp(PowerUp.MULTIPLY_SCORE), is(false));
 
         assertThat(occurrencesOf(events, Game.UpcomingPieceAvailable.INSTANCE), is(equalTo(2)));
@@ -208,7 +208,7 @@ public class GameTests extends FonzTestCase {
         assertThat(occurrencesOf(events, Game.UpcomingPieceAvailable.INSTANCE), is(equalTo(2)));
         assertThat(game.isInProgress(), is(true));
         assertThat(game.getUpcomingPiece(), is(notNullValue()));
-        assertThat(game.countUp.getTickDuration(), is(equalTo(990L)));
+        assertThat(game.countUp.getTickDuration(), is(equalTo(950L)));
     }
 
     @Test
