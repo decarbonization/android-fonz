@@ -33,6 +33,7 @@ import android.widget.Button;
 
 import com.kevinmacwhinnie.fonz.data.PowerUp;
 import com.kevinmacwhinnie.fonz.data.Preferences;
+import com.kevinmacwhinnie.fonz.data.ScoresStore;
 import com.kevinmacwhinnie.fonz.game.CountUp;
 import com.kevinmacwhinnie.fonz.game.Game;
 import com.kevinmacwhinnie.fonz.game.Sounds;
@@ -60,6 +61,7 @@ public class MainActivity extends GraphActivity
     private final AnimatorContext animatorContext = new AnimatorContext(getClass().getSimpleName());
 
     @Inject Game game;
+    @Inject ScoresStore scores;
     @Inject Sounds sounds;
     @Inject Preferences preferences;
 
@@ -176,7 +178,7 @@ public class MainActivity extends GraphActivity
             boardView.setPowerUpAvailable(powerUp, false);
         }
 
-        if (event.how == Game.GameOver.How.GAME_LOGIC) {
+        if (event.how == Game.GameOver.How.GAME_LOGIC && scores.isNewHighScore(event.score)) {
             final Intent scoresActivity = new Intent(this, ScoresActivity.class);
             scoresActivity.putExtras(ScoresActivity.getArguments(event.score));
             startActivity(scoresActivity);
