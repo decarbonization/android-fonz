@@ -13,7 +13,7 @@
     <string name="caption_player_name">Enter your name:</string>
     <string name="score_name_default">Dina</string>
     <string name="title_high_scores">High Scores</string>
-    <string name="action_clear_scores">Clear All</string>
+    <string name="action_clear_scores">Clear</string>
 
     <string name="power_up_clear_all">Clear All</string>
     <string name="power_up_multiply_score">2x</string>
@@ -27,4 +27,6 @@
     <string name="title_setting_prevent_duplicate_pieces">Prevent duplicate pieces</string>
     <string name="info_setting_prevent_duplicate_pieces">When enabled, you will never get the same pie piece twice in a row.</string>
     <string name="version_fmt">Version %1$s (%2$s, %3$s)</string>
+    <string name="alert_clear_scores_confirm_title">Clear Scores</string>
+    <string name="alert_clear_scores_confirm_message">Are you sure you want to clear your high scores? This operation cannot be undone.</string>
 </resources>

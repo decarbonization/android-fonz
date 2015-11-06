@@ -29,14 +29,15 @@ package com.kevinmacwhinnie.fonz;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Button;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.kevinmacwhinnie.fonz.data.ScoresStore;
 import com.kevinmacwhinnie.fonz.graph.GraphActivity;
@@ -46,7 +47,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class ScoresActivity extends GraphActivity {
     public static final String EXTRA_SCORE = ScoresActivity.class.getName() + ".EXTRA_SCORE";
@@ -76,7 +76,6 @@ public class ScoresActivity extends GraphActivity {
             showNewScoreDialog();
         }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
         this.adapter = new ScoresAdapter(this, scoreStore);
@@ -98,6 +97,25 @@ public class ScoresActivity extends GraphActivity {
                              .unregisterReceiver(ON_SCORE_SUBMITTED);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_scores, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_clear: {
+                clearScores();
+                return true;
+            }
+            default: {
+                return super.onOptionsItemSelected(item);
+            }
+        }
+    }
+
     //endregion
 
 
@@ -117,9 +135,18 @@ public class ScoresActivity extends GraphActivity {
         dialogFragment.show(getSupportFragmentManager(), HighScoreDialogFragment.TAG);
     }
 
-    @OnClick(R.id.activity_scores_clear)
-    public void clearScores(@NonNull Button sender) {
-        scoreStore.clear();
+    private void clearScores() {
+        final AlertDialog.Builder confirm = new AlertDialog.Builder(this);
+        confirm.setTitle(R.string.alert_clear_scores_confirm_title);
+        confirm.setMessage(R.string.alert_clear_scores_confirm_message);
+        confirm.setNegativeButton(android.R.string.cancel, null);
+        confirm.setPositiveButton(R.string.action_clear_scores, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                scoreStore.clear();
+            }
+        });
+        confirm.show();
     }
 
     //endregion

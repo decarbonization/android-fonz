@@ -26,32 +26,12 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:paddingLeft="@dimen/activity_horizontal_margin"
-              android:paddingRight="@dimen/activity_horizontal_margin"
-              android:paddingTop="@dimen/gap_medium"
-              android:paddingBottom="@dimen/gap_medium">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/item_score_entry_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginEnd="@dimen/gap_small"
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:text="@string/score_name_default" />
+    <item
+        android:id="@+id/action_clear"
+        android:title="@string/action_clear_scores"
+        app:showAsAction="ifRoom" />
 
-    <TextView
-        android:id="@+id/item_score_entry_score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="?attr/colorAccent"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:text="@string/data_placeholder"/>
-
-</LinearLayout>
+</menu>
