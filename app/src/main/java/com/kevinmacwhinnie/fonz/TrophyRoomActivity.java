@@ -25,57 +25,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.kevinmacwhinnie.fonz.graph;
+package com.kevinmacwhinnie.fonz;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
+import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 
-import com.kevinmacwhinnie.fonz.MainActivity;
-import com.kevinmacwhinnie.fonz.ScoresActivity;
-import com.kevinmacwhinnie.fonz.TrophyRoomActivity;
-import com.kevinmacwhinnie.fonz.achievements.InAppTrophyRoom;
 import com.kevinmacwhinnie.fonz.achievements.TrophyRoom;
-import com.kevinmacwhinnie.fonz.data.ScoresStore;
-import com.kevinmacwhinnie.fonz.game.Game;
-import com.kevinmacwhinnie.fonz.game.Sounds;
-import com.squareup.otto.Bus;
-import com.squareup.otto.ThreadEnforcer;
+import com.kevinmacwhinnie.fonz.graph.GraphActivity;
+import com.kevinmacwhinnie.fonz.view.AchievementsAdapter;
 
-import javax.inject.Singleton;
+import javax.inject.Inject;
 
-import dagger.Module;
-import dagger.Provides;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
-@Module(complete = false,
-        injects = {
-                MainActivity.class,
-                ScoresActivity.class,
-                TrophyRoomActivity.class,
-        })
-public class GamePlayModule {
-    private final Context context;
+public class TrophyRoomActivity extends GraphActivity {
+    @Inject TrophyRoom trophyRoom;
 
-    public GamePlayModule(@NonNull Context context) {
-        this.context = context;
-    }
+    @Bind(R.id.activity_trophy_room_recycler) RecyclerView recyclerView;
 
-    @Singleton @Provides Bus provideBus() {
-        return new Bus(ThreadEnforcer.MAIN, "Fonz Bus");
-    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_trophy_room);
+        ButterKnife.bind(this);
 
-    @Singleton @Provides Game provideGame(@NonNull Bus bus) {
-        return new Game(bus);
-    }
-
-    @Singleton @Provides ScoresStore provideScores(@NonNull Bus bus) {
-        return new ScoresStore(context, bus);
-    }
-
-    @Singleton @Provides Sounds provideSounds() {
-        return new Sounds(context);
-    }
-
-    @Singleton @Provides TrophyRoom provideTrophyRoom(@NonNull Bus bus) {
-        return new InAppTrophyRoom(bus, context);
+        final AchievementsAdapter adapter =
+                new AchievementsAdapter(this, trophyRoom.getUnlockedAchievements());
+        recyclerView.setAdapter(adapter);
     }
 }

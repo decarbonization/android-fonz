@@ -30,8 +30,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.kevinmacwhinnie.fonz.achievements.Achievement;
+import com.kevinmacwhinnie.fonz.achievements.AchievementUnlocked;
 import com.kevinmacwhinnie.fonz.achievements.TrophyRoom;
 import com.kevinmacwhinnie.fonz.data.Formatting;
 import com.kevinmacwhinnie.fonz.data.PowerUp;
@@ -211,6 +213,10 @@ public class MainActivity extends GraphActivity
 
     @Subscribe public void onTimerScaleFactorChanged(@NonNull Preferences.TimerScaleFactorChanged event) {
         game.setTimerScaleFactor(event.value);
+    }
+
+    @Subscribe public void onAchievementUnlocked(@NonNull AchievementUnlocked event) {
+        Toast.makeText(getApplicationContext(), event.value.name, Toast.LENGTH_SHORT).show();
     }
 
     //endregion

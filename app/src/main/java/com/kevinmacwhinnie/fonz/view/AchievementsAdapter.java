@@ -25,62 +25,59 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.kevinmacwhinnie.fonz.achievements;
+package com.kevinmacwhinnie.fonz.view;
 
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
-import com.squareup.otto.Bus;
+import com.kevinmacwhinnie.fonz.R;
+import com.kevinmacwhinnie.fonz.achievements.Achievement;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class InAppTrophyRoom implements TrophyRoom {
-    static final String PREFERENCES_NAME = "trophy_room";
+public class AchievementsAdapter extends RecyclerView.Adapter<AchievementsAdapter.ViewHolder> {
+    private final Resources resources;
+    private final LayoutInflater inflater;
+    private final List<Achievement> achievements;
 
-    private final Bus bus;
-    private final SharedPreferences preferences;
-
-    public InAppTrophyRoom(@NonNull Bus bus, @NonNull Context context) {
-        this.bus = bus;
-        this.preferences = context.getSharedPreferences(PREFERENCES_NAME, 0);
+    public AchievementsAdapter(@NonNull Context context,
+                               @NonNull List<Achievement> achievements) {
+        this.resources = context.getResources();
+        this.inflater = LayoutInflater.from(context);
+        this.achievements = achievements;
     }
 
-    @NonNull
     @Override
-    public List<Achievement> getUnlockedAchievements() {
-        final List<Achievement> achievements = new ArrayList<>();
-        for (final Achievement achievement : Achievement.values()) {
-            if (isAchievementUnlocked(achievement)) {
-                achievements.add(achievement);
-            }
+    public int getItemCount() {
+        return achievements.size();
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        final View view = inflater.inflate(R.layout.item_achievement, parent, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        final Achievement achievement = achievements.get(position);
+        final String name = resources.getString(achievement.name);
+        holder.name.setText(name);
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        final TextView name;
+
+        ViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            this.name = (TextView) itemView.findViewById(R.id.item_achievement_name);
         }
-        return achievements;
-    }
-
-    @Override
-    public boolean isAchievementUnlocked(@NonNull Achievement achievement) {
-        return preferences.getBoolean(achievement.name(), false);
-    }
-
-    @Override
-    public void achievementUnlocked(@NonNull Achievement achievement) {
-        final String name = achievement.name();
-        if (!preferences.getBoolean(name, false)) {
-            preferences.edit()
-                       .putBoolean(name, true)
-                       .apply();
-
-            bus.post(new AchievementUnlocked(achievement));
-        }
-    }
-
-    @VisibleForTesting
-    void clear() {
-        preferences.edit()
-                   .clear()
-                   .apply();
     }
 }

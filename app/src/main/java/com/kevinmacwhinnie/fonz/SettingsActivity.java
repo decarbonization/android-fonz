@@ -140,6 +140,11 @@ public class SettingsActivity extends GraphActivity {
         startActivity(new Intent(this, ScoresActivity.class));
     }
 
+    @OnClick(R.id.activity_settings_trophy_room)
+    public void onTrophyRoomClicked(@NonNull Button sender) {
+        startActivity(new Intent(this, TrophyRoomActivity.class));
+    }
+
     @OnClick(R.id.activity_settings_restore_defaults)
     public void onRestoreDefaultsClicked(@NonNull Button sender) {
         preferences.restoreDefaults();

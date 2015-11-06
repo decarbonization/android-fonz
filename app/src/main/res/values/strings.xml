@@ -15,6 +15,7 @@
     <string name="action_done">Done</string>
     <string name="action_restore_defaults">Restore Defaults</string>
     <string name="action_high_scores">High Scores</string>
+    <string name="action_trophy_room">Achievements</string>
 
 
     <!-- Alerts -->
@@ -47,7 +48,7 @@
     <string name="achievement_first_power_up">First power up unlocked</string>
     <string name="achievement_first_high_score">First high score</string>
     <string name="achievement_beat_the_clock">Beat the clock</string>
-    <string name="achievement_all_power_ups_unlocked">Power Mad</string>
+    <string name="achievement_all_power_ups_unlocked">Power Mad!</string>
     <string name="achievement_king_of_lives">All the lives!</string>
     <string name="achievement_score_over_1_000">Quadruple digit club</string>
     <string name="achievement_score_over_10_000">It\'s over 9,000!</string>

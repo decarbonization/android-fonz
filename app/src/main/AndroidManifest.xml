@@ -35,6 +35,11 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".TrophyRoomActivity"
+            android:label="@string/action_trophy_room"
+            android:parentActivityName=".SettingsActivity" />
+
+        <activity
             android:name=".SettingsActivity"
             android:label="@string/action_settings"
             android:parentActivityName=".MainActivity" />
