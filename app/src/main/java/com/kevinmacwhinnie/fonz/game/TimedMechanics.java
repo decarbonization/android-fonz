@@ -28,28 +28,27 @@
 package com.kevinmacwhinnie.fonz.game;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.kevinmacwhinnie.fonz.data.GamePersistence;
 import com.kevinmacwhinnie.fonz.data.PowerUp;
 import com.kevinmacwhinnie.fonz.events.BaseValueEvent;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
-import java.util.EnumSet;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-public class TimedMechanics implements Handler.Callback, GamePersistence {
-    static final String SAVED_PENDING = TimedMechanics.class.getName() + ".SAVED_PENDING";
+public class TimedMechanics implements GamePersistence {
+    static final String SAVED_SCHEDULED = TimedMechanics.class.getName() + ".SAVED_SCHEDULED";
 
-    public static final long DURATION = 15 * 1000L;
-
-    private static final int MSG_POWER_UP_EXPIRE = 0;
-
-    private final Handler handler = new Handler(Looper.getMainLooper(), this);
-    private final EnumSet<PowerUp> pending = EnumSet.noneOf(PowerUp.class);
     private final Bus bus;
+    private final ArrayList<ScheduledPowerUp> scheduled = new ArrayList<>(3);
+    private boolean subscribed = false;
+
+    //region Lifecycle
 
     public TimedMechanics(@NonNull Bus bus) {
         this.bus = bus;
@@ -57,62 +56,127 @@ public class TimedMechanics implements Handler.Callback, GamePersistence {
 
     @Override
     public void restoreState(@NonNull Bundle inState) {
-        @SuppressWarnings("unchecked")
-        final EnumSet<PowerUp> savedPending =
-                (EnumSet<PowerUp>) inState.getSerializable(SAVED_PENDING);
-        assert savedPending != null;
-        pending.clear();
-        pending.addAll(savedPending);
+        final ArrayList<ScheduledPowerUp> inScheduled =
+                inState.getParcelableArrayList(SAVED_SCHEDULED);
+        if (inScheduled != null) {
+            scheduled.clear();
+            scheduled.addAll(inScheduled);
+        }
     }
 
     @Override
     public void saveState(@NonNull Bundle outState) {
-        outState.putSerializable(SAVED_PENDING, pending);
-    }
-
-    //region Scheduling
-
-    public void schedulePowerUp(@NonNull PowerUp powerUp) {
-        final Message expiration = handler.obtainMessage(MSG_POWER_UP_EXPIRE, powerUp);
-        handler.sendMessageDelayed(expiration, DURATION);
-        pending.add(powerUp);
-        bus.post(new PowerUpScheduled(powerUp));
-    }
-
-    public void pause() {
-        handler.removeMessages(MSG_POWER_UP_EXPIRE);
-    }
-
-    public void resume() {
-        for (final PowerUp powerUp : pending) {
-            schedulePowerUp(powerUp);
-        }
-    }
-
-    public void reset() {
-        handler.removeMessages(MSG_POWER_UP_EXPIRE);
-        pending.clear();
-    }
-
-    public boolean isPending(@NonNull PowerUp powerUp) {
-        return pending.contains(powerUp);
+        outState.putParcelableArrayList(SAVED_SCHEDULED, scheduled);
     }
 
     //endregion
 
 
-    //region Events
+    //region Scheduling
 
-    @Override
-    public boolean handleMessage(Message msg) {
-        if (msg.what == MSG_POWER_UP_EXPIRE) {
-            final PowerUp powerUp = (PowerUp) msg.obj;
-            pending.remove(powerUp);
-            bus.post(new PowerUpExpired(powerUp));
+    private void subscribe() {
+        if (!subscribed) {
+            bus.register(this);
+            this.subscribed = true;
         }
+    }
 
+    private void unsubscribe() {
+        if (subscribed) {
+            bus.unregister(this);
+            this.subscribed = false;
+        }
+    }
+
+    public void schedulePowerUp(@NonNull PowerUp powerUp, long durationTicks) {
+        scheduled.add(new ScheduledPowerUp(powerUp, durationTicks, 1L));
+        bus.post(new PowerUpScheduled(powerUp));
+        subscribe();
+    }
+
+    public void reset() {
+        unsubscribe();
+        scheduled.clear();
+    }
+
+    public boolean isPending(@NonNull PowerUp powerUp) {
+        for (final ScheduledPowerUp scheduledPowerUp : scheduled) {
+            if (scheduledPowerUp.powerUp == powerUp) {
+                return true;
+            }
+        }
         return false;
     }
+
+    //endregion
+
+
+    //region Callbacks
+
+    @Subscribe public void onCountUpTicked(@NonNull CountUp.Ticked tick) {
+        final Iterator<ScheduledPowerUp> iterator = scheduled.iterator();
+        while (iterator.hasNext()) {
+            final ScheduledPowerUp scheduledPowerUp = iterator.next();
+            if (++scheduledPowerUp.durationTickCurrent >= scheduledPowerUp.durationTicks) {
+                iterator.remove();
+                bus.post(new PowerUpExpired(scheduledPowerUp.powerUp));
+            }
+        }
+        
+        if (scheduled.isEmpty()) {
+            unsubscribe();
+        }
+    }
+
+    //endregion
+
+
+    static class ScheduledPowerUp implements Parcelable {
+        public final PowerUp powerUp;
+        public final long durationTicks;
+        public long durationTickCurrent;
+
+        ScheduledPowerUp(@NonNull PowerUp powerUp,
+                         long durationTicks,
+                         long durationTickCurrent) {
+            this.powerUp = powerUp;
+            this.durationTicks = durationTicks;
+            this.durationTickCurrent = durationTickCurrent;
+        }
+
+        ScheduledPowerUp(Parcel in) {
+            this(PowerUp.valueOf(in.readString()),
+                 in.readLong(),
+                 in.readLong());
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            out.writeString(powerUp.toString());
+            out.writeLong(durationTicks);
+            out.writeLong(durationTickCurrent);
+        }
+
+        public static final Creator<ScheduledPowerUp> CREATOR = new Creator<ScheduledPowerUp>() {
+            @Override
+            public ScheduledPowerUp createFromParcel(Parcel in) {
+                return new ScheduledPowerUp(in);
+            }
+
+            @Override
+            public ScheduledPowerUp[] newArray(int size) {
+                return new ScheduledPowerUp[size];
+            }
+        };
+    }
+
+
+    //region Events
 
     public static class PowerUpScheduled extends BaseValueEvent<PowerUp> {
         public PowerUpScheduled(@NonNull PowerUp value) {

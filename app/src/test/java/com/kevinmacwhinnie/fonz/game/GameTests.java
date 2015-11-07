@@ -217,21 +217,22 @@ public class GameTests extends FonzTestCase {
         scheduler.pause();
 
         game.newGame();
-        game.timedMechanics.schedulePowerUp(PowerUp.MULTIPLY_SCORE);
+        game.timedMechanics.schedulePowerUp(PowerUp.MULTIPLY_SCORE,
+                                            CountUp.NUMBER_TICKS);
         scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * 2L);
 
         final int beforePause = game.countUp.getTickCurrent();
         game.pause();
         assertThat(game.isPaused(), is(true));
 
-        scheduler.advanceBy(TimedMechanics.DURATION + 10L);
+        scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS + 10L);
         assertThat(game.countUp.getTickCurrent(), is(equalTo(beforePause)));
         assertThat(game.timedMechanics.isPending(PowerUp.MULTIPLY_SCORE), is(true));
 
         game.resume();
         assertThat(game.isPaused(), is(false));
 
-        scheduler.advanceBy(TimedMechanics.DURATION + 10L);
+        scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * CountUp.NUMBER_TICKS * 3);
         assertThat(game.countUp.getTickCurrent(), is(not(equalTo(beforePause))));
         assertThat(game.timedMechanics.isPending(PowerUp.MULTIPLY_SCORE), is(false));
 
@@ -296,7 +297,7 @@ public class GameTests extends FonzTestCase {
         assertThat(game.timedMechanics.isPending(PowerUp.MULTIPLY_SCORE), is(true));
         assertThat(game.score.getMultiplier(), is(equalTo(2f)));
 
-        scheduler.advanceBy(TimedMechanics.DURATION + 1L);
+        scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * CountUp.NUMBER_TICKS * 3);
 
         assertThat(game.timedMechanics.isPending(PowerUp.MULTIPLY_SCORE), is(false));
         assertThat(game.score.getMultiplier(), is(equalTo(1f)));
@@ -317,7 +318,7 @@ public class GameTests extends FonzTestCase {
         assertThat(game.timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
         assertThat(game.countUp.getTickDuration(), is(equalTo(2000L)));
 
-        scheduler.advanceBy(TimedMechanics.DURATION + 1L);
+        scheduler.advanceBy(2000L * CountUp.NUMBER_TICKS * 3);
 
         assertThat(game.timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(false));
         assertThat(game.countUp.getTickDuration(), is(not(equalTo(2000L))));

@@ -51,19 +51,22 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class TimedMechanicsTests extends FonzTestCase {
-    private final Bus bus = new Bus();
+    private final Bus bus = new Bus("TimedMechanicsTests#bus");
+    private final CountUp countUp = new CountUp(bus);
+    private final TimedMechanics timedMechanics = new TimedMechanics(bus);
     private final List<BaseEvent> events = new ArrayList<>();
-    private TimedMechanics timedMechanics;
 
     @Before
     public void setUp() {
-        this.timedMechanics = new TimedMechanics(bus);
         bus.register(this);
     }
 
     @After
     public void tearDown() {
         bus.unregister(this);
+        events.clear();
+        countUp.reset();
+        timedMechanics.reset();
     }
 
     @Subscribe public void onPowerUpScheduled(@NonNull TimedMechanics.PowerUpScheduled info) {
@@ -80,10 +83,12 @@ public class TimedMechanicsTests extends FonzTestCase {
         final Scheduler scheduler = Robolectric.getForegroundThreadScheduler();
         scheduler.pause();
 
-        timedMechanics.schedulePowerUp(PowerUp.SLOW_DOWN_TIME);
+        countUp.start();
+        timedMechanics.schedulePowerUp(PowerUp.SLOW_DOWN_TIME,
+                                       CountUp.NUMBER_TICKS);
         assertThat(timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
 
-        scheduler.advanceBy(TimedMechanics.DURATION + 10L);
+        scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * CountUp.NUMBER_TICKS + 100L);
         assertThat(events.size(), is(equalTo(2)));
         assertThat(events, hasItem(new TimedMechanics.PowerUpScheduled(PowerUp.SLOW_DOWN_TIME)));
         assertThat(events, hasItem(new TimedMechanics.PowerUpExpired(PowerUp.SLOW_DOWN_TIME)));
@@ -95,31 +100,14 @@ public class TimedMechanicsTests extends FonzTestCase {
         final Scheduler scheduler = Robolectric.getForegroundThreadScheduler();
         scheduler.pause();
 
-        timedMechanics.schedulePowerUp(PowerUp.SLOW_DOWN_TIME);
+        countUp.start();
+        timedMechanics.schedulePowerUp(PowerUp.SLOW_DOWN_TIME,
+                                       CountUp.NUMBER_TICKS);
         assertThat(timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
         timedMechanics.reset();
 
-        scheduler.advanceBy(TimedMechanics.DURATION + 10L);
+        scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * CountUp.NUMBER_TICKS + 100L);
         assertThat(events.size(), is(equalTo(1)));
-        assertThat(timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(false));
-    }
-
-    @Test
-    public void pause() {
-        final Scheduler scheduler = Robolectric.getForegroundThreadScheduler();
-        scheduler.pause();
-
-        timedMechanics.schedulePowerUp(PowerUp.SLOW_DOWN_TIME);
-        assertThat(timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
-
-        timedMechanics.pause();
-
-        scheduler.advanceBy(TimedMechanics.DURATION + 10L);
-        assertThat(timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
-
-        timedMechanics.resume();
-
-        scheduler.advanceBy(TimedMechanics.DURATION + 10L);
         assertThat(timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(false));
     }
 
@@ -128,7 +116,7 @@ public class TimedMechanicsTests extends FonzTestCase {
         final Scheduler scheduler = Robolectric.getForegroundThreadScheduler();
         scheduler.pause();
 
-        timedMechanics.schedulePowerUp(PowerUp.SLOW_DOWN_TIME);
+        timedMechanics.schedulePowerUp(PowerUp.SLOW_DOWN_TIME, CountUp.NUMBER_TICKS);
         assertThat(timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
 
         final Bundle savedState = new Bundle();
