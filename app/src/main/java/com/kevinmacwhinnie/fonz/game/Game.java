@@ -222,7 +222,7 @@ public class Game implements GamePersistence {
 
                     final int slot = board.getSlot(pie);
                     if (board.pieHasPowerUp(slot)) {
-                        board.addPowerUp(PowerUp.values()[slot]);
+                        board.addPowerUp(PowerUp.forSlot(slot));
                     }
 
                     result = PlacementResult.PIE_COMPLETED_SINGLE_COLOR;

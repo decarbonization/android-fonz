@@ -29,7 +29,32 @@ package com.kevinmacwhinnie.fonz.data;
 
 public enum PowerUp {
     // Must match layout of board.
-    MULTIPLY_SCORE,
-    CLEAR_ALL,
-    SLOW_DOWN_TIME,
+    MULTIPLY_SCORE(0),
+    CLEAR_ALL(1),
+    SLOW_DOWN_TIME(2);
+
+    /**
+     * The slot the power up is attached to.
+     */
+    public final int boardSlot;
+
+    /**
+     * Looks up the power up matching a given slot.
+     * @param boardSlot The slot to find the power up for.
+     * @return The power up.
+     * @throws IllegalArgumentException if no power up matches the slot.
+     */
+    public static PowerUp forSlot(int boardSlot) {
+        for (final PowerUp powerUp : values()) {
+            if (powerUp.boardSlot == boardSlot) {
+                return powerUp;
+            }
+        }
+
+        throw new IllegalArgumentException("No power up for board slot " + boardSlot);
+    }
+
+    PowerUp(int boardSlot) {
+        this.boardSlot = boardSlot;
+    }
 }

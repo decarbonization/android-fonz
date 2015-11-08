@@ -104,9 +104,9 @@ public class BoardView extends LinearLayout
                 (ImageButton) findViewById(R.id.view_game_board_power_up_clear_all),
                 (ImageButton) findViewById(R.id.view_game_board_power_up_slow_down),
         };
-        for (int i = 0, length = powerUpButtons.length; i < length; i++) {
-            final ImageButton powerUpButton = powerUpButtons[i];
-            powerUpButton.setTag(R.id.view_board_power_up_tag, PowerUp.values()[i]);
+        for (final ImageButton powerUpButton : powerUpButtons) {
+            final String powerUpName = (String) powerUpButton.getTag();
+            powerUpButton.setTag(R.id.view_board_power_up_tag, PowerUp.valueOf(powerUpName));
             powerUpButton.setOnClickListener(ON_POWER_UP_CLICKED);
         }
 
@@ -165,8 +165,12 @@ public class BoardView extends LinearLayout
     }
 
     public void setPowerUpAvailable(@NonNull PowerUp powerUp, boolean available) {
-        final int position = powerUp.ordinal();
-        powerUpButtons[position].setEnabled(available);
+        for (final ImageButton powerUpButton : powerUpButtons) {
+            final PowerUp match = (PowerUp) powerUpButton.getTag(R.id.view_board_power_up_tag);
+            if (match == powerUp) {
+                powerUpButton.setEnabled(available);
+            }
+        }
     }
 
     public void setListener(@Nullable Listener listener) {

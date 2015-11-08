@@ -74,6 +74,25 @@ public class Pie implements GamePersistence {
              NUMBER_SLOTS})
     public @interface Slot {}
 
+    public static String slotToString(@Slot int slot) {
+        switch (slot) {
+            case SLOT_TOP_LEFT:
+                return "SLOT_TOP_LEFT";
+            case SLOT_TOP_CENTER:
+                return "SLOT_TOP_CENTER";
+            case SLOT_TOP_RIGHT:
+                return "SLOT_TOP_RIGHT";
+            case SLOT_BOTTOM_LEFT:
+                return "SLOT_BOTTOM_LEFT";
+            case SLOT_BOTTOM_CENTER:
+                return "SLOT_BOTTOM_CENTER";
+            case SLOT_BOTTOM_RIGHT:
+                return "SLOT_BOTTOM_RIGHT";
+            default:
+                throw new IllegalArgumentException("Slot '" + slot + "' is unknown");
+        }
+    }
+
 
     public final @Nullable Bus bus;
 

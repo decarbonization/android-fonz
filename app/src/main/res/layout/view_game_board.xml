@@ -23,6 +23,7 @@
             android:enabled="false"
             android:contentDescription="@string/accessibility_power_up_2x_score"
             android:src="@drawable/power_up_2x"
+            android:tag="MULTIPLY_SCORE"
             style="@style/Fonz.Button.PowerUp"/>
 
         <com.kevinmacwhinnie.fonz.view.PieView
@@ -68,6 +69,7 @@
             android:enabled="false"
             android:contentDescription="@string/accessibility_power_up_clear_all"
             android:src="@drawable/power_up_clear_all"
+            android:tag="CLEAR_ALL"
             style="@style/Fonz.Button.PowerUp"/>
 
         <com.kevinmacwhinnie.fonz.view.PieView
@@ -124,6 +126,7 @@
             android:enabled="false"
             android:contentDescription="@string/accessibility_power_up_slow_down_time"
             android:src="@drawable/power_up_timer"
+            android:tag="SLOW_DOWN_TIME"
             style="@style/Fonz.Button.PowerUp"/>
 
         <com.kevinmacwhinnie.fonz.view.PieView
