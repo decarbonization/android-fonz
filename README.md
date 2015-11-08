@@ -1,3 +1,5 @@
+![fonz icon](https://raw.githubusercontent.com/decarbonization/android-fonz/master/app/src/main/res/drawable-mdpi/ic_launcher.png)
+
 # Fonz
 
 [![Circle CI](https://circleci.com/gh/decarbonization/android-fonz/tree/master.svg?style=svg&circle-token=f4212f192ae698963c57dc6dde54be7ad4d9bce6)](https://circleci.com/gh/decarbonization/android-fonz/tree/master)
@@ -29,6 +31,12 @@ The matching keystore directory layout for the example `signing.properties` is a
 - `keystores/`
     + `debug.keystore`
     + `release.keystore`
+
+# Contributing
+
+If you find a bug, or see something that could be improved, don't hesitate to create a new issue on the `android-fonz` GitHub project.
+
+If you'd like to contribute code to Fonz, fork the project on GitHub, and submit a pull request with your changes. Be sure to include unit tests where possible, and try to follow the code style of the project as closely as you can.
 
 # License
 
