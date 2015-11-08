@@ -165,7 +165,16 @@ public class MainActivity extends GraphActivity
     }
 
     @Subscribe public void onPowerUpScheduled(@NonNull TimedMechanics.PowerUpScheduled change) {
-        // Do nothing for now.
+        boardView.setPowerUpActive(change.value, true);
+    }
+
+    @Subscribe public void onPowerUpTicked(@NonNull TimedMechanics.PowerUpTicked ticked) {
+        boardView.setPowerUpTick(ticked.powerUp,
+                                 (int) (ticked.durationTicks - ticked.durationTickCurrent));
+    }
+
+    @Subscribe public void onPowerUpScheduled(@NonNull TimedMechanics.PowerUpExpired change) {
+        boardView.setPowerUpActive(change.value, false);
     }
 
     @Subscribe public void onPauseStateChanged(@NonNull Game.PauseStateChanged change) {

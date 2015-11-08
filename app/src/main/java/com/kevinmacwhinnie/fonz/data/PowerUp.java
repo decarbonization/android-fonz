@@ -27,16 +27,31 @@
 
 package com.kevinmacwhinnie.fonz.data;
 
+import android.support.annotation.DrawableRes;
+import android.support.annotation.StringRes;
+
+import com.kevinmacwhinnie.fonz.R;
+
 public enum PowerUp {
     // Must match layout of board.
-    MULTIPLY_SCORE(0),
-    CLEAR_ALL(1),
-    SLOW_DOWN_TIME(2);
+    MULTIPLY_SCORE(0, R.drawable.power_up_2x, R.string.accessibility_power_up_2x_score),
+    CLEAR_ALL(1, R.drawable.power_up_clear_all, R.string.accessibility_power_up_clear_all),
+    SLOW_DOWN_TIME(2, R.drawable.power_up_timer, R.string.accessibility_power_up_slow_down_time);
 
     /**
      * The slot the power up is attached to.
      */
     public final int boardSlot;
+
+    /**
+     * The icon for the power up.
+     */
+    public final @DrawableRes int iconRes;
+
+    /**
+     * The accessibility description for the power up.
+     */
+    public final @StringRes int accessibilityRes;
 
     /**
      * Looks up the power up matching a given slot.
@@ -54,7 +69,11 @@ public enum PowerUp {
         throw new IllegalArgumentException("No power up for board slot " + boardSlot);
     }
 
-    PowerUp(int boardSlot) {
+    PowerUp(int boardSlot,
+            @DrawableRes int iconRes,
+            @StringRes int accessibilityRes) {
         this.boardSlot = boardSlot;
+        this.iconRes = iconRes;
+        this.accessibilityRes = accessibilityRes;
     }
 }

@@ -33,16 +33,17 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.SimpleArrayMap;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.kevinmacwhinnie.fonz.R;
 import com.kevinmacwhinnie.fonz.data.Piece;
 import com.kevinmacwhinnie.fonz.data.PowerUp;
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
+import com.kevinmacwhinnie.fonz.game.TimedMechanics;
 import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Pie;
 import com.kevinmacwhinnie.fonz.view.util.Animations;
@@ -55,7 +56,7 @@ import is.hello.go99.animators.OnAnimationCompleted;
 public class BoardView extends LinearLayout
         implements PieceDrawable.PieceProvider {
     private final PieView[] pieViews;
-    private final ImageButton[] powerUpButtons;
+    private final SimpleArrayMap<PowerUp, PowerUpButton> powerUpButtons;
     private final UpcomingPieceView upcomingPieceView;
     private final PieceDrawable placementPieceDrawable;
 
@@ -99,15 +100,15 @@ public class BoardView extends LinearLayout
             pieView.setOnClickListener(ON_PIE_CLICKED);
         }
 
-        this.powerUpButtons = new ImageButton[] {
-                (ImageButton) findViewById(R.id.view_game_board_power_up_multiply_score),
-                (ImageButton) findViewById(R.id.view_game_board_power_up_clear_all),
-                (ImageButton) findViewById(R.id.view_game_board_power_up_slow_down),
+        final PowerUpButton[] powerUpButtons = new PowerUpButton[] {
+                (PowerUpButton) findViewById(R.id.view_game_board_power_up_multiply_score),
+                (PowerUpButton) findViewById(R.id.view_game_board_power_up_clear_all),
+                (PowerUpButton) findViewById(R.id.view_game_board_power_up_slow_down),
         };
-        for (final ImageButton powerUpButton : powerUpButtons) {
-            final String powerUpName = (String) powerUpButton.getTag();
-            powerUpButton.setTag(R.id.view_board_power_up_tag, PowerUp.valueOf(powerUpName));
+        this.powerUpButtons = new SimpleArrayMap<>(powerUpButtons.length);
+        for (final PowerUpButton powerUpButton : powerUpButtons) {
             powerUpButton.setOnClickListener(ON_POWER_UP_CLICKED);
+            this.powerUpButtons.put(powerUpButton.getPowerUp(), powerUpButton);
         }
 
         this.upcomingPieceView = (UpcomingPieceView) findViewById(R.id.view_game_board_upcoming_piece);
@@ -134,9 +135,8 @@ public class BoardView extends LinearLayout
             pieViews[i].setPie(board.getPie(i));
         }
 
-        final PowerUp[] powerUps = PowerUp.values();
-        for (int i = 0, length = powerUps.length; i < length; i++) {
-            powerUpButtons[i].setEnabled(board.hasPowerUp(powerUps[i]));
+        for (final PowerUp powerUp : PowerUp.values()) {
+            powerUpButtons.get(powerUp).setEnabled(board.hasPowerUp(powerUp));
         }
     }
 
@@ -151,8 +151,8 @@ public class BoardView extends LinearLayout
     public void setPaused(boolean isPaused) {
         upcomingPieceView.setPaused(isPaused);
 
-        for (final ImageButton powerUpButton : powerUpButtons) {
-            powerUpButton.setClickable(!isPaused);
+        for (int i = 0, size = powerUpButtons.size(); i < size; i++) {
+            powerUpButtons.valueAt(i).setClickable(!isPaused);
         }
         for (final PieView pieView : pieViews) {
             pieView.setClickable(!isPaused);
@@ -165,12 +165,22 @@ public class BoardView extends LinearLayout
     }
 
     public void setPowerUpAvailable(@NonNull PowerUp powerUp, boolean available) {
-        for (final ImageButton powerUpButton : powerUpButtons) {
-            final PowerUp match = (PowerUp) powerUpButton.getTag(R.id.view_board_power_up_tag);
-            if (match == powerUp) {
-                powerUpButton.setEnabled(available);
-            }
+        powerUpButtons.get(powerUp).setEnabled(available);
+    }
+
+    public void setPowerUpActive(@NonNull PowerUp powerUp, boolean active) {
+        final PowerUpButton powerUpButton = powerUpButtons.get(powerUp);
+        if (active) {
+            powerUpButton.setTick(TimedMechanics.STANDARD_DURATION_TICKS);
+            powerUpButton.setClickable(false);
+        } else {
+            powerUpButton.setTick(0);
+            powerUpButton.setClickable(true);
         }
+    }
+
+    public void setPowerUpTick(@NonNull PowerUp powerUp, int tick) {
+        powerUpButtons.get(powerUp).setTick(tick);
     }
 
     public void setListener(@Nullable Listener listener) {
@@ -303,9 +313,9 @@ public class BoardView extends LinearLayout
     @SuppressWarnings("FieldCanBeLocal")
     private final OnClickListener ON_POWER_UP_CLICKED = new OnClickListener() {
         @Override
-        public void onClick(View powerUpButton) {
+        public void onClick(View powerUpView) {
             if (listener != null && board != null) {
-                final PowerUp powerUp = (PowerUp) powerUpButton.getTag(R.id.view_board_power_up_tag);
+                final PowerUp powerUp = ((PowerUpButton) powerUpView).getPowerUp();
                 listener.onPowerUpClicked(powerUp);
             }
         }

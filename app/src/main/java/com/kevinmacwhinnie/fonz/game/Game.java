@@ -311,7 +311,8 @@ public class Game implements GamePersistence {
         if (inProgress && board.hasPowerUp(PowerUp.MULTIPLY_SCORE) &&
                 !timedMechanics.isPending(PowerUp.MULTIPLY_SCORE)) {
             score.setMultiplier(2f);
-            timedMechanics.schedulePowerUp(PowerUp.MULTIPLY_SCORE, 30);
+            timedMechanics.schedulePowerUp(PowerUp.MULTIPLY_SCORE,
+                                           TimedMechanics.STANDARD_DURATION_TICKS);
             return true;
         } else {
             return false;
@@ -324,7 +325,8 @@ public class Game implements GamePersistence {
         if (inProgress && board.hasPowerUp(PowerUp.SLOW_DOWN_TIME) &&
                 !timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME)) {
             countUp.scaleTickDuration(2f);
-            timedMechanics.schedulePowerUp(PowerUp.SLOW_DOWN_TIME, 30);
+            timedMechanics.schedulePowerUp(PowerUp.SLOW_DOWN_TIME,
+                                           TimedMechanics.STANDARD_DURATION_TICKS);
             return true;
         } else {
             return false;

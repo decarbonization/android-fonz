@@ -42,12 +42,11 @@ import com.kevinmacwhinnie.fonz.game.CountUp;
 import com.kevinmacwhinnie.fonz.view.util.Drawing;
 
 public class TimerDrawable extends Drawable {
-    private static final float DEGREES_PER_TICK = 360f / CountUp.NUMBER_TICKS;
-
     private final RectF drawingRect = new RectF();
     private final Paint fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final float inset;
 
+    private float degreesPerTick = 360f / CountUp.NUMBER_TICKS;
     private int tick = 0;
 
     public TimerDrawable(@NonNull Resources resources) {
@@ -64,7 +63,7 @@ public class TimerDrawable extends Drawable {
     @Override
     public void draw(Canvas canvas) {
         canvas.drawArc(drawingRect, 180f,
-                       tick * DEGREES_PER_TICK,
+                       tick * degreesPerTick,
                        false, fillPaint);
     }
 
@@ -72,6 +71,15 @@ public class TimerDrawable extends Drawable {
     protected void onBoundsChange(Rect bounds) {
         drawingRect.set(bounds);
         drawingRect.inset(inset, inset);
+        if (drawingRect.width() > drawingRect.height()) {
+            final int diffX = (int) (drawingRect.width() - drawingRect.height()) / 2;
+            drawingRect.left += diffX;
+            drawingRect.right -= diffX;
+        } else if (drawingRect.width() < drawingRect.height()) {
+            final int diffY = (int) (drawingRect.height() - drawingRect.width()) / 2;
+            drawingRect.top += diffY;
+            drawingRect.bottom -= diffY;
+        }
     }
 
     //endregion
@@ -97,6 +105,11 @@ public class TimerDrawable extends Drawable {
 
     public void setTick(int tick) {
         this.tick = tick;
+        invalidateSelf();
+    }
+
+    public void setNumberOfTicks(int ticks) {
+        this.degreesPerTick = 360f / ticks;
         invalidateSelf();
     }
 
