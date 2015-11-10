@@ -27,22 +27,33 @@
 
 package com.kevinmacwhinnie.fonz;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 
+import com.kevinmacwhinnie.fonz.achievements.Achievement;
 import com.kevinmacwhinnie.fonz.achievements.TrophyRoom;
 import com.kevinmacwhinnie.fonz.graph.GraphActivity;
 import com.kevinmacwhinnie.fonz.view.AchievementsAdapter;
+import com.kevinmacwhinnie.fonz.view.DividerItemDecoration;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class TrophyRoomActivity extends GraphActivity {
+public class TrophyRoomActivity extends GraphActivity implements AchievementsAdapter.OnShareClickListener {
     @Inject TrophyRoom trophyRoom;
 
     @Bind(R.id.activity_trophy_room_recycler) RecyclerView recyclerView;
+
+
+    //region Lifecycle
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +62,58 @@ public class TrophyRoomActivity extends GraphActivity {
         ButterKnife.bind(this);
 
         final AchievementsAdapter adapter =
-                new AchievementsAdapter(this, trophyRoom.getUnlockedAchievements());
+                new AchievementsAdapter(this, this, trophyRoom.getUnlockedAchievements());
         recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getResources()));
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_scores, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_clear: {
+                clearAchievements();
+                return true;
+            }
+            default: {
+                return super.onOptionsItemSelected(item);
+            }
+        }
+    }
+
+    //endregion
+
+
+    //region Actions
+
+    public void clearAchievements() {
+        final AlertDialog.Builder confirm = new AlertDialog.Builder(this);
+        confirm.setTitle(R.string.alert_clear_achievements_confirm_title);
+        confirm.setMessage(R.string.alert_clear_achievements_confirm_message);
+        confirm.setNegativeButton(android.R.string.cancel, null);
+        confirm.setPositiveButton(R.string.action_clear_scores, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                trophyRoom.reset();
+                finish();
+            }
+        });
+        confirm.show();
+    }
+
+    @Override
+    public void onItemShareClick(@NonNull Achievement achievement) {
+        final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.achievement_share_title));
+        shareIntent.putExtra(Intent.EXTRA_TEXT, getString(achievement.name));
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share)));
+    }
+
+    //endregion
 }

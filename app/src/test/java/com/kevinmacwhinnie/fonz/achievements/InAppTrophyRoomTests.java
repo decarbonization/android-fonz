@@ -59,7 +59,7 @@ public class InAppTrophyRoomTests extends FonzTestCase {
     @After
     public void tearDown() {
         bus.unregister(this);
-        trophyRoom.clear();
+        trophyRoom.reset();
         events.clear();
     }
 

@@ -30,7 +30,6 @@ package com.kevinmacwhinnie.fonz.achievements;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 
 import com.squareup.otto.Bus;
 
@@ -77,8 +76,8 @@ public class InAppTrophyRoom implements TrophyRoom {
         }
     }
 
-    @VisibleForTesting
-    void clear() {
+    @Override
+    public void reset() {
         preferences.edit()
                    .clear()
                    .apply();

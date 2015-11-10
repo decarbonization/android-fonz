@@ -27,26 +27,27 @@
 
 package com.kevinmacwhinnie.fonz;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.kevinmacwhinnie.fonz.achievements.Achievement;
+import com.kevinmacwhinnie.fonz.achievements.AchievementUnlocked;
 import com.kevinmacwhinnie.fonz.achievements.TrophyRoom;
 import com.kevinmacwhinnie.fonz.data.Formatting;
 import com.kevinmacwhinnie.fonz.data.ScoresStore;
 import com.kevinmacwhinnie.fonz.graph.GraphActivity;
+import com.kevinmacwhinnie.fonz.view.AchievementHeadsUp;
+import com.kevinmacwhinnie.fonz.view.DividerItemDecoration;
 import com.kevinmacwhinnie.fonz.view.ScoresAdapter;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
@@ -57,10 +58,12 @@ import butterknife.OnClick;
 public class ScoresActivity extends GraphActivity {
     public static final String EXTRA_SCORE = ScoresActivity.class.getName() + ".EXTRA_SCORE";
 
+    @Inject Bus bus;
     @Inject Formatting formatting;
     @Inject ScoresStore scoreStore;
     @Inject TrophyRoom trophyRoom;
 
+    @Bind(R.id.activity_scores_root) RelativeLayout rootContainer;
     @Bind(R.id.activity_scores_recycler) RecyclerView recyclerView;
 
     private ScoresAdapter adapter;
@@ -88,10 +91,9 @@ public class ScoresActivity extends GraphActivity {
 
         this.adapter = new ScoresAdapter(this, scoreStore, formatting);
         recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getResources()));
 
-        final IntentFilter intentFilter = new IntentFilter(HighScoreDialogFragment.ACTION_SUBMITTED);
-        LocalBroadcastManager.getInstance(this)
-                             .registerReceiver(ON_SCORE_SUBMITTED, intentFilter);
+        bus.register(this);
     }
 
     @Override
@@ -101,8 +103,7 @@ public class ScoresActivity extends GraphActivity {
         recyclerView.setAdapter(null);
         adapter.destroy();
 
-        LocalBroadcastManager.getInstance(this)
-                             .unregisterReceiver(ON_SCORE_SUBMITTED);
+        bus.unregister(this);
     }
 
     @Override
@@ -129,24 +130,25 @@ public class ScoresActivity extends GraphActivity {
 
     //region Scores
 
-    private final BroadcastReceiver ON_SCORE_SUBMITTED = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String name = intent.getStringExtra(HighScoreDialogFragment.EXTRA_NAME);
-            final int score = getIntent().getIntExtra(EXTRA_SCORE, 0);
-            scoreStore.insert(name, score);
+    @Subscribe public void onAchievementUnlocked(@NonNull AchievementUnlocked event) {
+        AchievementHeadsUp.show(rootContainer, event.value);
+    }
 
-            if (score > 1000000) {
-                trophyRoom.achievementUnlocked(Achievement.SCORE_OVER_1_000_000);
-            } else if (score > 100000) {
-                trophyRoom.achievementUnlocked(Achievement.SCORE_OVER_100_000);
-            } else if (score > 10000) {
-                trophyRoom.achievementUnlocked(Achievement.SCORE_OVER_10_000);
-            } else if (score > 1000) {
-                trophyRoom.achievementUnlocked(Achievement.SCORE_OVER_1_000);
-            }
+    @Subscribe public void onNameSubmitted(@NonNull HighScoreDialogFragment.NameSubmitted event) {
+        final String name = event.value;
+        final int score = getIntent().getIntExtra(EXTRA_SCORE, 0);
+        scoreStore.insert(name, score);
+
+        if (score > 1000000) {
+            trophyRoom.achievementUnlocked(Achievement.SCORE_OVER_1_000_000);
+        } else if (score > 100000) {
+            trophyRoom.achievementUnlocked(Achievement.SCORE_OVER_100_000);
+        } else if (score > 10000) {
+            trophyRoom.achievementUnlocked(Achievement.SCORE_OVER_10_000);
+        } else if (score > 1000) {
+            trophyRoom.achievementUnlocked(Achievement.SCORE_OVER_1_000);
         }
-    };
+    }
 
     private void showNewScoreDialog() {
         final int newScore = getIntent().getIntExtra(EXTRA_SCORE, 0);

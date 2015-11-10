@@ -35,4 +35,5 @@ public interface TrophyRoom {
     @NonNull List<Achievement> getUnlockedAchievements();
     boolean isAchievementUnlocked(@NonNull Achievement achievement);
     void achievementUnlocked(@NonNull Achievement achievement);
+    void reset();
 }

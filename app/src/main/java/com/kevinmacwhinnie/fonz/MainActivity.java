@@ -30,7 +30,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
 
 import com.kevinmacwhinnie.fonz.achievements.Achievement;
 import com.kevinmacwhinnie.fonz.achievements.AchievementUnlocked;
@@ -48,6 +48,7 @@ import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Life;
 import com.kevinmacwhinnie.fonz.state.Pie;
 import com.kevinmacwhinnie.fonz.state.Score;
+import com.kevinmacwhinnie.fonz.view.AchievementHeadsUp;
 import com.kevinmacwhinnie.fonz.view.BoardView;
 import com.kevinmacwhinnie.fonz.view.StatsView;
 import com.squareup.otto.Subscribe;
@@ -72,6 +73,7 @@ public class MainActivity extends GraphActivity
     @Inject Preferences preferences;
     @Inject Formatting formatting;
 
+    @Bind(R.id.activity_main_root) RelativeLayout rootContainer;
     @Bind(R.id.activity_main_stats) StatsView statsView;
     @Bind(R.id.activity_main_board) BoardView boardView;
     @Bind(R.id.activity_main_game_state_control) Button gameControl;
@@ -224,7 +226,7 @@ public class MainActivity extends GraphActivity
     }
 
     @Subscribe public void onAchievementUnlocked(@NonNull AchievementUnlocked event) {
-        Toast.makeText(getApplicationContext(), event.value.name, Toast.LENGTH_SHORT).show();
+        AchievementHeadsUp.show(rootContainer, event.value);
     }
 
     //endregion

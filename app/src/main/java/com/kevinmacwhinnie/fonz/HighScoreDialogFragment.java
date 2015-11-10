@@ -30,10 +30,8 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.KeyEvent;
@@ -46,18 +44,18 @@ import android.widget.TextView;
 
 import com.kevinmacwhinnie.fonz.data.Formatting;
 import com.kevinmacwhinnie.fonz.data.Preferences;
+import com.kevinmacwhinnie.fonz.events.BaseValueEvent;
 import com.kevinmacwhinnie.fonz.graph.Injection;
+import com.squareup.otto.Bus;
 
 import javax.inject.Inject;
 
 public class HighScoreDialogFragment extends AppCompatDialogFragment
         implements Dialog.OnClickListener, TextView.OnEditorActionListener {
-    public static final String ACTION_SUBMITTED = HighScoreDialogFragment.class.getName() + ".ACTION_SUBMITTED";
-    public static final String EXTRA_NAME = HighScoreDialogFragment.class.getName() + ".EXTRA_NAME";
-
     public static final String TAG = HighScoreDialogFragment.class.getSimpleName();
     public static final String ARG_SCORE = HighScoreDialogFragment.class.getName() + ".ARG_SCORE";
 
+    @Inject Bus bus;
     @Inject Preferences preferences;
     @Inject Formatting formatting;
 
@@ -129,11 +127,7 @@ public class HighScoreDialogFragment extends AppCompatDialogFragment
         if (which == DialogInterface.BUTTON_POSITIVE) {
             final String name = nameText.getText().toString();
             preferences.setSavedScoreName(name);
-
-            final Intent response = new Intent(ACTION_SUBMITTED);
-            response.putExtra(EXTRA_NAME, name);
-            LocalBroadcastManager.getInstance(getActivity())
-                    .sendBroadcast(response);
+            bus.post(new NameSubmitted(name));
         }
     }
 
@@ -153,4 +147,11 @@ public class HighScoreDialogFragment extends AppCompatDialogFragment
     }
 
     //endregion
+
+
+    public static class NameSubmitted extends BaseValueEvent<String> {
+        public NameSubmitted(@NonNull String value) {
+            super(value);
+        }
+    }
 }

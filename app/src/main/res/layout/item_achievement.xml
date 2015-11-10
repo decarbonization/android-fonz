@@ -26,13 +26,33 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-          android:id="@+id/item_achievement_name"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:paddingLeft="@dimen/activity_horizontal_margin"
-          android:paddingRight="@dimen/activity_horizontal_margin"
-          android:paddingTop="@dimen/gap_small"
-          android:paddingBottom="@dimen/gap_small"
-          android:text="@string/data_placeholder"
-          android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageButton
+        android:id="@+id/item_achievement_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:contentDescription="@string/action_share"
+        android:src="@drawable/action_share"
+        style="@style/Fonz.Button.Inline"/>
+
+    <TextView
+        android:id="@+id/item_achievement_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/item_achievement_share"
+        android:layout_centerInParent="true"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/gap_small"
+        android:paddingBottom="@dimen/gap_small"
+        android:text="@string/data_placeholder"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/color_primary" />
+
+</RelativeLayout>
