@@ -217,7 +217,7 @@ public class GameTests extends FonzTestCase {
         scheduler.pause();
 
         game.newGame();
-        game.timedMechanics.schedulePowerUp(PowerUp.MULTIPLY_SCORE,
+        game.powerUpTimer.schedulePowerUp(PowerUp.MULTIPLY_SCORE,
                                             CountUp.NUMBER_TICKS);
         scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * 2L);
 
@@ -227,14 +227,14 @@ public class GameTests extends FonzTestCase {
 
         scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS + 10L);
         assertThat(game.countUp.getTickDurationMs(), is(equalTo(beforePause)));
-        assertThat(game.timedMechanics.isPending(PowerUp.MULTIPLY_SCORE), is(true));
+        assertThat(game.powerUpTimer.isPending(PowerUp.MULTIPLY_SCORE), is(true));
 
         game.resume();
         assertThat(game.isPaused(), is(false));
 
         scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * CountUp.NUMBER_TICKS * 3);
         assertThat(game.countUp.getTickDurationMs(), is(not(equalTo(beforePause))));
-        assertThat(game.timedMechanics.isPending(PowerUp.MULTIPLY_SCORE), is(false));
+        assertThat(game.powerUpTimer.isPending(PowerUp.MULTIPLY_SCORE), is(false));
 
         game.pause();
         assertThat(game.isPaused(), is(true));
@@ -294,12 +294,12 @@ public class GameTests extends FonzTestCase {
 
         assertThat(game.multiplyScore(), is(true));
         assertThat(game.multiplyScore(), is(false));
-        assertThat(game.timedMechanics.isPending(PowerUp.MULTIPLY_SCORE), is(true));
+        assertThat(game.powerUpTimer.isPending(PowerUp.MULTIPLY_SCORE), is(true));
         assertThat(game.score.getMultiplier(), is(equalTo(2f)));
 
-        scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * CountUp.NUMBER_TICKS * 3);
+        scheduler.advanceBy(PowerUpTimer.TICK_DURATION_MS * PowerUpTimer.STANDARD_NUMBER_TICKS);
 
-        assertThat(game.timedMechanics.isPending(PowerUp.MULTIPLY_SCORE), is(false));
+        assertThat(game.powerUpTimer.isPending(PowerUp.MULTIPLY_SCORE), is(false));
         assertThat(game.score.getMultiplier(), is(equalTo(1f)));
     }
 
@@ -315,12 +315,12 @@ public class GameTests extends FonzTestCase {
 
         assertThat(game.slowDownTime(), is(true));
         assertThat(game.slowDownTime(), is(false));
-        assertThat(game.timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
+        assertThat(game.powerUpTimer.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
         assertThat(game.countUp.getTickDurationMs(), is(equalTo(2000L)));
 
-        scheduler.advanceBy(2000L * CountUp.NUMBER_TICKS * 3);
+        scheduler.advanceBy(PowerUpTimer.TICK_DURATION_MS * PowerUpTimer.STANDARD_NUMBER_TICKS);
 
-        assertThat(game.timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(false));
+        assertThat(game.powerUpTimer.isPending(PowerUp.SLOW_DOWN_TIME), is(false));
         assertThat(game.countUp.getTickDurationMs(), is(not(equalTo(2000L))));
     }
 }

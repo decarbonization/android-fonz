@@ -54,6 +54,13 @@ public class CountUp extends Timer {
     }
 
     @Override
+    public void stop() {
+        super.stop();
+
+        setTickDurationMs(DEFAULT_TICK_DURATION_MS);
+    }
+
+    @Override
     protected void onTick(int tick) {
         bus.post(Ticked.acquire(tick));
     }

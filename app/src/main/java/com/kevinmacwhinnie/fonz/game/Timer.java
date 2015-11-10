@@ -78,9 +78,9 @@ public abstract class Timer implements GamePersistence, Handler.Callback {
 
     //region Attributes
 
-
     public final void setNumberOfTicks(int numberOfTicks) {
         this.numberOfTicks = numberOfTicks;
+        this.currentTick = 0;
     }
 
     public final int getNumberOfTicks() {
@@ -113,7 +113,8 @@ public abstract class Timer implements GamePersistence, Handler.Callback {
 
     //region Controlling Timer
 
-    public final void start() {
+    @CallSuper
+    public void start() {
         this.running = true;
 
         this.currentTick = 1;
@@ -124,26 +125,28 @@ public abstract class Timer implements GamePersistence, Handler.Callback {
         onTick(currentTick);
     }
 
-    public final void resume() {
+    @CallSuper
+    public void resume() {
         if (paused) {
             handler.sendEmptyMessageDelayed(MSG_TICK, tickDurationMs);
             this.paused = false;
         }
     }
 
-    public final void pause() {
+    @CallSuper
+    public void pause() {
         if (!paused) {
             handler.removeMessages(MSG_TICK);
             this.paused = true;
         }
     }
 
-    public final void stop() {
+    @CallSuper
+    public void stop() {
         handler.removeMessages(MSG_TICK);
 
         this.running = false;
         this.paused = false;
-        this.tickDurationMs = DEFAULT_TICK_DURATION_MS;
         this.currentTick = 1;
     }
 

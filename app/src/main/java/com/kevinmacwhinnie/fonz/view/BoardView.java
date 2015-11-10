@@ -43,7 +43,7 @@ import com.kevinmacwhinnie.fonz.R;
 import com.kevinmacwhinnie.fonz.data.Piece;
 import com.kevinmacwhinnie.fonz.data.PowerUp;
 import com.kevinmacwhinnie.fonz.data.UpcomingPiece;
-import com.kevinmacwhinnie.fonz.game.TimedMechanics;
+import com.kevinmacwhinnie.fonz.game.PowerUpTimer;
 import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Pie;
 import com.kevinmacwhinnie.fonz.view.util.Animations;
@@ -171,7 +171,7 @@ public class BoardView extends LinearLayout
     public void setPowerUpActive(@NonNull PowerUp powerUp, boolean active) {
         final PowerUpButton powerUpButton = powerUpButtons.get(powerUp);
         if (active) {
-            powerUpButton.setTick(TimedMechanics.STANDARD_DURATION_TICKS);
+            powerUpButton.setTick(PowerUpTimer.STANDARD_NUMBER_TICKS);
             powerUpButton.setClickable(false);
         } else {
             powerUpButton.setTick(0);

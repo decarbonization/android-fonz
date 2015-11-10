@@ -32,33 +32,34 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.kevinmacwhinnie.fonz.data.GamePersistence;
 import com.kevinmacwhinnie.fonz.data.PowerUp;
 import com.kevinmacwhinnie.fonz.events.BaseEvent;
 import com.kevinmacwhinnie.fonz.events.BaseValueEvent;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TimedMechanics implements GamePersistence {
-    public static final int STANDARD_DURATION_TICKS = 30;
+public class PowerUpTimer extends Timer {
+    public static final int STANDARD_NUMBER_TICKS = 60;
+    public static final long TICK_DURATION_MS = 500L;
 
-    static final String SAVED_SCHEDULED = TimedMechanics.class.getName() + ".SAVED_SCHEDULED";
+    static final String SAVED_SCHEDULED = PowerUpTimer.class.getName() + ".SAVED_SCHEDULED";
 
     private final Bus bus;
     private final ArrayList<PowerUpTicked> scheduled = new ArrayList<>(3);
-    private boolean subscribed = false;
 
     //region Lifecycle
 
-    public TimedMechanics(@NonNull Bus bus) {
+    public PowerUpTimer(@NonNull Bus bus) {
         this.bus = bus;
+        setTickDurationMs(TICK_DURATION_MS);
     }
 
     @Override
     public void restoreState(@NonNull Bundle inState) {
+        super.restoreState(inState);
+
         final ArrayList<PowerUpTicked> inScheduled =
                 inState.getParcelableArrayList(SAVED_SCHEDULED);
         if (inScheduled != null) {
@@ -69,6 +70,8 @@ public class TimedMechanics implements GamePersistence {
 
     @Override
     public void saveState(@NonNull Bundle outState) {
+        super.saveState(outState);
+
         outState.putParcelableArrayList(SAVED_SCHEDULED, scheduled);
     }
 
@@ -77,28 +80,19 @@ public class TimedMechanics implements GamePersistence {
 
     //region Scheduling
 
-    private void subscribe() {
-        if (!subscribed) {
-            bus.register(this);
-            this.subscribed = true;
-        }
-    }
-
-    private void unsubscribe() {
-        if (subscribed) {
-            bus.unregister(this);
-            this.subscribed = false;
-        }
-    }
-
-    public void schedulePowerUp(@NonNull PowerUp powerUp, long durationTicks) {
-        scheduled.add(new PowerUpTicked(powerUp, durationTicks, 1L));
+    public void schedulePowerUp(@NonNull PowerUp powerUp, int numberOfTicks) {
+        scheduled.add(new PowerUpTicked(powerUp, numberOfTicks, 1));
         bus.post(new PowerUpScheduled(powerUp));
-        subscribe();
+
+        setNumberOfTicks(numberOfTicks);
+        if (!isRunning()) {
+            start();
+        }
     }
 
-    public void reset() {
-        unsubscribe();
+    @Override
+    public void stop() {
+        super.stop();
         scheduled.clear();
     }
 
@@ -114,23 +108,25 @@ public class TimedMechanics implements GamePersistence {
     //endregion
 
 
-    //region Callbacks
+    //region Timing
 
-    @Subscribe public void onCountUpTicked(@NonNull CountUp.Ticked tick) {
+    @Override
+    protected void onTick(int tick) {
         final Iterator<PowerUpTicked> iterator = scheduled.iterator();
         while (iterator.hasNext()) {
             final PowerUpTicked powerUpTicked = iterator.next();
-            if (++powerUpTicked.durationTickCurrent >= powerUpTicked.durationTicks) {
+            if (++powerUpTicked.currentTick >= powerUpTicked.numberOfTicks) {
                 iterator.remove();
                 bus.post(new PowerUpExpired(powerUpTicked.powerUp));
             } else {
                 bus.post(powerUpTicked);
             }
         }
+    }
 
-        if (scheduled.isEmpty()) {
-            unsubscribe();
-        }
+    @Override
+    protected void onCompleted() {
+        // Do nothing.
     }
 
     //endregion
@@ -140,21 +136,25 @@ public class TimedMechanics implements GamePersistence {
 
     public static class PowerUpTicked extends BaseEvent implements Parcelable {
         public final PowerUp powerUp;
-        public final long durationTicks;
-        public long durationTickCurrent;
+        public final int numberOfTicks;
+        public int currentTick;
 
         PowerUpTicked(@NonNull PowerUp powerUp,
-                      long durationTicks,
-                      long durationTickCurrent) {
+                      int numberOfTicks,
+                      int currentTick) {
             this.powerUp = powerUp;
-            this.durationTicks = durationTicks;
-            this.durationTickCurrent = durationTickCurrent;
+            this.numberOfTicks = numberOfTicks;
+            this.currentTick = currentTick;
         }
 
         PowerUpTicked(Parcel in) {
             this(PowerUp.valueOf(in.readString()),
-                 in.readLong(),
-                 in.readLong());
+                 in.readInt(),
+                 in.readInt());
+        }
+
+        public int getTicksRemaining() {
+            return (numberOfTicks - currentTick);
         }
 
         @Override
@@ -165,8 +165,8 @@ public class TimedMechanics implements GamePersistence {
         @Override
         public void writeToParcel(Parcel out, int flags) {
             out.writeString(powerUp.toString());
-            out.writeLong(durationTicks);
-            out.writeLong(durationTickCurrent);
+            out.writeInt(numberOfTicks);
+            out.writeInt(currentTick);
         }
 
         public static final Creator<PowerUpTicked> CREATOR = new Creator<PowerUpTicked>() {

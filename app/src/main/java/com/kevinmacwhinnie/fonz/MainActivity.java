@@ -41,8 +41,8 @@ import com.kevinmacwhinnie.fonz.data.Preferences;
 import com.kevinmacwhinnie.fonz.data.ScoresStore;
 import com.kevinmacwhinnie.fonz.game.CountUp;
 import com.kevinmacwhinnie.fonz.game.Game;
+import com.kevinmacwhinnie.fonz.game.PowerUpTimer;
 import com.kevinmacwhinnie.fonz.game.Sounds;
-import com.kevinmacwhinnie.fonz.game.TimedMechanics;
 import com.kevinmacwhinnie.fonz.graph.GraphActivity;
 import com.kevinmacwhinnie.fonz.state.Board;
 import com.kevinmacwhinnie.fonz.state.Life;
@@ -164,16 +164,15 @@ public class MainActivity extends GraphActivity
         }
     }
 
-    @Subscribe public void onPowerUpScheduled(@NonNull TimedMechanics.PowerUpScheduled change) {
+    @Subscribe public void onPowerUpScheduled(@NonNull PowerUpTimer.PowerUpScheduled change) {
         boardView.setPowerUpActive(change.value, true);
     }
 
-    @Subscribe public void onPowerUpTicked(@NonNull TimedMechanics.PowerUpTicked ticked) {
-        boardView.setPowerUpTick(ticked.powerUp,
-                                 (int) (ticked.durationTicks - ticked.durationTickCurrent));
+    @Subscribe public void onPowerUpTicked(@NonNull PowerUpTimer.PowerUpTicked ticked) {
+        boardView.setPowerUpTick(ticked.powerUp, ticked.getTicksRemaining());
     }
 
-    @Subscribe public void onPowerUpScheduled(@NonNull TimedMechanics.PowerUpExpired change) {
+    @Subscribe public void onPowerUpScheduled(@NonNull PowerUpTimer.PowerUpExpired change) {
         boardView.setPowerUpActive(change.value, false);
     }
 

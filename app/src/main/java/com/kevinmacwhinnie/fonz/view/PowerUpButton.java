@@ -38,7 +38,7 @@ import android.util.AttributeSet;
 
 import com.kevinmacwhinnie.fonz.R;
 import com.kevinmacwhinnie.fonz.data.PowerUp;
-import com.kevinmacwhinnie.fonz.game.TimedMechanics;
+import com.kevinmacwhinnie.fonz.game.PowerUpTimer;
 
 public class PowerUpButton extends AppCompatImageButton {
     private final TimerDrawable timerDrawable;
@@ -61,7 +61,7 @@ public class PowerUpButton extends AppCompatImageButton {
         setAdjustViewBounds(true);
 
         this.timerDrawable = new TimerDrawable(getResources());
-        timerDrawable.setNumberOfTicks(TimedMechanics.STANDARD_DURATION_TICKS);
+        timerDrawable.setNumberOfTicks(PowerUpTimer.STANDARD_NUMBER_TICKS);
         setBackground(timerDrawable);
 
         if (attrs != null) {

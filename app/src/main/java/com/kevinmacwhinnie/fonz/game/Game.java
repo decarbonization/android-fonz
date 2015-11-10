@@ -53,7 +53,7 @@ public class Game implements GamePersistence {
     public final Bus bus;
 
     public final CountUp countUp;
-    public final TimedMechanics timedMechanics;
+    public final PowerUpTimer powerUpTimer;
 
     public final Life life;
     public final Score score;
@@ -73,7 +73,7 @@ public class Game implements GamePersistence {
         this.bus = bus;
 
         this.countUp = new CountUp(bus);
-        this.timedMechanics = new TimedMechanics(bus);
+        this.powerUpTimer = new PowerUpTimer(bus);
 
         this.life = new Life(bus);
         this.score = new Score(bus);
@@ -93,7 +93,7 @@ public class Game implements GamePersistence {
         this.inProgress = inState.getBoolean(SAVED_IN_PROGRESS, false);
         if (inProgress) {
             countUp.restoreState(inState);
-            timedMechanics.restoreState(inState);
+            powerUpTimer.restoreState(inState);
             life.restoreState(inState);
             score.restoreState(inState);
             board.restoreState(inState);
@@ -113,7 +113,7 @@ public class Game implements GamePersistence {
         outState.putBoolean(SAVED_IN_PROGRESS, inProgress);
         if (inProgress) {
             countUp.saveState(outState);
-            timedMechanics.saveState(outState);
+            powerUpTimer.saveState(outState);
             life.saveState(outState);
             score.saveState(outState);
             board.saveState(outState);
@@ -178,7 +178,7 @@ public class Game implements GamePersistence {
         pieceFactory.reset();
 
         countUp.stop();
-        timedMechanics.reset();
+        powerUpTimer.stop();
 
         life.reset();
         score.reset();
@@ -258,6 +258,7 @@ public class Game implements GamePersistence {
 
         if (!paused && inProgress) {
             countUp.pause();
+            powerUpTimer.pause();
             this.paused = true;
 
             bus.post(new PauseStateChanged(true));
@@ -269,6 +270,7 @@ public class Game implements GamePersistence {
 
         if (paused && inProgress) {
             countUp.resume();
+            powerUpTimer.resume();
             this.paused = false;
 
             bus.post(new PauseStateChanged(false));
@@ -309,10 +311,10 @@ public class Game implements GamePersistence {
         Log.d(LOG_TAG, "useScoreMultiplier()");
 
         if (inProgress && board.hasPowerUp(PowerUp.MULTIPLY_SCORE) &&
-                !timedMechanics.isPending(PowerUp.MULTIPLY_SCORE)) {
+                !powerUpTimer.isPending(PowerUp.MULTIPLY_SCORE)) {
             score.setMultiplier(2f);
-            timedMechanics.schedulePowerUp(PowerUp.MULTIPLY_SCORE,
-                                           TimedMechanics.STANDARD_DURATION_TICKS);
+            powerUpTimer.schedulePowerUp(PowerUp.MULTIPLY_SCORE,
+                                           PowerUpTimer.STANDARD_NUMBER_TICKS);
             return true;
         } else {
             return false;
@@ -323,17 +325,17 @@ public class Game implements GamePersistence {
         Log.d(LOG_TAG, "slowDownTime()");
 
         if (inProgress && board.hasPowerUp(PowerUp.SLOW_DOWN_TIME) &&
-                !timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME)) {
+                !powerUpTimer.isPending(PowerUp.SLOW_DOWN_TIME)) {
             countUp.scaleTickDuration(2f);
-            timedMechanics.schedulePowerUp(PowerUp.SLOW_DOWN_TIME,
-                                           TimedMechanics.STANDARD_DURATION_TICKS);
+            powerUpTimer.schedulePowerUp(PowerUp.SLOW_DOWN_TIME,
+                                           PowerUpTimer.STANDARD_NUMBER_TICKS);
             return true;
         } else {
             return false;
         }
     }
 
-    @Subscribe public void onPowerUpExpired(@NonNull TimedMechanics.PowerUpExpired expiration) {
+    @Subscribe public void onPowerUpExpired(@NonNull PowerUpTimer.PowerUpExpired expiration) {
         final PowerUp powerUp = expiration.value;
         Log.d(LOG_TAG, "onPowerUpExpired(" + powerUp + ")");
 
