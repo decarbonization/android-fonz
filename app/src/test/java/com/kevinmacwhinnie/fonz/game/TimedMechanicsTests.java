@@ -65,7 +65,7 @@ public class TimedMechanicsTests extends FonzTestCase {
     public void tearDown() {
         bus.unregister(this);
         events.clear();
-        countUp.reset();
+        countUp.stop();
         timedMechanics.reset();
     }
 

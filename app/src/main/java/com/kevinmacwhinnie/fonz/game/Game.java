@@ -177,7 +177,7 @@ public class Game implements GamePersistence {
 
         pieceFactory.reset();
 
-        countUp.reset();
+        countUp.stop();
         timedMechanics.reset();
 
         life.reset();

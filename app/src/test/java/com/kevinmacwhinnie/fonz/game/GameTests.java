@@ -157,7 +157,7 @@ public class GameTests extends FonzTestCase {
         assertThat(pie.getOccupiedSlotCount(), is(equalTo(0)));
         assertThat(events, hasItem(new Score.Changed(120)));
         assertThat(events, hasItem(new Life.Changed(Life.INITIAL_VALUE + 1)));
-        assertThat(game.countUp.getTickDuration(), is(equalTo(950L)));
+        assertThat(game.countUp.getTickDurationMs(), is(equalTo(950L)));
         assertThat(game.board.hasPowerUp(PowerUp.MULTIPLY_SCORE), is(true));
 
         assertThat(occurrencesOf(events, Game.UpcomingPieceAvailable.INSTANCE), is(equalTo(2)));
@@ -185,7 +185,7 @@ public class GameTests extends FonzTestCase {
         assertThat(pie.getOccupiedSlotCount(), is(equalTo(0)));
         assertThat(events, hasItem(new Score.Changed(60)));
         assertThat(events, not(hasItem(new Life.Changed(Life.INITIAL_VALUE + 1))));
-        assertThat(game.countUp.getTickDuration(), is(equalTo(950L)));
+        assertThat(game.countUp.getTickDurationMs(), is(equalTo(950L)));
         assertThat(game.board.hasPowerUp(PowerUp.MULTIPLY_SCORE), is(false));
 
         assertThat(occurrencesOf(events, Game.UpcomingPieceAvailable.INSTANCE), is(equalTo(2)));
@@ -208,7 +208,7 @@ public class GameTests extends FonzTestCase {
         assertThat(occurrencesOf(events, Game.UpcomingPieceAvailable.INSTANCE), is(equalTo(2)));
         assertThat(game.isInProgress(), is(true));
         assertThat(game.getUpcomingPiece(), is(notNullValue()));
-        assertThat(game.countUp.getTickDuration(), is(equalTo(950L)));
+        assertThat(game.countUp.getTickDurationMs(), is(equalTo(950L)));
     }
 
     @Test
@@ -221,19 +221,19 @@ public class GameTests extends FonzTestCase {
                                             CountUp.NUMBER_TICKS);
         scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * 2L);
 
-        final int beforePause = game.countUp.getTickCurrent();
+        final long beforePause = game.countUp.getTickDurationMs();
         game.pause();
         assertThat(game.isPaused(), is(true));
 
         scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS + 10L);
-        assertThat(game.countUp.getTickCurrent(), is(equalTo(beforePause)));
+        assertThat(game.countUp.getTickDurationMs(), is(equalTo(beforePause)));
         assertThat(game.timedMechanics.isPending(PowerUp.MULTIPLY_SCORE), is(true));
 
         game.resume();
         assertThat(game.isPaused(), is(false));
 
         scheduler.advanceBy(CountUp.DEFAULT_TICK_DURATION_MS * CountUp.NUMBER_TICKS * 3);
-        assertThat(game.countUp.getTickCurrent(), is(not(equalTo(beforePause))));
+        assertThat(game.countUp.getTickDurationMs(), is(not(equalTo(beforePause))));
         assertThat(game.timedMechanics.isPending(PowerUp.MULTIPLY_SCORE), is(false));
 
         game.pause();
@@ -316,11 +316,11 @@ public class GameTests extends FonzTestCase {
         assertThat(game.slowDownTime(), is(true));
         assertThat(game.slowDownTime(), is(false));
         assertThat(game.timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(true));
-        assertThat(game.countUp.getTickDuration(), is(equalTo(2000L)));
+        assertThat(game.countUp.getTickDurationMs(), is(equalTo(2000L)));
 
         scheduler.advanceBy(2000L * CountUp.NUMBER_TICKS * 3);
 
         assertThat(game.timedMechanics.isPending(PowerUp.SLOW_DOWN_TIME), is(false));
-        assertThat(game.countUp.getTickDuration(), is(not(equalTo(2000L))));
+        assertThat(game.countUp.getTickDurationMs(), is(not(equalTo(2000L))));
     }
 }

@@ -26,125 +26,42 @@
  */
 package com.kevinmacwhinnie.fonz.game;
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 
-import com.kevinmacwhinnie.fonz.data.GamePersistence;
 import com.kevinmacwhinnie.fonz.events.BaseEvent;
 import com.squareup.otto.Bus;
 
-public class CountUp implements Handler.Callback, GamePersistence {
-    static final String SAVED_RUNNING = CountUp.class.getName() + ".SAVED_RUNNING";
-    static final String SAVED_TICK_DURATION = CountUp.class.getName() + ".SAVED_TICK_DURATION";
-    static final String SAVED_CURRENT = CountUp.class.getName() + ".SAVED_CURRENT";
-
+public class CountUp extends Timer {
     public static final int NUMBER_TICKS = 10;
-    public static final long DEFAULT_TICK_DURATION_MS = 1000L;
     public static final long MIN_TICK_DURATION = 450L;
     public static final float DEFAULT_SCALE_FACTOR = 0.95f;
 
-    private static final int MSG_TICK = 0;
-
     private final Bus bus;
-    private final Handler handler;
-
-    @VisibleForTesting boolean running = false;
-    @VisibleForTesting int tickCurrent = 0;
-    @VisibleForTesting long tickDuration = DEFAULT_TICK_DURATION_MS;
 
     public CountUp(@NonNull Bus bus) {
         this.bus = bus;
-        this.handler = new Handler(Looper.getMainLooper(), this);
-    }
 
-    @Override
-    public void restoreState(@NonNull Bundle inState) {
-        this.running = inState.getBoolean(SAVED_RUNNING);
-        this.tickCurrent = inState.getInt(SAVED_CURRENT);
-        this.tickDuration = inState.getLong(SAVED_TICK_DURATION);
-    }
-
-    @Override
-    public void saveState(@NonNull Bundle outState) {
-        outState.putBoolean(SAVED_RUNNING, running);
-        outState.putInt(SAVED_CURRENT, tickCurrent);
-        outState.putLong(SAVED_TICK_DURATION, tickDuration);
+        setNumberOfTicks(NUMBER_TICKS);
     }
 
     public void scaleTickDuration(double factor) {
-        this.tickDuration = Math.round(tickDuration * factor);
+        long tickDuration = Math.round(getTickDurationMs() * factor);
         if (tickDuration < MIN_TICK_DURATION) {
-            this.tickDuration = MIN_TICK_DURATION;
+            tickDuration = MIN_TICK_DURATION;
         }
 
-        handler.removeMessages(MSG_TICK);
-        if (running) {
-            handler.sendEmptyMessageDelayed(MSG_TICK, tickDuration);
-        }
-    }
-
-    public long getTickDuration() {
-        return tickDuration;
-    }
-
-    public int getTickCurrent() {
-        return tickCurrent;
-    }
-
-    public void start() {
-        this.running = true;
-
-        this.tickCurrent = 1;
-
-        handler.removeMessages(MSG_TICK);
-        handler.sendEmptyMessageDelayed(MSG_TICK, tickDuration);
-
-        bus.post(Ticked.acquire(tickCurrent));
-    }
-
-    public void resume() {
-        handler.sendEmptyMessageDelayed(MSG_TICK, tickDuration);
-    }
-
-    public void pause() {
-        handler.removeMessages(MSG_TICK);
-    }
-
-    public boolean isRunning() {
-        return running;
-    }
-
-    public void reset() {
-        handler.removeMessages(MSG_TICK);
-
-        this.running = false;
-        this.tickDuration = DEFAULT_TICK_DURATION_MS;
-        this.tickCurrent = 1;
+        setTickDurationMs(tickDuration);
     }
 
     @Override
-    public boolean handleMessage(Message msg) {
-        switch (msg.what) {
-            case MSG_TICK: {
-                if (++this.tickCurrent <= NUMBER_TICKS) {
-                    bus.post(Ticked.acquire(tickCurrent));
-                    handler.sendEmptyMessageDelayed(MSG_TICK, tickDuration);
-                } else {
-                    reset();
-                    bus.post(Completed.INSTANCE);
-                }
-                return true;
-            }
-            default: {
-                return false;
-            }
-        }
+    protected void onTick(int tick) {
+        bus.post(Ticked.acquire(tick));
     }
 
+    @Override
+    protected void onCompleted() {
+        bus.post(Completed.INSTANCE);
+    }
 
     public static class Ticked extends BaseEvent {
         private static final Ticked INSTANCE = new Ticked();

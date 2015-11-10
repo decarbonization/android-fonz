@@ -100,7 +100,7 @@ public class MainActivity extends GraphActivity
         boardView.setListener(this);
 
         if (gamePaused) {
-            boardView.setTick(game.countUp.getTickCurrent());
+            boardView.setTick(game.countUp.getCurrentTick());
             gameControl.setText(R.string.action_resume_game);
         }
 
