@@ -27,6 +27,7 @@
 
 package com.kevinmacwhinnie.fonz.view;
 
+import android.support.annotation.NonNull;
 import android.widget.FrameLayout;
 
 import com.kevinmacwhinnie.fonz.FonzTestCase;
@@ -42,12 +43,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class AchievementsAdapterTests extends FonzTestCase {
+public class AchievementsAdapterTests extends FonzTestCase implements AchievementsAdapter.OnShareClickListener {
     @Test
     public void achievementRendering() {
         final List<Achievement> achievements = new ArrayList<>();
         achievements.add(Achievement.ALL_POWER_UPS_UNLOCKED);
-        final AchievementsAdapter adapter = new AchievementsAdapter(getContext(), achievements);
+        final AchievementsAdapter adapter = new AchievementsAdapter(getContext(), this, achievements);
 
         final FrameLayout fakeParent = new FrameLayout(getContext());
 
@@ -58,6 +59,11 @@ public class AchievementsAdapterTests extends FonzTestCase {
 
         adapter.bindViewHolder(holder1, 0);
 
-        assertThat(holder1.name.getText().toString(), is(equalTo("Power Mad!")));
+        assertThat(holder1.name.getText().toString(), is(equalTo("Power mad!")));
+    }
+
+    @Override
+    public void onItemShareClick(@NonNull Achievement achievement) {
+        // Do nothing.
     }
 }
