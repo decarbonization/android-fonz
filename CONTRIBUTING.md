@@ -10,4 +10,3 @@ If you contribute code to Fonz, add yourself to this list before you submit a pu
 
 - decarbonization
 - spencerv
-- 
