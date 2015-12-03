@@ -119,6 +119,10 @@ public class ScoresActivity extends GraphActivity {
                 clearScores();
                 return true;
             }
+            case android.R.id.home: {
+                finish();
+                return true;
+            }
             default: {
                 return super.onOptionsItemSelected(item);
             }
