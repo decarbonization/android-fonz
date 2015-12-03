@@ -229,9 +229,10 @@ public class Game implements GamePersistence {
                 } else {
                     result = PlacementResult.PIE_COMPLETED_MULTI_COLOR;
                 }
+
+                countUp.scaleTickDuration(timerScaleFactor);
             }
 
-            countUp.scaleTickDuration(timerScaleFactor);
             doNewCountUp();
             return result;
         } else {
@@ -245,7 +246,7 @@ public class Game implements GamePersistence {
         if (inProgress) {
             life.decrement();
             if (life.isAlive()) {
-                countUp.scaleTickDuration(CountUp.DEFAULT_SCALE_FACTOR);
+                countUp.scaleTickDuration(timerScaleFactor);
                 doNewCountUp();
             } else {
                 gameOver(GameOver.How.GAME_LOGIC);
@@ -314,7 +315,7 @@ public class Game implements GamePersistence {
                 !powerUpTimer.isPending(PowerUp.MULTIPLY_SCORE)) {
             score.setMultiplier(2f);
             powerUpTimer.schedulePowerUp(PowerUp.MULTIPLY_SCORE,
-                                           PowerUpTimer.STANDARD_NUMBER_TICKS);
+                                         PowerUpTimer.STANDARD_NUMBER_TICKS);
             return true;
         } else {
             return false;
@@ -328,7 +329,7 @@ public class Game implements GamePersistence {
                 !powerUpTimer.isPending(PowerUp.SLOW_DOWN_TIME)) {
             countUp.scaleTickDuration(2f);
             powerUpTimer.schedulePowerUp(PowerUp.SLOW_DOWN_TIME,
-                                           PowerUpTimer.STANDARD_NUMBER_TICKS);
+                                         PowerUpTimer.STANDARD_NUMBER_TICKS);
             return true;
         } else {
             return false;
