@@ -38,52 +38,62 @@ public enum Achievement {
     /**
      * First time the user completes a pie with a single color.
      */
-    FIRST_SINGLE_COLOR_PIE(R.string.achievement_first_single_color_pie),
+    FIRST_SINGLE_COLOR_PIE(R.string.achievement_first_single_color_pie,
+                           R.string.achievement_description_first_single_color_pie),
 
     /**
      * First time the user unlocks a power up.
      */
-    FIRST_POWER_UP(R.string.achievement_first_power_up),
+    FIRST_POWER_UP(R.string.achievement_first_power_up,
+                   R.string.achievement_description_first_power_up),
 
     /**
      * First time the user makes a high score.
      */
-    FIRST_HIGH_SCORE(R.string.achievement_first_high_score),
+    FIRST_HIGH_SCORE(R.string.achievement_first_high_score,
+                     R.string.achievement_description_first_high_score),
 
     /**
      * When the user places a piece and the count up timer is on its last tick.
      */
-    BEAT_THE_CLOCK(R.string.achievement_beat_the_clock),
+    BEAT_THE_CLOCK(R.string.achievement_beat_the_clock,
+                   R.string.achievement_description_beat_the_clock),
 
     /**
      * First time the user unlocks all power ups.
      */
-    ALL_POWER_UPS_UNLOCKED(R.string.achievement_all_power_ups_unlocked),
+    ALL_POWER_UPS_UNLOCKED(R.string.achievement_all_power_ups_unlocked,
+                           R.string.achievement_description_all_power_ups_unlocked),
 
     /**
      * When the user breaks 20 lives.
      */
-    KING_OF_LIVES(R.string.achievement_king_of_lives),
+    KING_OF_LIVES(R.string.achievement_king_of_lives,
+                  R.string.achievement_description_king_of_lives),
 
     /**
      * First time the user has high score over 1,000 point.
      */
-    SCORE_OVER_1_000(R.string.achievement_score_over_1_000),
+    SCORE_OVER_1_000(R.string.achievement_score_over_1_000,
+                     R.string.achievement_description_score_over_1_000),
 
     /**
      * First time the user has high score over 10,000 point.
      */
-    SCORE_OVER_10_000(R.string.achievement_score_over_10_000),
+    SCORE_OVER_10_000(R.string.achievement_score_over_10_000,
+                      R.string.achievement_description_score_over_10_000),
 
     /**
      * First time the user has high score over 100,000 point.
      */
-    SCORE_OVER_100_000(R.string.achievement_score_over_100_000),
+    SCORE_OVER_100_000(R.string.achievement_score_over_100_000,
+                       R.string.achievement_description_score_over_100_000),
 
     /**
      * First time the user has high score over 1,000,000 point.
      */
-    SCORE_OVER_1_000_000(R.string.achievement_score_over_1_000_000);
+    SCORE_OVER_1_000_000(R.string.achievement_score_over_1_000_000,
+                         R.string.achievement_description_score_over_1_000_000);
 
 
     /**
@@ -91,8 +101,14 @@ public enum Achievement {
      */
     public final @StringRes int name;
 
-    Achievement(@StringRes int name) {
+    /**
+     * The human readable description of the achievement
+     */
+    public final @StringRes int description;
+
+    Achievement(@StringRes int name, @StringRes int description) {
         this.name = name;
+        this.description = description;
     }
 
 

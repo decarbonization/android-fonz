@@ -60,6 +60,8 @@ public class AchievementsAdapterTests extends FonzTestCase implements Achievemen
         adapter.bindViewHolder(holder1, 0);
 
         assertThat(holder1.name.getText().toString(), is(equalTo("Power mad!")));
+        assertThat(holder1.description.getText().toString(),
+                   is(equalTo("You've unlocked all the power ups at once in a single game.")));
     }
 
     @Override

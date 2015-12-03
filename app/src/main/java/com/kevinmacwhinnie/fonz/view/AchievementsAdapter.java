@@ -76,17 +76,20 @@ public class AchievementsAdapter extends RecyclerView.Adapter<AchievementsAdapte
         final Achievement achievement = achievements.get(position);
         final String name = resources.getString(achievement.name);
         holder.name.setText(name);
+        holder.description.setText(achievement.description);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
         final TextView name;
+        final TextView description;
         final ImageButton shareButton;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             this.name = (TextView) itemView.findViewById(R.id.item_achievement_name);
+            this.description = (TextView) itemView.findViewById(R.id.item_achievement_description);
             this.shareButton = (ImageButton) itemView.findViewById(R.id.item_achievement_share);
             final Drawable shareIcon = DrawableCompat.wrap(shareButton.getDrawable().mutate());
             DrawableCompat.setTint(shareIcon, Drawing.getColor(resources, R.color.color_accent));

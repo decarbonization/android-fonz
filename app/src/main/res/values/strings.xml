@@ -51,13 +51,23 @@
     <string name="achievement_unlocked_template">Achievement Unlocked: {}</string>
     <string name="achievement_share_title">My Fonz Achievement</string>
     <string name="achievement_first_single_color_pie">Color coordinated</string>
+    <string name="achievement_description_first_single_color_pie">You\'ve completed a pie with a single color.</string>
     <string name="achievement_first_power_up">Powered up</string>
+    <string name="achievement_description_first_power_up">You\'ve unlocked a power up.</string>
     <string name="achievement_first_high_score">Score board worthy</string>
+    <string name="achievement_description_first_high_score">You\'ve made it onto the score board.</string>
     <string name="achievement_beat_the_clock">Beat the clock</string>
+    <string name="achievement_description_beat_the_clock">You placed a piece just before time ran out.</string>
     <string name="achievement_all_power_ups_unlocked">Power mad!</string>
+    <string name="achievement_description_all_power_ups_unlocked">You\'ve unlocked all the power ups at once in a single game.</string>
     <string name="achievement_king_of_lives">All the lives!</string>
+    <string name="achievement_description_king_of_lives">You\'ve gotten more than 20 lives.</string>
     <string name="achievement_score_over_1_000">Quadruple digit club</string>
+    <string name="achievement_description_score_over_1_000">You\'ve scored over 1,000 points in a single game.</string>
     <string name="achievement_score_over_10_000">It\'s over 9,000!</string>
+    <string name="achievement_description_score_over_10_000">You\'ve scored over 10,000 points in a single game.</string>
     <string name="achievement_score_over_100_000">That\'s a big score!</string>
+    <string name="achievement_description_score_over_100_000">You\'ve scored over 100,000 points in a single game.</string>
     <string name="achievement_score_over_1_000_000">Go outside!</string>
+    <string name="achievement_description_score_over_1_000_000">You\'ve scored over 1,000,000 points in a single game.</string>
 </resources>
