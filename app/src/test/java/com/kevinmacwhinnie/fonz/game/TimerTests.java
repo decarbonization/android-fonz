@@ -103,6 +103,39 @@ public class TimerTests extends FonzTestCase {
     }
 
     @Test
+    public void startAfterPause() {
+        assertThat(timer.isRunning(), is(false));
+
+        final Scheduler scheduler = Robolectric.getForegroundThreadScheduler();
+        scheduler.pause();
+        timer.start();
+
+        scheduler.advanceBy(Timer.DEFAULT_TICK_DURATION_MS * 4);
+        assertThat(counter, is(equalTo(5)));
+        assertThat(completed, is(false));
+
+        timer.pause();
+        assertThat(timer.isRunning(), is(true));
+
+        scheduler.advanceBy(Timer.DEFAULT_TICK_DURATION_MS * 6);
+        assertThat(counter, is(equalTo(5)));
+        assertThat(completed, is(false));
+
+        this.counter = 0;
+        timer.start();
+        scheduler.advanceBy(Timer.DEFAULT_TICK_DURATION_MS * 4);
+        assertThat(counter, is(equalTo(5)));
+        assertThat(completed, is(false));
+
+        timer.pause();
+        assertThat(timer.isRunning(), is(true));
+
+        scheduler.advanceBy(Timer.DEFAULT_TICK_DURATION_MS * 6);
+        assertThat(counter, is(equalTo(5)));
+        assertThat(completed, is(false));
+    }
+
+    @Test
     public void serialization() {
         final TestTimer outTimer = new TestTimer();
         outTimer.running = true;

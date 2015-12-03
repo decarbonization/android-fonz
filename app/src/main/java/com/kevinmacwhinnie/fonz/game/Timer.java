@@ -116,6 +116,7 @@ public abstract class Timer implements GamePersistence, Handler.Callback {
     @CallSuper
     public void start() {
         this.running = true;
+        this.paused = false;
 
         this.currentTick = 1;
 
@@ -135,10 +136,8 @@ public abstract class Timer implements GamePersistence, Handler.Callback {
 
     @CallSuper
     public void pause() {
-        if (!paused) {
-            handler.removeMessages(MSG_TICK);
-            this.paused = true;
-        }
+        handler.removeMessages(MSG_TICK);
+        this.paused = true;
     }
 
     @CallSuper
